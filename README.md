@@ -20,12 +20,6 @@ If you want to learn more about creating good readme files then refer the follow
 - [Chakra Core](https://github.com/Microsoft/ChakraCore)
 
 # Authors
-Kelvin Nguyen
-Christopher Soremekun
-Komalpreet Singh
-Felipe Teixeira Andrade
-Thomas Nguyen
-Dakota O’Neil
 Johnnie Ho
 
 # Team Leads
