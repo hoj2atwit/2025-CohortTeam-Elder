@@ -6,3 +6,6 @@
 /.vs/cohort/v17
 *.sqlite
 /.vs/VSWorkspaceState.json
+bin/
+obj/
+.fake
