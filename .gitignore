@@ -6,3 +6,7 @@
 /.vs/cohort/v17
 *.sqlite
 /.vs/VSWorkspaceState.json
+bin/
+obj/
+SmartGym/obj/
+SmartGym/bin/
