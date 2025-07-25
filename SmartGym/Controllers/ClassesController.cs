@@ -33,8 +33,17 @@ public class ClassesController: ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Class>> CreateClass(Class newClass)
+    public async Task<ActionResult<Class>> CreateClass(ClassDTO newClassData)
     {
+        var newClass = new Class
+        {
+            Name = newClassData.Name,
+            Schedule = newClassData.Schedule,
+            Capacity = newClassData.Capacity,
+            TrainerId = newClassData.TrainerId,
+            CategoryId = newClassData.CategoryId
+        };
+        
         _context.Classes.Add(newClass);
         await _context.SaveChangesAsync();
         
@@ -42,7 +51,7 @@ public class ClassesController: ControllerBase
     }
     
     [HttpPatch("{id:int}")]
-    public async Task<IActionResult> UpdateClassById(int id, Class patchData)
+    public async Task<IActionResult> UpdateClassById(int id, ClassDTO patchData)
     {
         if (id != patchData.Id)
             return BadRequest();
