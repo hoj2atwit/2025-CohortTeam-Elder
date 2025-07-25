@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SmartGym.Data;
 using SmartGym.Models;
 
@@ -22,12 +23,57 @@ public class ClassesController: ControllerBase
     }
     
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Class>> GetClassesById(int id)
+    public async Task<ActionResult<Class>> GetClassById(int id)
     {
         var classItem = await _context.Classes.FindAsync(id);
         if (classItem == null)
             return NotFound();
         
         return classItem;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Class>> CreateClass(Class newClass)
+    {
+        _context.Classes.Add(newClass);
+        await _context.SaveChangesAsync();
+        
+        return CreatedAtAction(nameof(GetClassById), new { id = newClass.Id }, newClass);
+    }
+    
+    [HttpPatch("{id:int}")]
+    public async Task<IActionResult> UpdateClassById(int id, Class patchData)
+    {
+        if (id != patchData.Id)
+            return BadRequest();
+
+        var classToPatch = await _context.Classes.FindAsync(id);
+        if (classToPatch == null)
+        {
+            return NotFound();
+        }
+        
+        classToPatch.Name = patchData.Name;
+        classToPatch.Schedule = patchData.Schedule;
+        classToPatch.Capacity = patchData.Capacity;
+        classToPatch.TrainerId = patchData.TrainerId;
+        classToPatch.CategoryId = patchData.CategoryId;
+        
+        //are we using AutoMapper or something to deserialize?
+        
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteClass(int id)
+    {
+        var classItem = await _context.Classes.FindAsync(id);
+        if (classItem == null)
+            return NotFound();
+
+        _context.Classes.Remove(classItem);
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 }
