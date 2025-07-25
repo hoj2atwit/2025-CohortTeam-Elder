@@ -8,4 +8,7 @@
 /.vs/VSWorkspaceState.json
 bin/
 obj/
+.vscode/
+.vs/
+.idea/
 .fake
