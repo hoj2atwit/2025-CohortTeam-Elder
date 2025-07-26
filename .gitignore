@@ -12,3 +12,4 @@ obj/
 .vs/
 .idea/
 .fake
+/SmartGym/appsettings.Development.json
