@@ -1,10 +1,11 @@
 @page "/"
+@inject NavigationManager Navigation
 
 <PageTitle>Login</PageTitle>
 
 <section>
     <h1>Welcome to SMART Gym!</h1>
-    <form>
+    <form @onsubmit="HandleLogin">
         <h4>Please log in</h4>
         <hr />
         <div class="mb-3">
@@ -23,3 +24,12 @@
         </div>
     </form>
 </section>
+
+@code{
+    private void HandleLogin()
+    {
+        // TODO: Add authentication logic here
+
+        Navigation.NavigateTo("/dashboard");
+    }
+}
