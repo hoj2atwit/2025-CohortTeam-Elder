@@ -13,3 +13,4 @@ obj/
 .idea/
 .fake
 node_modules/
+/SmartGym/appsettings.Development.json
