@@ -9,6 +9,5 @@ public class Class
  public int TrainerId { get; set; }
  public User? Trainer { get; set; }
  public int CategoryId { get; set; }
- public Category? Category { get; set; }
  
 }
