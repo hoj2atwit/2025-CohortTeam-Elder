@@ -1,8 +1,9 @@
 using System;
+using SmartGym.Models;
 
 namespace SmartGym.Services;
 
 public interface IDatabaseService
 {
-	void TestInsert();
+	void CreateNewUser(); //TODO: Pass in user obj
 }
