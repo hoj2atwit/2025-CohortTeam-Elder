@@ -40,21 +40,6 @@ builder.Services.AddDbContext<SmartGymContext>(options =>
 
 var app = builder.Build();
 
-#region Remove later, for testing only
-try
-{
-	using (var scope = app.Services.CreateScope())
-	{
-		var db = scope.ServiceProvider.GetRequiredService<IDatabaseService>();
-		// var db.CreateNewUser();
-	}
-}
-catch (System.Exception ex)
-{
-	throw;
-}
-#endregion
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
