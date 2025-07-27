@@ -12,12 +12,7 @@ TODO: Guide users through getting your code up and running on their own system. 
 TODO: Describe and show how to build your code and run the tests. 
 
 # Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
-
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+- [Team Documentation](https://docs.google.com/document/d/16qTz4D3PUEkH6RLYqhEU96XssM3lTgyG1ZXrbTGdE4Y/edit?tab=t.uojwo2euacp6#heading=h.g8ll01ksq5i7)
 
 # Authors
 Johnnie Ho

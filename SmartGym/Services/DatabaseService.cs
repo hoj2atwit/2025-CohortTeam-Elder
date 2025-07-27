@@ -18,11 +18,10 @@ public class DatabaseService : IDatabaseService
 	{
 		_context = context;
 	}
-	#region 
 
+	#region User
 
-	#endregion
-	public void CreateNewUser()
+	public void CreateUser(User user)
 	{
 		//TODO: Pass in user obj and create new user that way.
 		// var newUser = new User
@@ -34,5 +33,60 @@ public class DatabaseService : IDatabaseService
 		// _context.Users.Add(newUser);
 		// _context.SaveChanges();
 	}
+	public void UpdateUser(User user)
+	{
+
+	}
+	public void GetUser(User user)
+	{
+
+	}
+	public void GetUserCheckInHistory(User user)
+	{
+
+	}
+	public void GetAllUsers()
+	{
+
+	}
+	public void GetUserPaymentMethod(User user)
+	{
+
+	}
+	public void GetTrafficData(DateTime date)
+	{
+
+	}
+	public void GetTrafficData(DateTime startDate, DateTime endDate)
+	{
+
+	}
+
+	#endregion
+
+	#region Cafe
+
+	public void GetOrderHistory(User user)
+	{
+
+	}
+	public void GetFullMenu()
+	{
+
+	}
+	public void GetMealPrepItems()
+	{
+
+	}
+	public void GetCafeItemModifications()
+	{
+
+	}
+	public void GetCurrentPromos()
+	{
+
+	}
+
+	#endregion
 
 }
