@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using SmartGym.Services;
 using Microsoft.AspNetCore.Mvc;
 using SmartGym.Data;
+using SmartGym.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -11,14 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+		.AddInteractiveServerComponents();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection(DatabaseConfiguration.ConnectionStrings));
 builder.Services.AddTransient<IDatabaseService, DatabaseService>();
 builder.Services.AddDbContext<SmartGymContext>(options =>
-{ 
+{
 	var connectionString = builder.Configuration.GetConnectionString("DBConnectionString");
 	options.UseSqlServer(connectionString);
 });
@@ -26,18 +27,37 @@ builder.Services.AddDbContext<SmartGymContext>(options =>
 var app = builder.Build();
 
 #region Remove later, for testing only
-try
+using (var scope = app.Services.CreateScope())
 {
-	using (var scope = app.Services.CreateScope())
+	var context = scope.ServiceProvider.GetRequiredService<SmartGymContext>();
+
+	if (!context.Users.Any())
 	{
-		var db = scope.ServiceProvider.GetRequiredService<IDatabaseService>();
-		// var db.CreateNewUser();
+		var newUser = new User
+		{
+			Id = 1,
+			Name = "John Trainer",
+			Email = "trainer@example.com",
+			Role = "trainer", // Make sure this ID exists in Roles
+		};
+
+		context.Users.Add(newUser);
+		context.SaveChanges();
 	}
 }
-catch (System.Exception ex)
-{
-	throw;
-}
+
+// try
+// {
+// 	using (var scope = app.Services.CreateScope())
+// 	{
+// 		var db = scope.ServiceProvider.GetRequiredService<IDatabaseService>();
+// 		// var db.CreateNewUser();
+// 	}
+// }
+// catch (System.Exception ex)
+// {
+// 	throw;
+// }
 #endregion
 
 // Configure the HTTP request pipeline.
@@ -55,14 +75,14 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+		.AddInteractiveServerRenderMode();
 
 app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.Run();
