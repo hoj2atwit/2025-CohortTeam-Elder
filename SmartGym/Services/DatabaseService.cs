@@ -17,28 +17,23 @@ public class DatabaseService : IDatabaseService
 
 	public DatabaseService(SmartGymContext context)
 	{
-		// _connectionString = options.Value.context;
 		_context = context;
 	}
-#region 
-	
-	
-#endregion
-	public void TestInsert()
-	{
-		// using (IDbConnection db = new SqlConnection(_connectionString))
-		// {
-		// 	db.Execute("INSERT INTO users (name, email, role) VALUES (@Name, @Email, @Role)", new { Name = "test", Email = "test", Role = "test" });
-		// }
-		var newUser = new User
-		{
-			Name = "test",
-			Email = "test",
-			Role = "test"
-		};
-		_context.Users.Add(newUser);
-		_context.SaveChanges();
+	#region 
 
+
+	#endregion
+	public void CreateNewUser()
+	{
+		//TODO: Pass in user obj and create new user that way.
+		// var newUser = new User
+		// {
+		// 	Name = "test",
+		// 	Email = "test",
+		// 	Role = "test"
+		// };
+		// _context.Users.Add(newUser);
+		// _context.SaveChanges();
 	}
 
 }
