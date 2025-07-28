@@ -4,6 +4,7 @@ using SmartGym.Models;
 namespace SmartGym.Data;
 
 public class SmartGymContext : DbContext
+public class SmartGymContext : DbContext
 {
 	public SmartGymContext(DbContextOptions<SmartGymContext> options) : base(options)
 	{
