@@ -4,6 +4,7 @@ using SmartGym.Services;
 using Microsoft.AspNetCore.Mvc;
 using SmartGym.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using SmartGym.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
