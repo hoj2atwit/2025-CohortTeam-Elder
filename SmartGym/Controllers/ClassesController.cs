@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SmartGym.Data;
 using SmartGym.Models;
 using SmartGym.Services;
 

@@ -1,26 +1,21 @@
 using SmartGym.Components;
-using Microsoft.Extensions.Configuration;
 using SmartGym.Services;
-using Microsoft.AspNetCore.Mvc;
 using SmartGym.Data;
-using SmartGym.Models;
 using Microsoft.EntityFrameworkCore;
-using SmartGym.Services.UserService;
-using Microsoft.EntityFrameworkCore.Design;
 using SmartGym.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-		.AddInteractiveServerComponents();
+    .AddInteractiveServerComponents();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Database
 builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection(DatabaseConfiguration.ConnectionStrings));
 builder.Services.AddDbContext<SmartGymContext>(options =>
-{
+{ 
 	var connectionString = builder.Configuration.GetConnectionString("DBConnectionString");
 	options.UseSqlServer(connectionString);
 });
@@ -51,14 +46,14 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-		.AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode();
 
 app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.Run();
