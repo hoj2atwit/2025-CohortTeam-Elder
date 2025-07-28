@@ -35,7 +35,7 @@ public class ClassesController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<ActionResult<Class>> CreateClass([FromBody] ClassDTO newClassData)
+	public async Task<ActionResult<Class>> CreateClass(ClassDTO newClassData)
 	{
 		var created = await _service.CreateClass(newClassData);
 		return CreatedAtAction(nameof(GetClassById), new { id = created.Id }, created);

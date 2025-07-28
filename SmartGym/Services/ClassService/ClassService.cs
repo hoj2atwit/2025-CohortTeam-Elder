@@ -9,18 +9,17 @@ public class ClassService : IClassService
 {
 
 	private readonly IUnitOfWork _unitOfWork;
-
-
 	public ClassService(IUnitOfWork unitOfWork)
 	{
 		_unitOfWork = unitOfWork;
 	}
+	
 	public async Task<Class> CreateClass(ClassDTO newClassData)
 	{
 		var trainer = await _unitOfWork.UserRepository.GetAsync(newClassData.TrainerId);
 		if (trainer == null)
 			throw new Exception("Trainer not found");
-			
+
 		var entity = new Class
 		{
 			Name = newClassData.Name,
@@ -67,8 +66,7 @@ public class ClassService : IClassService
 	public async Task<List<ClassDTO>> GetAllClasses()
 	{
 		List<ClassDTO> classList = new();
-		var classes = await _unitOfWork.ClassRepository.GetAsync(); //TODO: Does this need a linq query?
-
+		var classes = await _unitOfWork.ClassRepository.GetAsync();
 		foreach (var item in classes)
 		{
 			var classDto = new ClassDTO();
