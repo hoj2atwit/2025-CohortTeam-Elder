@@ -1,0 +1,118 @@
+<div class="ml-6 h-full overflow-y-auto ">
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+    <div class="flex gap-6 mt-4 ">
+        <div class="border-[#f34f5d] border-2 p-4 bg-white rounded-[10px]">
+            Active Members Today: <br>
+            <span class="text-2xl text-green-500">100</span>
+        </div>
+        <div class="border-[#f34f5d] border-2 p-4 bg-white rounded-[10px]">
+            Class Occupancy: <br>
+            <span class="text-2xl text-green-500">75%</span>
+        </div>
+        <div class="border-[#f34f5d] border-2 p-4 bg-white rounded-[10px]">
+            Peak Hours: <br>
+            <span class="text-2xl !text-green-500">5 PM - 7 PM</span>
+        </div>
+        <div class="border-[#f34f5d] border-2 p-4 bg-white rounded-[10px]">
+            Cafe Orders: <br>
+            <span class="text-2xl text-green-500">58</span>
+            @* <span class="text-2xl text-green-500">58<br></span>
+            <span class="text-2xl text-green-500">Revenue: <br>$290</span> *@
+
+        </div>
+    </div>
+
+    <!-- Upcoming Classes and Daily Check-ins Row -->
+<div class="mt-8 flex gap-6">
+    <!-- Daily Check-ins Graph -->
+    <div class="flex-1">
+         <div class="flex-1 bg-gray-100 border border-gray-300 rounded-lg h-48 flex items-center justify-center text-gray-500">
+            [Revenue Chart goes here]
+        </div>
+    </div>
+    
+    <!-- Upcoming Classes -->
+    <div class="flex-1">
+        <h2 class="text-xl font-semibold mb-2">Upcoming Classes</h2>
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="py-2 px-4 border-b text-left">Class</th>
+                    <th class="py-2 px-4 border-b text-left">Trainer</th>
+                    <th class="py-2 px-4 border-b text-left">Time</th>
+                    <th class="py-2 px-4 border-b text-left">Spots Left</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="py-2 px-4 border-b">Yoga</td>
+                    <td class="py-2 px-4 border-b">Priya</td>
+                    <td class="py-2 px-4 border-b">5 PM</td>
+                    <td class="py-2 px-4 border-b">3</td>
+                </tr>
+                <tr>
+                    <td class="py-2 px-4 border-b">HIIT</td>
+                    <td class="py-2 px-4 border-b">Alex</td>
+                    <td class="py-2 px-4 border-b">6 PM</td>
+                    <td class="py-2 px-4 border-b">5</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    <!-- Charts Row -->
+    <div class="mt-8 flex gap-6">
+        <div class="flex-1 bg-gray-100 border border-gray-300 rounded-lg h-48 flex items-center justify-center text-gray-500">
+            [Revenue Chart goes here]
+        </div>
+        <div class="flex-1 bg-gray-100 border border-gray-300 rounded-lg h-48 flex items-center justify-center text-gray-500">
+            [Attendance Chart goes here]
+        </div>
+    </div>
+
+    <div class="mt-6 p-4">
+        <div class="view-user-head flex gap-4 items-center">
+            <h2 class="text-lg font-semibold">View Users</h2>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded">Add User</button>
+            <input type="text" placeholder="Search Users" class="border rounded px-2 py-1" />
+        </div>
+
+        <div class="overflow-x-auto mt-4">
+            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="py-2 px-4 border-b text-left">Name</th>
+                        <th class="py-2 px-4 border-b text-left">Email</th>
+                        <th class="py-2 px-4 border-b text-left">Role</th>
+                        <th class="py-2 px-4 border-b text-left">Status</th>
+                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-2 px-4 border-b">Komal Singh</td>
+                        <td class="py-2 px-4 border-b">komal@example.com</td>
+                        <td class="py-2 px-4 border-b">Admin</td>
+                        <td class="py-2 px-4 border-b text-green-600">Active</td>
+                        <td class="py-2 px-4 border-b">
+                            <button class="text-blue-500 hover:underline">Edit</button>
+                            <button class="text-red-500 hover:underline ml-2">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 border-b">John Doe</td>
+                        <td class="py-2 px-4 border-b">john@example.com</td>
+                        <td class="py-2 px-4 border-b">Member</td>
+                        <td class="py-2 px-4 border-b text-green-600">Active</td>
+                        <td class="py-2 px-4 border-b">
+                            <button class="text-blue-500 hover:underline">Edit</button>
+                            <button class="text-red-500 hover:underline ml-2">Delete</button>
+                        </td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
