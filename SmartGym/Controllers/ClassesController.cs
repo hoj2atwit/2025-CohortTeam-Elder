@@ -2,87 +2,69 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartGym.Data;
 using SmartGym.Models;
+using SmartGym.Services;
 
 namespace SmartGym.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ClassesController: ControllerBase
+public class ClassesController : ControllerBase
 {
-    private readonly SmartGymContext _context;
+	private readonly IClassService _service;
 
-    public ClassesController(SmartGymContext context)
-    {
-        _context = context;
-    }
+	public ClassesController(IClassService service)
+	{
+		_service = service;
+	}
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Class>>> GetAllClasses()
-    {
-        return await _context.Classes.ToListAsync();
-    }
-    
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Class>> GetClassById(int id)
-    {
-        var classItem = await _context.Classes.FindAsync(id);
-        if (classItem == null)
-            return NotFound();
-        
-        return classItem;
-    }
+	[HttpGet]
+	public async Task<ActionResult<IEnumerable<Class>>> GetAllClasses()
+	{
+		var classList = await _service.GetAllClasses();
+		return Ok(classList);
+	}
 
-    [HttpPost]
-    public async Task<ActionResult<Class>> CreateClass(ClassDTO newClassData)
-    {
-        var newClass = new Class
-        {
-            Name = newClassData.Name,
-            Schedule = newClassData.Schedule,
-            Capacity = newClassData.Capacity,
-            TrainerId = newClassData.TrainerId,
-            CategoryId = newClassData.CategoryId
-        };
-        
-        _context.Classes.Add(newClass);
-        await _context.SaveChangesAsync();
-        
-        return CreatedAtAction(nameof(GetClassById), new { id = newClass.Id }, newClass);
-    }
-    
-    [HttpPatch("{id:int}")]
-    public async Task<IActionResult> UpdateClassById(int id, ClassDTO patchData)
-    {
-        if (id != patchData.Id)
-            return BadRequest();
+	[HttpGet("{id:int}")]
+	public async Task<ActionResult<Class>> GetClassById(int id)
+	{
+		var classItem = await _service.GetClassById(id);
+		if (classItem == null)
+			return NotFound();
 
-        var classToPatch = await _context.Classes.FindAsync(id);
-        if (classToPatch == null)
-        {
-            return NotFound();
-        }
-        
-        classToPatch.Name = patchData.Name;
-        classToPatch.Schedule = patchData.Schedule;
-        classToPatch.Capacity = patchData.Capacity;
-        classToPatch.TrainerId = patchData.TrainerId;
-        classToPatch.CategoryId = patchData.CategoryId;
-        
-        //are we using AutoMapper or something to deserialize?
-        
-        await _context.SaveChangesAsync();
-        return Ok();
-    }
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteClass(int id)
-    {
-        var classItem = await _context.Classes.FindAsync(id);
-        if (classItem == null)
-            return NotFound();
+		return classItem;
+	}
 
-        _context.Classes.Remove(classItem);
-        await _context.SaveChangesAsync();
+	[HttpPost]
+	public async Task<ActionResult<Class>> CreateClass(ClassDTO newClassData)
+	{
+		var created = await _service.CreateClass(newClassData);
+		return CreatedAtAction(nameof(GetClassById), new { id = created.Id }, created);
+	}
 
-        return Ok();
-    }
+	[HttpPatch("{id:int}")]
+	public async Task<IActionResult> UpdateClassById(int id, ClassDTO classDto)
+	{
+		if (id != classDto.Id)
+			return BadRequest();
+
+		// var classEntity = await _service.GetClassById(id);
+		// if (classEntity == null)
+		// 	return NotFound();
+
+		var patched = await _service.UpdateClassById(id, classDto);
+
+		if (patched)
+			return Ok(patched);
+		else
+			return StatusCode(500); //TODO: Return more detail why api call failed
+	}
+
+	[HttpDelete("{id}")]
+	public async Task<IActionResult> DeleteClass(int id)
+	{
+		var removed = await _service.DeleteClass(id);
+		if (!removed)
+			return NotFound();
+		return Ok();
+	}
 }
