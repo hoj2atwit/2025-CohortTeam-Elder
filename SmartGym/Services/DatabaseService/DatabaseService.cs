@@ -89,4 +89,31 @@ public class DatabaseService : IDatabaseService
 
 	#endregion
 
+	#region Classes
+
+	public async Task<bool> CreateClass(ClassDTO newClassData)
+	{
+		var newClass = new Class
+		{
+			Name = newClassData.Name,
+			Schedule = newClassData.Schedule,
+			Capacity = newClassData.Capacity,
+			TrainerId = newClassData.TrainerId,
+			CategoryId = newClassData.CategoryId
+		};
+		_context.Classes.Add(newClass);
+		try
+		{
+			await _context.SaveChangesAsync();
+		}
+		catch (System.Exception ex)
+		{
+			throw;
+		}
+
+		return true;
+	}
+	
+	#endregion
+
 }

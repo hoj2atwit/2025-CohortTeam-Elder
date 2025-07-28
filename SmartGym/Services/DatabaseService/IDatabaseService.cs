@@ -5,10 +5,9 @@ namespace SmartGym.Services;
 
 public interface IDatabaseService
 {
-	//TODO: Update signatures with args when we have built those out more.
 	#region User
 
-	void CreateUser(User user); 
+	void CreateUser(User user);
 	void UpdateUser(User user);
 	void GetUser(User user);
 	void GetUserCheckInHistory(User user);
@@ -27,6 +26,12 @@ public interface IDatabaseService
 	void GetMealPrepItems();
 	void GetCafeItemModifications();
 	void GetCurrentPromos();
+
+	#endregion
+
+	#region Classes
+	Task<bool> CreateClass(ClassDTO newClassData);
+
 
 	#endregion
 
