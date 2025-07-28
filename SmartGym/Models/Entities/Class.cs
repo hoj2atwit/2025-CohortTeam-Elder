@@ -7,7 +7,7 @@ public class Class
  public DateTime Schedule { get; set; }
  public int Capacity { get; set; }
  public int TrainerId { get; set; }
- public User? Trainer { get; set; }
- public int CategoryId { get; set; }
+ public User Trainer { get; set; }
+ public int? CategoryId { get; set; }
  
 }

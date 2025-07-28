@@ -9,7 +9,7 @@ public class SmartGymContext : DbContext
 	{
 
 	}
-	public DbSet<Class> Classes { get; set; }
-	public DbSet<User> Users { get; set; }
+	public DbSet<Class>? Classes { get; set; }
+	public DbSet<User>? Users { get; set; }
 
 }
