@@ -14,4 +14,3 @@ obj/
 .fake
 node_modules/
 /SmartGym/appsettings.Development.json
-node_modules/
