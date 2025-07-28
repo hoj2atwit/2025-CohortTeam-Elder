@@ -1,5 +1,3 @@
-using System;
-using Microsoft.EntityFrameworkCore;
 using SmartGym.Data;
 using SmartGym.Models;
 

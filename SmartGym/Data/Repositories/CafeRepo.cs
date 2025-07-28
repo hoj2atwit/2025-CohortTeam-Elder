@@ -1,5 +1,3 @@
-using System;
-
 namespace SmartGym.Data;
 
 public class CafeRepo //: Repository<Cafe>

@@ -1,4 +1,3 @@
-using System;
 using SmartGym.Models;
 
 namespace SmartGym.Services.UserService;
