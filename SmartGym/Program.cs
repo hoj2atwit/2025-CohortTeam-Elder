@@ -5,9 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SmartGym.Data;
 using SmartGym.Models;
 using Microsoft.EntityFrameworkCore;
-using SmartGym.Services.UserService;
 using Microsoft.EntityFrameworkCore.Design;
-using SmartGym.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
 
