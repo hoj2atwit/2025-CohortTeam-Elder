@@ -31,6 +31,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
+//TODO: Always seed your tables
+DbSeed.SeedDatabase(app.Services, app.Environment.IsDevelopment());
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
