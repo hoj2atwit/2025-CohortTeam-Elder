@@ -30,8 +30,8 @@
                     </button>
 
                 </div>
-                <div class="h-full w-1/2 max-w-screen flex-grow overflow-y-auto border border-red-500" >
-                    <div class="flex h-fit flex-wrap gap-2 border border-blue-500" id="menuItemContainer">
+                <div class="min-h-0 overflow-y-auto border border-red-500" >
+                    <div class="flex h-full min-h-0 flex-wrap gap-2 overflow-y-auto border">
                         @* Fill with MenuItemContainerLayout depending on amount of items desired *@
                         @* TODO: Dynamically update depending on filters *@
                         @foreach (var item in POS.instance.filteredMenu)
@@ -64,12 +64,12 @@
     {
         await InitializeMenu();
     }
-    public async void addToCart(MenuItemLayout.MenuItem item)
+    public void addToCart(MenuItemLayout.MenuItem item)
     {
         POS.instance.cart.addItem(item);
         StateHasChanged();
     }
-    public async void updateMenu()
+    public void updateMenu()
     {
         instance.search(searchText);
         StateHasChanged();
