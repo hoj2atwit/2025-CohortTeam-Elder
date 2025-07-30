@@ -3,82 +3,14 @@
     <div class="p-4 text-gray-800">
         <h5 class="mb-2 text-lg font-semibold" >@item.name</h5>
         <p class="text-base">@item.description</p>
-        <p class="text-base">$@item.priceString</p>
+        <p class="text-base">@item.priceString</p>
     </div>
 </button>
 
 @code {
     [Parameter]
-    public MenuItem? item { get; set; }
-    [Parameter]
-    public MenuMain? main { get; set; }
+    public POS.MenuItem? item { get; set; }
     [Parameter]
     public EventCallback OnClickCallback { get; set; }
 
-    public class MenuItem
-    {
-
-        public int itemId = 0;
-        public double price = 0.0;
-        public string name = "";
-        public string description = "";
-        public string priceString = "";
-        public string imageLocation = "";
-
-        public MenuItem()
-        {
-            this.setPrice(0);
-            this.name = "None";
-            this.setImageLocation("None");
-            this.itemId = 0;
-            this.description = "No Description";
-        }
-
-        public MenuItem(string name, double price, int itemId, string description)
-        {
-            this.setPrice(price);
-            this.name = name;
-            this.setImageLocation(name);
-            this.itemId = itemId;
-            this.description = description;
-        }
-        private void setImageLocation(string name)
-        {
-            //True Implementation
-            //imageLocation = $"lib/images/{name}.jpg";
-            //Just using Coffee Image for now
-            imageLocation = $"lib/images/Coffee.jpg";
-        }
-
-        private void setPrice(double p)
-        {
-            price = p;
-            priceString = p.ToString("#.00");
-        }
-
-        public static List<MenuItem> generateItemList()
-        {
-            List<MenuItem> menuItems = new List<MenuItem>();
-            //TODO: Have this generate a list of menu items from the database
-            for (int i = 0; i < 50; i++)
-            {
-                menuItems.Add(new MenuItem("Coffee " + i, 6.99, i, "Cup of Coffee"));
-            }
-
-            return menuItems;
-        }
-
-        public static Dictionary<string, MenuItem> generateItemDict()
-        {
-            Dictionary<string, MenuItem> menuItems = new Dictionary<string, MenuItem>();
-            //TODO: Have this generate a list of menu items from the database
-            for (int i = 0; i < 50; i++)
-            {
-                menuItems.Add("Coffee " + i, new MenuItem("Coffee " + i, 6.99, i, "Cup of Coffee"));
-            }
-
-            return menuItems;
-        }
-
-    }
 }
