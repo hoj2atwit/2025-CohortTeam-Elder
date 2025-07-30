@@ -8,7 +8,7 @@
             <div class="max-w-sm min-w-[200px]">
 
                 @* TODO: Add Search Functionality to menu, updating the menu when input is updated *@
-                <input type="text"
+                <input type="text" @onchange="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })"
                        class="w-8/12 rounded-full border px-2 py-2 text-slate-700 shadow-lg transition duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:shadow focus:outline-none"
                        placeholder="Search..." />
 
@@ -67,6 +67,11 @@
     public async void addToCart(MenuItemLayout.MenuItem item)
     {
         POS.instance.cart.addItem(item);
+        StateHasChanged();
+    }
+    public async void updateMenu()
+    {
+        instance.search(searchText);
         StateHasChanged();
     }
 
