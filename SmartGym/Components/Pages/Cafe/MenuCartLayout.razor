@@ -33,7 +33,7 @@
         await updateCart();
     }
 
-    async public void addToCart(POS.MenuItem item)
+    async public void addToCart(MenuItem item)
     {
         instance.currentCart.addItem(item);
         await updateCart();

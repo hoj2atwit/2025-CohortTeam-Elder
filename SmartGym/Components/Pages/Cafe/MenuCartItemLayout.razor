@@ -2,13 +2,14 @@
 <div class="flex min-h-0 flex-row rounded-full border border-black px-50 py-3">
     <h3 class="px-2 py-1">@cartItem.item.name</h3>
     <button class="aspect-square w-10 border border-black font-bold" @onclick=increaseAmount>+</button>
-    <input type="number" class="field-sizing-content min-w-0" value=@cartItem.amount @onchange="@((ChangeEventArgs e) => {cartItem.amount = int.Parse("0"+e.Value); updateAmount();})" />
+    @* Input field for quantity of cart item. If quantity input is invalid then default to 0 as input *@
+    <input type="number" class="field-sizing-content min-w-0" value=@cartItem.amount @onchange="@((ChangeEventArgs e) => { try { cartItem.amount = int.Parse(e.Value.ToString()); } catch (Exception ex) { e.Value = 0; cartItem.amount = 0; } updateAmount(); })" />
     <button class="aspect-square w-10 border border-black font-bold" @onclick=remove>-</button>
     <h3 class="px-2 py-1">@cartItem.currentPriceString</h3>
 </div>
 @code {
     [Parameter]
-    public POS.CartItem? cartItem { get; set; }
+    public Cart.CartItem? cartItem { get; set; }
     [Parameter]
     public MenuCartLayout cartMain { get; set; }
 
