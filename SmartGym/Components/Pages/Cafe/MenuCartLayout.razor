@@ -1,9 +1,9 @@
 ﻿@inherits MenuCartItemLayout
-<div class="h-11/12 max-h-11/12 w-2/6 min-w-2/6 border border-black">
+<div class="h-full max-h-full w-2/6 min-w-2/6 border border-black">
     <h5 class="mb-2 justify-center px-2 py-1 text-lg font-semibold">
         Cart
     </h5>
-    <div class="flex flex-col border border-black">
+    <div class="flex flex-col overflow-y-scroll border border-black">
         @foreach (var cartItem in main.instance.cart.cartItems.Values)
         {
             <MenuCartItemLayout cartMain="this" cartItem=@cartItem/>
