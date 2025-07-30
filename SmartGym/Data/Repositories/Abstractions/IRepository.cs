@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using SmartGym.Models;
 
 namespace SmartGym.Data;
 

@@ -1,3 +1,7 @@
+using System;
+using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using SmartGym.Data;
 using SmartGym.Models;
 
@@ -7,51 +11,39 @@ public class ClassService : IClassService
 {
 
 	private readonly IUnitOfWork _unitOfWork;
-	public ClassService(IUnitOfWork unitOfWork)
+	private readonly IMapper _mapper;
+	public ClassService(IUnitOfWork unitOfWork, IMapper mapper)
 	{
 		_unitOfWork = unitOfWork;
+		_mapper = mapper;
 	}
-	
-	public async Task<Class> CreateClass(ClassDTO newClassData)
+
+	public async Task<ClassDTO> CreateClass(ClassPostDTO newClassData)
 	{
 		var trainer = await _unitOfWork.UserRepository.GetAsync(newClassData.TrainerId);
 		if (trainer == null)
 			throw new Exception("Trainer not found");
+		Class newClass = _mapper.Map<Class>(newClassData);
 
-		var entity = new Class
-		{
-			Name = newClassData.Name,
-			Schedule = newClassData.Schedule,
-			Capacity = newClassData.Capacity,
-			TrainerId = newClassData.TrainerId,
-			CategoryId = newClassData.CategoryId
-		};
-
-		await _unitOfWork.ClassRepository.AddAsync(entity);
+		await _unitOfWork.ClassRepository.AddAsync(newClass);
 		await _unitOfWork.SaveAsync();
-		return entity;
+		return _mapper.Map<ClassDTO>(newClass);
 	}
-	public async Task<bool> UpdateClassById(int id, ClassDTO newClassData)
+	public async Task<ClassDTO?> UpdateClassById(int id, ClassPatchDTO newClassData)
 	{
-		var classEntity = await GetClassById(id);
-
+		var classEntity = await _unitOfWork.ClassRepository.GetAsync(id);
 		if (classEntity == null)
-			return false;
+			return null;
 
-		classEntity.Name = newClassData.Name;
-		classEntity.Schedule = newClassData.Schedule;
-		classEntity.Capacity = newClassData.Capacity;
-		classEntity.TrainerId = newClassData.TrainerId;
-		classEntity.CategoryId = newClassData.CategoryId;
+		_mapper.Map(newClassData, classEntity);
 
 		_unitOfWork.ClassRepository.Update(classEntity);
 		await _unitOfWork.SaveAsync();
-		return true;
-
+		return _mapper.Map<ClassDTO>(classEntity);
 	}
 	public async Task<bool> DeleteClass(int id)
 	{
-		var classEntity = await GetClassById(id);
+		var classEntity = await _unitOfWork.ClassRepository.GetAsync(id);
 		if (classEntity == null)
 			return false;
 
@@ -63,25 +55,18 @@ public class ClassService : IClassService
 	//TODO: Make it a true async
 	public async Task<List<ClassDTO>> GetAllClasses()
 	{
-		List<ClassDTO> classList = new();
 		var classes = await _unitOfWork.ClassRepository.GetAsync();
-		foreach (var item in classes)
-		{
-			var classDto = new ClassDTO();
-			classDto.Id = item.Id;
-			classDto.Name = item.Name;
-			classDto.Schedule = item.Schedule;
-			classDto.Capacity = item.Capacity;
-			classDto.TrainerId = item.TrainerId;
-			classDto.CategoryId = item.CategoryId;
-			classList.Add(classDto);
-		}
+		var classList = _mapper.Map<List<ClassDTO>>(classes);
 		return classList.ToList();
 	}
 
-	public async Task<Class> GetClassById(int id)
+	public async Task<ClassDTO> GetClassById(int id)
 	{
-		return await _unitOfWork.ClassRepository.GetAsync(id);
+		var classEntity = await _unitOfWork.ClassRepository.GetAsync(id);
+		return _mapper.Map<ClassDTO>(classEntity);
 	}
-	
+	// NOTE: This method returns a DTO intended for read/display purposes only.
+	// Do NOT use this to retrieve entities for update, patch, or delete operations.
+	// For internal logic, use _unitOfWork.ClassRepository.GetAsync(id) to get the actual tracked entity.
+
 }
