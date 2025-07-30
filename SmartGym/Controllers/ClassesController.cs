@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SmartGym.Data;
 using SmartGym.Models;
 using SmartGym.Services;
 
@@ -8,7 +6,7 @@ namespace SmartGym.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ClassesController : ControllerBase
+public class ClassesController  : ControllerBase
 {
 	private readonly IClassService _service;
 

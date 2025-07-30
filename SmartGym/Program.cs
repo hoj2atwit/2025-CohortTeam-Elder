@@ -1,10 +1,9 @@
 using SmartGym.Components;
-using Microsoft.Extensions.Configuration;
 using SmartGym.Services;
-using Microsoft.AspNetCore.Mvc;
 using SmartGym.Data;
 using Microsoft.EntityFrameworkCore;
 using SmartGym.Services.UserService;
+using Microsoft.EntityFrameworkCore.Design;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +31,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
+//TODO: Always seed your tables
+DbSeed.SeedDatabase(app.Services, app.Environment.IsDevelopment());
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
