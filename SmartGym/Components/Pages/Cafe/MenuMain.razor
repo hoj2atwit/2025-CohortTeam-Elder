@@ -1,13 +1,18 @@
 ﻿@page "/POS"
-<title>User's Order</title>
+@inject ILogger<MenuMain> Logger
+<title>@username's Order</title>
+<h1> @username's Order </h1>
 <div class="flex h-11/12 max-h-full">
     <div class="h-full w-full flex-col overflow-y-hidden border border-black">
         <section class="flex h-1/12 max-h-1/12 max-w-fit flex-1 flex-row">
             <div class="max-w-sm min-w-[200px]">
+
+                @* TODO: Add Search Functionality to menu, updating the menu when input is updated *@
                 <input type="text"
                        class="w-8/12 rounded-full border px-2 py-2 text-slate-700 shadow-lg transition duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:shadow focus:outline-none"
                        placeholder="Search..." />
 
+                @* Depending on decided functionality, might be removed *@
                 <button class="rounded-r-full border py-2 shadow-lg transition"
                         type="button">
                     Search
@@ -18,19 +23,20 @@
         <section class="h-11/12 max-h-11/12 w-screen max-w-screen border border-green-500">
             <div class="flex max-w-1/12 flex-row">
                 <div class="flex w-96 flex-col">
+
+                    @* TODO: Add Filters and have them update the menu when selected *@
                     <button class="h-45 w-full rounded-full border border-black px-2 py-2">
                         Filter
                     </button>
-
-
 
                 </div>
                 <div class="h-full w-1/2 max-w-screen flex-grow overflow-y-auto border border-red-500" >
                     <div class="flex h-fit flex-wrap gap-2 border border-blue-500" id="menuItemContainer">
                         @* Fill with MenuItemContainerLayout depending on amount of items desired *@
-                        @foreach (var item in menuItems)
+                        @* TODO: Dynamically update depending on filters *@
+                        @foreach (var item in POS.instance.filteredMenu)
                         {
-                            <MenuItemLayout imageLocation=@Assets[@item.imageLocation] name=@item.name description=@item.description priceString=item.priceString />
+                            <MenuItemLayout item=@item main="this" OnClickCallback=@(() => addToCart(@item))/>
                         }
 
                     </div>
@@ -39,22 +45,29 @@
             </div>
         </section>
     </div>
-    <MenuCartLayout />
+    <MenuCartLayout main="this"/>
 </div>
-
-
-
 
 @code {
     public string searchText = "";
-    public List<MenuItemLayout.MenuItem> menuItems = new List<MenuItemLayout.MenuItem>();
+    public string username = "";
+    public POS instance = POS.instance;
+
     Task InitializeMenu()
     {
-        menuItems = MenuItemLayout.generateItemList();
+        //TODO: Get User's Name
+        username = "Test";
+        instance = POS.instance;
         return Task.CompletedTask;
     }
     protected override async Task OnInitializedAsync()
     {
         await InitializeMenu();
     }
+    public async void addToCart(MenuItemLayout.MenuItem item)
+    {
+        POS.instance.cart.addItem(item);
+        StateHasChanged();
+    }
+
 }

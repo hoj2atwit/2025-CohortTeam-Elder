@@ -1,11 +1,77 @@
 ﻿
 <div class="flex flex-row rounded-full border border-black px-50 py-3">
-    <h3 class="px-2 py-1">Coffee</h3>
-    <button class="aspect-square w-10 border border-black font-bold">+</button>
-    <input type="number" class="field-sizing-content min-w-0" value="1" />
-    <button class="aspect-square w-10 border border-black font-bold">-</button>
-    <h3 class="px-2 py-1">$6.99</h3>
+    <h3 class="px-2 py-1">@cartItem.item.name</h3>
+    <button class="aspect-square w-10 border border-black font-bold" @onclick=increaseAmount>+</button>
+    <input type="number" class="field-sizing-content min-w-0" value=@cartItem.amount @onchange="@((ChangeEventArgs e) => {cartItem.amount = int.Parse("0"+e.Value); updateAmount();})" />
+    <button class="aspect-square w-10 border border-black font-bold" @onclick=remove>-</button>
+    <h3 class="px-2 py-1">$@cartItem.currentPriceString</h3>
 </div>
 @code {
+    [Parameter]
+    public CartItem? cartItem { get; set; }
+    [Parameter]
+    public MenuCartLayout cartMain { get; set; }
 
+    async public void increaseAmount()
+    {
+        cartItem.increaseAmount();
+        await cartMain.updateCart();
+    }
+
+    async public void remove()
+    {
+        if (cartItem.amount - 1 <= 0)
+        {
+            cartMain.removeFromCart(cartItem.item.itemId);
+        }
+        else
+        {
+            cartItem.amount -= 1;
+        }
+        await cartMain.updateCart();
+
+    }
+
+    async public void updateAmount()
+    {
+        if (cartItem.amount <= 0)
+        {
+            cartMain.removeFromCart(cartItem.item.itemId);
+        }
+        else
+        {
+            cartItem.updatePrice();
+        }
+        await cartMain.updateCart();
+    }
+
+    public class CartItem
+    {
+        public MenuItemLayout.MenuItem? item;
+        public int amount = 0;
+        public double currentPrice;
+        public string? currentPriceString;
+
+        public CartItem(MenuItemLayout.MenuItem item, int amount)
+        {
+            this.item = item;
+            this.updatePrice(amount);
+        }
+
+        public void updatePrice(int amount)
+        {
+            this.amount = amount;
+            updatePrice();
+        }
+        public void updatePrice()
+        {
+            currentPrice = item.price * amount;
+            currentPriceString = currentPrice.ToString("#.00");
+        }
+
+        public void increaseAmount()
+        {
+            amount++;
+        }
+    }
 }

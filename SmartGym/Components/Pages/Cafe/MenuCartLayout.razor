@@ -1,19 +1,79 @@
-﻿<div class="h-11/12 max-h-11/12 w-2/6 min-w-2/6 border border-black">
+﻿@inherits MenuCartItemLayout
+<div class="h-11/12 max-h-11/12 w-2/6 min-w-2/6 border border-black">
     <h5 class="mb-2 justify-center px-2 py-1 text-lg font-semibold">
         Cart
     </h5>
     <div class="flex flex-col border border-black">
-        <MenuCartItemLayout />
-        <MenuCartItemLayout />
-        <MenuCartItemLayout />
-        <MenuCartItemLayout />
-        <MenuCartItemLayout />
-        <MenuCartItemLayout />
+        @foreach (var cartItem in main.instance.cart.cartItems.Values)
+        {
+            <MenuCartItemLayout cartMain="this" cartItem=@cartItem/>
+        }
     </div>
     <button class="bottom-0 w-full border border-black py-4">
-        Total: $000.00
+        Total: $@main.instance.cart.totalString
     </button>
 </div>
 @code {
+    [Parameter]
+    public MenuMain main { get; set; }
 
+    public Task updateCart()
+    {
+        main.instance.cart.updateTotal();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    async public void removeFromCart(int id)
+    {
+        main.instance.cart.removeItem(id);
+        await updateCart();
+    }
+
+    async public void addToCart(MenuItemLayout.MenuItem item)
+    {
+        main.instance.cart.addItem(item);
+        await updateCart();
+    }
+
+    public class Cart
+    {
+        public Dictionary<int, CartItem> cartItems = new Dictionary<int, CartItem>();
+        private double total = 0;
+        public string totalString = "";
+
+        public Cart()
+        {
+            updateTotal();
+        }
+
+        public void removeItem(int id)
+        {
+            cartItems.Remove(id);
+            updateTotal();
+        }
+
+        public void addItem(MenuItemLayout.MenuItem item)
+        {
+            if (cartItems.ContainsKey(item.itemId))
+            {
+                cartItems[item.itemId].increaseAmount();
+            }
+            else
+            {
+                cartItems.Add(item.itemId, new CartItem(item, 1));
+            }
+            updateTotal();
+        }
+
+        public void updateTotal()
+        {
+            total = 0;
+            foreach (CartItem ci in cartItems.Values)
+            {
+                total += ci.currentPrice * ci.amount;
+            }
+            totalString = total.ToString("#.00");
+        }
+    }
 }
