@@ -1,8 +1,7 @@
 ﻿@page "/POS"
-@inject ILogger<MenuMain> Logger
 <title>@username's Order</title>
 <h1> @username's Order </h1>
-<div class="flex h-11/12 max-h-full">
+<div class="flex h-11/12 max-h-full min-h-0">
     <div class="h-full w-full flex-col overflow-y-hidden border border-black">
         <section class="flex h-1/12 max-h-1/12 max-w-fit flex-1 flex-row">
             <div class="max-w-sm min-w-[200px]">
@@ -36,7 +35,7 @@
                         @* TODO: Dynamically update depending on filters *@
                         @foreach (var item in POS.instance.filteredMenu)
                         {
-                            <MenuItemLayout item=@item main="this" OnClickCallback=@(() => addToCart(@item))/>
+                            <MenuItemLayout item=@item OnClickCallback=@(() => addToCart(@item))/>
                         }
 
                     </div>
@@ -45,33 +44,33 @@
             </div>
         </section>
     </div>
-    <MenuCartLayout main="this"/>
+    <MenuCartLayout @ref="menuCart"/>
 </div>
 
 @code {
     public string searchText = "";
     public string username = "";
-    public POS instance = POS.instance;
+    MenuCartLayout menuCart;
 
     Task InitializeMenu()
     {
         //TODO: Get User's Name
         username = "Test";
-        instance = POS.instance;
+        POS.instance.refresh();
+        //TODO: Load Cart from User
         return Task.CompletedTask;
     }
     protected override async Task OnInitializedAsync()
     {
         await InitializeMenu();
     }
-    public void addToCart(MenuItemLayout.MenuItem item)
+    public void addToCart(POS.MenuItem item)
     {
-        POS.instance.cart.addItem(item);
-        StateHasChanged();
+        menuCart.addToCart(item);
     }
     public void updateMenu()
     {
-        instance.search(searchText);
+        POS.instance.search(searchText);
         StateHasChanged();
     }
 

@@ -1,85 +1,47 @@
-﻿@inherits MenuCartItemLayout
-<div class="h-full max-h-full w-2/6 min-w-2/6 border border-black">
+﻿<div class="h-full w-2/6 min-w-2/6 border border-black">
     <h5 class="mb-2 justify-center px-2 py-1 text-lg font-semibold">
         Cart
     </h5>
     <div class="flex flex-col overflow-y-scroll border border-black">
-        @foreach (var cartItem in main.instance.cart.cartItems.Values)
+        @foreach (var cartItem in instance.currentCart.cartItems.Values)
         {
             <MenuCartItemLayout cartMain="this" cartItem=@cartItem/>
         }
     </div>
     <button class="bottom-0 w-full border border-black py-4" @onclick=checkout>
-        Total: $@main.instance.cart.totalString
+        Total: @instance.currentCart.totalString
     </button>
 </div>
 @code {
-    [Parameter]
-    public MenuMain main { get; set; }
+    private POS instance = POS.instance;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await updateCart();
+    }
 
     public Task updateCart()
     {
-        main.instance.cart.updateTotal();
+        instance.currentCart.updateTotal();
         StateHasChanged();
         return Task.CompletedTask;
     }
 
     async public void removeFromCart(int id)
     {
-        main.instance.cart.removeItem(id);
+        instance.currentCart.removeItem(id);
         await updateCart();
     }
 
-    async public void addToCart(MenuItemLayout.MenuItem item)
+    async public void addToCart(POS.MenuItem item)
     {
-        main.instance.cart.addItem(item);
+        instance.currentCart.addItem(item);
         await updateCart();
     }
 
     public void checkout()
     {
         //Go to Checkout page and bring cart information over for receipt
-        main.instance.checkout();
-    }
-
-    public class Cart
-    {
-        public Dictionary<int, CartItem> cartItems = new Dictionary<int, CartItem>();
-        private double total = 0;
-        public string totalString = "";
-
-        public Cart()
-        {
-            updateTotal();
-        }
-
-        public void removeItem(int id)
-        {
-            cartItems.Remove(id);
-            updateTotal();
-        }
-
-        public void addItem(MenuItemLayout.MenuItem item)
-        {
-            if (cartItems.ContainsKey(item.itemId))
-            {
-                cartItems[item.itemId].increaseAmount();
-            }
-            else
-            {
-                cartItems.Add(item.itemId, new CartItem(item, 1));
-            }
-            updateTotal();
-        }
-
-        public void updateTotal()
-        {
-            total = 0;
-            foreach (CartItem ci in cartItems.Values)
-            {
-                total += ci.currentPrice * ci.amount;
-            }
-            totalString = total.ToString("#.00");
-        }
+        instance.checkout();
     }
 }
