@@ -1,0 +1,64 @@
+﻿<div class="flex max-h-1/3 max-w-1/4 min-w-50 flex-col border border-black shadow-2xl">
+    <img class="aspect-square h-50" id="menuItemImage" src=@imageLocation />
+    <div class="p-4 text-gray-800">
+        <h5 class="mb-2 text-lg font-semibold" >@name</h5>
+        <p class="text-base">@description</p>
+        <p class="text-base">@priceString</p>
+    </div>
+</div>
+
+@code {
+        [Parameter]
+        public string name { get; set; } = "";
+        [Parameter]
+        public string description { get; set; } = "";
+        [Parameter]
+        public string priceString { get; set; } = "";
+        [Parameter]
+        public string imageLocation { get; set; } = "";
+
+    public static List<MenuItem> generateItemList()
+    {
+        List<MenuItem>  menuItems = new List<MenuItem>();
+        for (int i = 0; i < 20; i++)
+        {
+            menuItems.Add(new MenuItem("Coffee", 6.99, i, "Cup of Coffee"));
+        }
+
+        return menuItems;
+    }
+
+    public class MenuItem
+    {
+
+        public int itemId { get; set; } = 0;
+        public double price { get; set; } = 0.0;
+        public string name { get; set; } = "";
+        public string description { get; set; } = "";
+        public string priceString = "";
+        public string imageLocation = "";
+
+        public MenuItem(string name, double price, int itemId, string description)
+        {
+            this.setPrice(price);
+            this.name = name;
+            this.setImageLocation(name);
+            this.itemId = itemId;
+            this.description = description;
+        }
+        private void setImageLocation(string name)
+        {
+            imageLocation = $"lib/images/{name}.jpg";
+        }
+
+        private void setPrice(double p)
+        {
+            price = p;
+            priceString = p.ToString("#.00");
+        }
+
+    }
+
+    
+
+}
