@@ -1,0 +1,80 @@
+@page "/myAccount"
+@using SmartGym.Models
+@attribute [StreamRendering]
+
+<PageTitle>My Account</PageTitle>
+
+<h1>My Account</h1>
+
+<h3>Account Information</h3>
+<div>
+@* <span>First Name: @user.firstName</span>
+<hr/>
+<span>Last Name: @user.lastName</span>
+<hr/>
+<span>Member Since: @user.accountActivationDate</span>
+<hr/>
+<span>Current Status: @user.accountStatus</span> *@
+<span>Account ID: @user.Id</span>
+<hr/>
+<span>First Name: @user.Name</span>
+<hr/>
+<span>Last Name: @user.Email</span>
+<hr/>
+<span>Membership: @user.Role</span>
+</div>
+
+@* <h3>Billing Information</h3>
+<div>
+<hr/>
+<span>Billing Name: @payment.cardholderName</span>
+<hr/>
+<span>Card # (Last 4): @payment.cardNumber.Substring(12)</span>
+</div> *@
+
+<h3>Personal Information</h3>
+<div>  
+
+</div>
+
+@code {
+
+    private User user;
+    //private Payment payment;
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        //await Task.Delay(500);
+        @* user = new User {
+            firstName = "Johnny",
+            lastName = "Danger",
+            emailAddress = "dangerj@test.com",
+            phoneNumber = "5031239999",
+            accountActivationDate = DateOnly.Parse("2025-07-14"),
+            accountStatus = "Active",
+            accountType = "Standard"
+        }; *@
+        user = new User {
+            Id = 23456789,
+            Name = "Johnny Danger",
+            Email = "dangerj@test.com",
+            Role = "User"
+        };
+        @* payment = new Payment {
+            cardholderName = "Johnathan Maximus Decimus Meridius Danger",
+            cardNumber = "1234987645670000",
+            monthExpiry = 01,
+            yearExpiry = 2029,
+            secCode = 404
+        }; *@
+    }
+    @* private class Payment {
+        public string cardholderName {get; set;}
+        public string cardNumber {get; set;}
+        public int monthExpiry {get; set;}
+        public int yearExpiry {get; set;}
+        public int secCode {get; set;}
+    } *@
+
+}
+    
