@@ -9,7 +9,7 @@
             <MenuCartItemLayout cartMain="this" cartItem=@cartItem/>
         }
     </div>
-    <button class="bottom-0 w-full border border-black py-4">
+    <button class="bottom-0 w-full border border-black py-4" @onclick=checkout>
         Total: $@main.instance.cart.totalString
     </button>
 </div>
@@ -34,6 +34,12 @@
     {
         main.instance.cart.addItem(item);
         await updateCart();
+    }
+
+    public void checkout()
+    {
+        //Go to Checkout page and bring cart information over for receipt
+        main.instance.checkout();
     }
 
     public class Cart

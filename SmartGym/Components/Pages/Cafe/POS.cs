@@ -27,8 +27,6 @@ namespace SmartGym.Components.Pages.Cafe
             filteredMenu = fullMenuList;
         }
 
-
-
         public void search(string search) 
         {
             if (search.Trim() == "" ) 
@@ -47,6 +45,14 @@ namespace SmartGym.Components.Pages.Cafe
             }
             
             filteredMenu = filteredList;
+        }
+
+        /// <summary>
+        /// Some Checkout function that does checkout things :^)
+        /// </summary>
+        public void checkout() 
+        { 
+            //TODO: Process cart information to create a receipt.
         }
 
     }
