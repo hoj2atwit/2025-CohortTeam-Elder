@@ -10,6 +10,10 @@ namespace SmartGym.Components.Pages.Cafe
         public List<MenuItem> fullMenuList = new();
         private Dictionary<string, MenuItem> fullMenuDict = new();
         public List<MenuItem> filteredMenu = new();
+        
+        /// <summary>
+        /// Constructor for POS that ensures that a static instance of POS exists. Also Resets the values of the instance.
+        /// </summary>
         public POS()
         {
             refresh();
@@ -24,6 +28,9 @@ namespace SmartGym.Components.Pages.Cafe
             }
         }
 
+        /// <summary>
+        /// Refreshes the values of the instanced POS.
+        /// </summary>
         public void refresh() 
         {
             currentCart = new Cart();
@@ -32,11 +39,19 @@ namespace SmartGym.Components.Pages.Cafe
             filteredMenu = fullMenuList;
         }
 
+        /// <summary>
+        /// Allows user to load a given cart
+        /// </summary>
+        /// <param name="cart"></param>
         public void loadCart(Cart cart) 
         { 
             this.currentCart = cart;
         }
 
+        /// <summary>
+        /// Filters Menu dependant on user's given search conditions.
+        /// </summary>
+        /// <param name="search"> text that the user wants to search for in the menu </param>
         public void search(string search)
         {
             if (search.Trim() == "")

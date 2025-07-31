@@ -4,7 +4,7 @@
     <button class="aspect-square w-10 rounded-full border border-black p-5 text-xl font-bold" @onclick=increaseAmount>+</button>
     @* Input field for quantity of cart item. If quantity input is invalid then default to 0 as input *@
     <input type="number" class="field-sizing-content min-w-0 border border-black" value=@cartItem.amount @onchange="@((ChangeEventArgs e) => { try { cartItem.amount = int.Parse(e.Value.ToString()); } catch (Exception ex) { e.Value = 0; cartItem.amount = 0; } updateAmount(); })" />
-    <button class="aspect-square w-10 rounded-full border border-black p-5 text-xl font-bold" @onclick=remove>-</button>
+    <button class="aspect-square w-10 rounded-full border border-black p-5 text-xl font-bold" @onclick=decreaseAmount>-</button>
     <h3 class="px-2 py-1">@cartItem.currentPriceString</h3>
 </div>
 @code {
@@ -13,13 +13,20 @@
     [Parameter]
     public MenuCartLayout cartMain { get; set; }
 
+    /// <summary>
+    /// Increases the amount of cartItem by 1.
+    /// </summary>
     async public void increaseAmount()
     {
         cartItem.increaseAmount();
         await cartMain.updateCart();
     }
 
-    async public void remove()
+    /// <summary>
+    /// decreases the amount of a cartItem by 1. 
+    /// If that were to decrease the amount to 0 or lower, removes the cartItem from the cart.
+    /// </summary>
+    async public void decreaseAmount()
     {
         if (cartItem.amount - 1 <= 0)
         {
@@ -33,6 +40,10 @@
 
     }
 
+    /// <summary>
+    /// Updates the amount of the CartItem dependant on inputed amount.
+    /// if cartItem is 0 or lower, removes the cartItem from the cart.
+    /// </summary>
     async public void updateAmount()
     {
         if (cartItem.amount <= 0)
