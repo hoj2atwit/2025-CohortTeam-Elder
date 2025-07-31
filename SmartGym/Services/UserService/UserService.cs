@@ -30,7 +30,10 @@ public class UserService : IUserService
 			throw;
 		}
 	}
-
+/// <summary>
+/// returns a list of users
+/// </summary>
+/// <returns></returns>
 	public async Task<List<UserDto>> GetAllUsers()
 	{
 		try
@@ -55,7 +58,11 @@ public class UserService : IUserService
 	{
 		throw new NotImplementedException();
 	}
-
+/// <summary>
+/// returns a single user by id
+/// </summary>
+/// <param name="id"></param>
+/// <returns></returns>
 	public async Task<UserDto> GetUserById(int id)
 	{
 		try
@@ -78,7 +85,12 @@ public class UserService : IUserService
 	{
 		throw new NotImplementedException();
 	}
-
+/// <summary>
+/// updates the user in the database
+/// </summary>
+/// <param name="id"></param>
+/// <param name="userDto"></param>
+/// <returns></returns>
 	public async Task<UserDto?> UpdateUser(int id, UserDto userDto)
 	{
 		try
@@ -99,7 +111,11 @@ public class UserService : IUserService
 			return null;
 		}
 	}
-
+/// <summary>
+/// removes a user in the database
+/// </summary>
+/// <param name="id"></param>
+/// <returns></returns>
 	public async Task<bool> DeleteUser(int id)
 	{
 		try

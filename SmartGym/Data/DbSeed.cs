@@ -11,6 +11,11 @@ namespace SmartGym.Data
 {
 	public class DbSeed
 	{
+		/// <summary>
+		/// This is the method the program uses to seed the db anytime you run
+		/// </summary>
+		/// <param name="services"></param>
+		/// <param name="isDevelopment"></param>
 		public static void SeedDatabase(IServiceProvider services, bool isDevelopment = false)
 		{
 			if (isDevelopment)
