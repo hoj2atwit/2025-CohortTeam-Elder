@@ -1,0 +1,16 @@
+﻿<button class="flex max-h-1/3 min-h-0 max-w-1/4 min-w-50 flex-col border border-black shadow-2xl" @onclick="OnClickCallback">
+    <img class="aspect-square h-50" id="menuItemImage" src=@Assets[@item.imageLocation] />
+    <div class="p-4 text-gray-800">
+        <h5 class="mb-2 text-lg font-semibold" >@item.name</h5>
+        <p class="text-base">@item.description</p>
+        <p class="text-base">@item.priceString</p>
+    </div>
+</button>
+
+@code {
+    [Parameter]
+    public MenuItem? item { get; set; }
+    [Parameter]
+    public EventCallback OnClickCallback { get; set; }
+
+}
