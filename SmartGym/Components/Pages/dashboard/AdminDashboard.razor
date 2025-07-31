@@ -1,19 +1,14 @@
-@page "/dashboard"
-@layout AdminLayout
+﻿@page "/dashboard"
 
 <PageTitle>Admin Portal</PageTitle>
 
 <div class="wrapper flex h-screen">
-    <div class="sidebar fixed top-0 left-0 h-screen w-[16rem] z-20">
-        <AdminSidebar />
-    </div>
-
-    <div class="flex-1 ml-[16rem] flex flex-col h-screen bg-[#f3f4f6]">
+    <div class="flex h-screen flex-1 flex-col bg-[#f3f4f6]">
         <div class="sticky top-0 z-10 bg-[#f3f4f6]">
             <AdminNavbar />
         </div>
         <!-- Main dashboard content goes here -->
-          <div class="flex-1 overflow-y-auto p-6 bg-[#f3f4f6]">
+          <div class="flex-1 overflow-y-auto bg-[#f3f4f6] p-6">
             <AdminMain />
             </div>
             <!-- Add more dashboard content/components here -->
