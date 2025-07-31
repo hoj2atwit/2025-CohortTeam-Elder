@@ -2,7 +2,7 @@
     <h5 class="mb-2 justify-center px-2 py-1 text-lg font-semibold">
         Cart
     </h5>
-    <div class="flex flex-col overflow-y-scroll border border-black">
+    <div class="h-fit w-full overflow-y-scroll border border-black">
         @foreach (var cartItem in instance.currentCart.cartItems.Values)
         {
             <MenuCartItemLayout cartMain="this" cartItem=@cartItem/>
