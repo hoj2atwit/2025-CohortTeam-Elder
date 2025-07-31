@@ -1,4 +1,5 @@
 @page "/myAccount"
+@using SmartGym.Constants.Enums
 @using SmartGym.Models
 @attribute [StreamRendering]
 
@@ -21,7 +22,7 @@
 <hr/>
 <span>Last Name: @user.Email</span>
 <hr/>
-<span>Membership: @user.Role</span>
+<span>Membership: @user.RoleId</span>
 </div>
 
 @* <h3>Billing Information</h3>
@@ -58,7 +59,7 @@
             Id = 23456789,
             Name = "Johnny Danger",
             Email = "dangerj@test.com",
-            Role = "User"
+            RoleId = (int)RoleId.Member
         };
         @* payment = new Payment {
             cardholderName = "Johnathan Maximus Decimus Meridius Danger",
@@ -68,13 +69,11 @@
             secCode = 404
         }; *@
     }
-    @* private class Payment {
-        public string cardholderName {get; set;}
-        public string cardNumber {get; set;}
-        public int monthExpiry {get; set;}
-        public int yearExpiry {get; set;}
-        public int secCode {get; set;}
-    } *@
-
-}
-    
+        @* private class Payment {
+            public string cardholderName {get; set;}
+            public string cardNumber {get; set;}
+            public int monthExpiry {get; set;}
+            public int yearExpiry {get; set;}
+            public int secCode {get; set;}
+        } *@
+    }
