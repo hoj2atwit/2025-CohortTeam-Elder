@@ -1,17 +1,52 @@
+using AutoMapper;
+using SmartGym.Data;
 using SmartGym.Models;
 
 namespace SmartGym.Services.UserService;
 
 public class UserService : IUserService
 {
-	public void CreateUser(User user)
+
+	private readonly IUnitOfWork _unitOfWork;
+	private readonly IMapper _mapper;
+	public UserService(IUnitOfWork unitOfWork, IMapper mapper)
 	{
-		throw new NotImplementedException();
+		_unitOfWork = unitOfWork;
+		_mapper = mapper;
 	}
 
-	public void GetAllUsers()
+	public async Task<UserDto> CreateUser(UserDto newUserData)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			User newUser = _mapper.Map<User>(newUserData);
+			await _unitOfWork.UserRepository.AddAsync(newUser);
+			await _unitOfWork.SaveAsync();
+			return _mapper.Map<UserDto>(newUser);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in CreateUser: {ex.Message}");
+			throw;
+		}
+	}
+/// <summary>
+/// returns a list of users
+/// </summary>
+/// <returns></returns>
+	public async Task<List<UserDto>> GetAllUsers()
+	{
+		try
+		{
+			var users = await _unitOfWork.UserRepository.GetAsync();
+			var userList = _mapper.Map<List<UserDto>>(users);
+			return userList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllUsers: {ex.Message}");
+			return new List<UserDto>();
+		}
 	}
 
 	public void GetTrafficData(DateTime date)
@@ -23,12 +58,24 @@ public class UserService : IUserService
 	{
 		throw new NotImplementedException();
 	}
-
-	public void GetUser(User user)
+/// <summary>
+/// returns a single user by id
+/// </summary>
+/// <param name="id"></param>
+/// <returns></returns>
+	public async Task<UserDto> GetUserById(int id)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			var userEntity = await _unitOfWork.UserRepository.GetAsync(id);
+			return _mapper.Map<UserDto>(userEntity);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetUserById: {ex.Message}");
+			return null;
+		}
 	}
-
 	public void GetUserCheckInHistory(User user)
 	{
 		throw new NotImplementedException();
@@ -38,9 +85,53 @@ public class UserService : IUserService
 	{
 		throw new NotImplementedException();
 	}
-
-	public void UpdateUser(User user)
+/// <summary>
+/// updates the user in the database
+/// </summary>
+/// <param name="id"></param>
+/// <param name="userDto"></param>
+/// <returns></returns>
+	public async Task<UserDto?> UpdateUser(int id, UserDto userDto)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			var userEntity = await _unitOfWork.UserRepository.GetAsync(id);
+			if (userEntity == null)
+				return null;
+
+			_mapper.Map(userDto, userEntity);
+
+			_unitOfWork.UserRepository.Update(userEntity);
+			await _unitOfWork.SaveAsync();
+			return _mapper.Map<UserDto>(userEntity);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error while updating user: {ex.Message}");
+			return null;
+		}
+	}
+/// <summary>
+/// removes a user in the database
+/// </summary>
+/// <param name="id"></param>
+/// <returns></returns>
+	public async Task<bool> DeleteUser(int id)
+	{
+		try
+		{
+			var userEntity = await _unitOfWork.UserRepository.GetAsync(id);
+			if (userEntity == null)
+				return false;
+
+			_unitOfWork.UserRepository.Delete(userEntity);
+			await _unitOfWork.SaveAsync();
+			return true;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error while deleting user: {ex.Message}");
+			return false;
+		}
 	}
 }

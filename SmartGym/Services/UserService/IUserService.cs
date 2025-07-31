@@ -4,12 +4,13 @@ namespace SmartGym.Services;
 
 public interface IUserService
 {
-	void CreateUser(User user);
-	void UpdateUser(User user);
-	void GetUser(User user);
+	Task<UserDto> CreateUser(UserDto newUserData);
+	Task<UserDto> GetUserById(int id);
 	void GetUserCheckInHistory(User user);
-	void GetAllUsers();
+	Task<List<UserDto>> GetAllUsers();
 	void GetUserPaymentMethod(User user);
 	void GetTrafficData(DateTime date);
 	void GetTrafficData(DateTime startDate, DateTime endDate);
+	Task<UserDto?> UpdateUser(int id, UserDto userDto);
+	Task<bool> DeleteUser(int id);
 }

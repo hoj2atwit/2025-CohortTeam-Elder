@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Bogus.DataSets;
 
 namespace SmartGym.Models;
 
@@ -16,5 +17,13 @@ public class User
 	public string Email { get; set; }
 	[Required]
 	[MaxLength(50)]
-	public string Role { get; set; }
+	public int RoleId { get; set; }
+	[Required]
+	public DateTime DateOfBirth { get; set; }
+	[Required]
+	public int Status { get; set; }
+	[Required]
+	public DateTime CreatedDate { get; set; }
+	[Required]
+	public DateTime UpdatedDate { get; set; }
 }
