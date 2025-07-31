@@ -47,6 +47,17 @@ public class UserService : IUserService
 			Console.WriteLine($"Error in GetAllUsers: {ex.Message}");
 			return new List<UserDto>();
 		}
+		try
+		{
+			var users = await _unitOfWork.UserRepository.GetAsync();
+			var userList = _mapper.Map<List<UserDto>>(users);
+			return userList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllUsers: {ex.Message}");
+			return new List<UserDto>();
+		}
 	}
 
 	public void GetTrafficData(DateTime date)
