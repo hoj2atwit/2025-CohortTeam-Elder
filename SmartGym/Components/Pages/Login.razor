@@ -3,27 +3,38 @@
 
 <PageTitle>Login</PageTitle>
 
-<section>
-    <h1>Welcome to SMART Gym!</h1>
-    <form @onsubmit="HandleLogin">
-        <h4>Please log in</h4>
-        <hr />
-        <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control rounded-pill" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Email address">
-        </div>
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control rounded-pill" id="exampleInputPassword1" placeholder="********">
-        </div>
-        <div class="mb-3 form-check">
-            <label class="form-check-label" for="exampleCheck1">Forgot your password?</label>
-        </div>
-        <div class="d-flex justify-content-center">
-            <button type="submit" class="btn btn-primary rounded-pill">LOGIN</button>
-        </div>
-    </form>
-</section>
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 class="text-2xl/9 mt-10 text-center font-bold tracking-tight text-gray-900">Please log in</h2>
+    </div>
+
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form action="#" method="POST" class="space-y-6">
+            <div>
+                <label for="email" class="text-sm/6 block font-medium text-gray-900">Email address</label>
+                <div class="mt-2">
+                    <input id="email" type="email" name="email" required autocomplete="email" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                </div>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between">
+                    <label for="password" class="text-sm/6 block font-medium text-gray-900">Password</label>
+                    <div class="text-sm">
+                        <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <input id="password" type="password" name="password" required autocomplete="current-password" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" form="form1" value="Submit">LOGIN</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 @code{
     private void HandleLogin()
