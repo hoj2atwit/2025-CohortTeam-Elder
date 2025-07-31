@@ -2,20 +2,20 @@
 <title>@username's Order</title>
 <h1> @username's Order </h1>
 <div class="flex h-11/12 max-h-full min-h-0">
-    <div class="h-full w-full flex-col overflow-y-hidden border border-black">
-        <section class="flex h-1/12 max-h-1/12 max-w-fit flex-1 flex-row">
-            <div class="max-w-sm min-w-[200px]">
+    <div class="flex h-full w-full flex-col overflow-y-hidden border border-black p-6">
+        <section class="flex h-1/12 max-h-1/12 w-full">
+            <div class="!w-1/2">
 
                 @* TODO: Add Search Functionality to menu, updating the menu when input is updated *@
                 <input type="text" @onchange="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })"
-                       class="w-8/12 rounded-full border px-2 py-2 text-slate-700 shadow-lg transition duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:shadow focus:outline-none"
+                       class="relative w-full rounded-full border px-2 py-2 text-slate-700 shadow-lg transition duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:shadow focus:outline-none"
                        placeholder="Search..." />
 
                 @* Depending on decided functionality, might be removed *@
-                <button class="rounded-r-full border py-2 shadow-lg transition"
+                @*<button class="rounded-r-full border py-2 shadow-lg transition"
                         type="button">
                     Search
-                </button>
+                </button>*@
             </div>
         </section>
         <hr />
@@ -50,7 +50,7 @@
 @code {
     public string searchText = "";
     public string username = "";
-    MenuCartLayout menuCart;
+    private MenuCartLayout menuCart;
 
     Task InitializeMenu()
     {
