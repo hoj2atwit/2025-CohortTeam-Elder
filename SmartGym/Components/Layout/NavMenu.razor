@@ -1,35 +1,53 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">SmartGym</a>
+﻿<div class="top-row navbar navbar-dark ps-3">
+    <div class="sidebar-header flex gap-4 p-6 pt-12">
+        <div class="user-image flex h-[50px] w-[50px] items-center justify-center rounded-full border-2 border-[#f34f5d] bg-[#f34f5d] p-8 text-2xl text-white">
+            <NavLink class="!text-white" href="myAccount">K</NavLink>
+        </div>
+        <div class="flex flex-col items-center justify-center">
+            @* dynamic user name fetch *@
+            <h2 class="text-sm !text-white">Welcome back, Komal</h2>
+        </div>
     </div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
+<div class="nav-scrollable p-6" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex flex-col gap-4 text-white">
+        <div class="nav-item">
+            <NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard" Match="NavLinkMatch.All">Dashboard</NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
+        <div class="nav-item">
+            <NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/members">Members</NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
+        <div class="nav-item">
+            <NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/classes">Classes</NavLink>
         </div>
-        
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="myAccount">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> My Account @*need icon for account*@
-            </NavLink>
+
+        <div class="nav-item">
+            <NavLink class="px-3 text-lg !text-white" href="/dashboard/bookings">Bookings</NavLink>
         </div>
+
+        <div class="nav-item">
+            <NavLink class="nav-link px-3 text-lg !text-white" href="/POS">Cafe</NavLink>
+        </div>
+
+        <div class="nav-item">
+            <NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/trainers">Trainers</NavLink>
+        </div>
+
+        <div class="nav-item">
+            <NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/settings">Settings</NavLink>
+        </div>
+
+        <div class="nav-item">
+            <NavLink class="nav-link px-3 text-lg !text-white" href="/logout">Logout</NavLink>
+        </div>
+
     </nav>
 </div>
+
+
+
