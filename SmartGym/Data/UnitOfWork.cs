@@ -7,6 +7,7 @@ public class UnitOfWork : IUnitOfWork
 	private readonly SmartGymContext _context;
 	private IRepository<Class>? _classRepository;
 	private IRepository<User>? _userRepository;
+	private IRepository<MenuItem>? _menuItemRepository;
 
 	public UnitOfWork(SmartGymContext context)
 	{
@@ -26,6 +27,15 @@ public class UnitOfWork : IUnitOfWork
 		{
 			_userRepository ??= new Repository<User>(_context);
 			return _userRepository;
+		}
+	}
+
+	public IRepository<MenuItem> MenuItemRepository
+	{
+		get
+		{
+			_menuItemRepository ??= new Repository<MenuItem>(_context);
+			return _menuItemRepository;
 		}
 	}
 	public async Task SaveAsync()
