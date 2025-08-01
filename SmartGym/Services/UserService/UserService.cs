@@ -76,10 +76,42 @@ public class UserService : IUserService
 			return null;
 		}
 	}
-	public void GetUserCheckInHistory(User user)
+	/// <summary>
+	/// returns a users check in history by id
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetUserCheckins(int id)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync(x => x.UserId == id);
+			return _mapper.Map<List<CheckinDTO>>(checkinEntity).ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetUserCheckins: {ex.Message}");
+			return null;
+		}
 	}
+	/// <summary>
+	/// returns all user checkin history
+	/// </summary>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetAllUserCheckins()
+	{
+		try
+		{
+			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync();
+			return _mapper.Map<List<CheckinDTO>>(checkinEntity);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllUserCheckins: {ex.Message}");
+			return null;
+		}
+	}
+
 
 	public void GetUserPaymentMethod(User user)
 	{

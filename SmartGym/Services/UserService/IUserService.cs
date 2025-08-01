@@ -6,8 +6,9 @@ public interface IUserService
 {
 	Task<UserDto> CreateUser(UserDto newUserData);
 	Task<UserDto> GetUserById(int id);
-	void GetUserCheckInHistory(User user);
 	Task<List<UserDto>> GetAllUsers();
+	Task<List<CheckinDTO>> GetUserCheckins(int id);
+	Task<List<CheckinDTO>> GetAllUserCheckins();
 	void GetUserPaymentMethod(User user);
 	void GetTrafficData(DateTime date);
 	void GetTrafficData(DateTime startDate, DateTime endDate);

@@ -54,6 +54,19 @@ namespace SmartGym.Data
 					context.Classes.AddRange(fakeClasses);
 					context.SaveChanges();
 				}
+
+				List<int> userIds = context.Users.Select(x => x.Id).ToList();
+				if (!context.Checkins.Any())
+				{
+					var faker = new Faker<Checkin>()
+						 .RuleFor(x => x.CheckinTime, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
+						 .RuleFor(x => x.Method, f => f.Random.ListItem(new List<string>() { "qr", "desk" }))
+						 .RuleFor(x => x.UserId, f => f.Random.ListItem(userIds));
+
+					var fakeCheckins = faker.Generate(1000); // Generate 20 random classes
+					context.Checkins.AddRange(fakeCheckins);
+					context.SaveChanges();
+				}
 			}
 		}
 	}

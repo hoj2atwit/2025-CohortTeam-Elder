@@ -50,7 +50,7 @@ namespace SmartGym.Controllers
 			if (patched != null)
 				return Ok(patched);
 			else
-				return StatusCode(500); 
+				return StatusCode(500);
 		}
 
 		[HttpDelete("{id}")]
@@ -60,6 +60,20 @@ namespace SmartGym.Controllers
 			if (!removed)
 				return NotFound();
 			return Ok();
+		}
+
+		[HttpGet("checkins/{id:int}")]
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetUserCheckins(int id)
+		{
+			var checkinList = await _service.GetUserCheckins(id);
+
+			return Ok(checkinList);
+		}
+		[HttpGet("checkins")]
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetAllUserCheckins()
+		{
+			var checkinList = await _service.GetAllUserCheckins();
+			return Ok(checkinList);
 		}
 	}
 }
