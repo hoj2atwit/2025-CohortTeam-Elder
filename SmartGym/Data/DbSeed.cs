@@ -23,7 +23,7 @@ namespace SmartGym.Data
 				using var scope = services.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<SmartGymContext>();
 				context.Database.Migrate(); // Catch up your database
-													 //Users
+																		//Users
 				if (!context.Users.Any())
 				{
 					var faker = new Faker<User>()
@@ -53,6 +53,29 @@ namespace SmartGym.Data
 					var fakeClasses = faker.Generate(20); // Generate 20 random classes
 					context.Classes.AddRange(fakeClasses);
 					context.SaveChanges();
+				}
+
+				//Orders
+				if (!context.Orders.Any())
+				{
+					var userIds = context.Users.Select(u => u.Id).ToList();
+					var users = context.Users.ToList();
+
+					if (users.Any())
+					{
+						var orderFaker = new Faker<Order>()
+						.RuleFor(o => o.User, f => f.PickRandom(users))
+						.RuleFor(o => o.UserId, (f, o) => o.User.Id)
+						.RuleFor(o => o.OrderTime, f => f.Date.Recent(90))
+						.RuleFor(o => o.TotalPrice, f => f.Finance.Amount(10, 99))
+						.RuleFor(o => o.CreatedAt, f => f.Date.Past(1))
+						.RuleFor(o => o.UpdatedAt, (f, o) => o.CreatedAt.AddMinutes(f.Random.Int(10, 1000)))
+						.RuleFor(o => o.Notes, f => f.Lorem.Sentence());
+
+						var fakeOrders = orderFaker.Generate(50);
+						context.Orders.AddRange(fakeOrders);
+						context.SaveChanges();
+					}
 				}
 			}
 		}
