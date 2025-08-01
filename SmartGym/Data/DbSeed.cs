@@ -13,7 +13,7 @@ namespace SmartGym.Data
 		public static void SeedDatabase(IServiceProvider services, bool isDevelopment = false)
 		{
 			if (isDevelopment)
-			{/*
+			{
 				using var scope = services.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<SmartGymContext>();
 				context.Database.Migrate(); // Catch up your database
@@ -45,7 +45,7 @@ namespace SmartGym.Data
 					context.Classes.AddRange(fakeClasses);
 					context.SaveChanges();
 				}
-			*/}
+			}
 		}
 	}
 }

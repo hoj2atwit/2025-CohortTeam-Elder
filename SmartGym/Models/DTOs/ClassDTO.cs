@@ -7,5 +7,5 @@ public class ClassDTO
     public DateTime Schedule { get; set; }
     public int Capacity { get; set; }
     public int TrainerId { get; set; }
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
 }
