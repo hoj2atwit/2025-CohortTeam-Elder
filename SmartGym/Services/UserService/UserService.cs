@@ -30,10 +30,10 @@ public class UserService : IUserService
 			throw;
 		}
 	}
-/// <summary>
-/// returns a list of users
-/// </summary>
-/// <returns></returns>
+	/// <summary>
+	/// returns a list of users
+	/// </summary>
+	/// <returns></returns>
 	public async Task<List<UserDto>> GetAllUsers()
 	{
 		try
@@ -58,11 +58,11 @@ public class UserService : IUserService
 	{
 		throw new NotImplementedException();
 	}
-/// <summary>
-/// returns a single user by id
-/// </summary>
-/// <param name="id"></param>
-/// <returns></returns>
+	/// <summary>
+	/// returns a single user by id
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
 	public async Task<UserDto> GetUserById(int id)
 	{
 		try
@@ -76,21 +76,54 @@ public class UserService : IUserService
 			return null;
 		}
 	}
-	public void GetUserCheckInHistory(User user)
+	/// <summary>
+	/// gets all checkins for the given user id
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetUserCheckins(int id)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync(x => x.UserId == id);
+			return _mapper.Map<List<CheckinDTO>>(checkinEntity).ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetUserCheckins: {ex.Message}");
+			return null;
+		}
 	}
+	/// <summary>
+	/// returns all user checkin history
+	/// </summary>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetAllUserCheckins()
+	{
+		try
+		{
+			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync();
+			return _mapper.Map<List<CheckinDTO>>(checkinEntity);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllUserCheckins: {ex.Message}");
+			return null;
+		}
+	}
+
 
 	public void GetUserPaymentMethod(User user)
 	{
 		throw new NotImplementedException();
 	}
-/// <summary>
-/// updates the user in the database
-/// </summary>
-/// <param name="id"></param>
-/// <param name="userDto"></param>
-/// <returns></returns>
+	
+	/// <summary>
+	/// updates the user in the database
+	/// </summary>
+	/// <param name="id"></param>
+	/// <param name="userDto"></param>
+	/// <returns></returns>
 	public async Task<UserDto?> UpdateUser(int id, UserDto userDto)
 	{
 		try
@@ -111,11 +144,11 @@ public class UserService : IUserService
 			return null;
 		}
 	}
-/// <summary>
-/// removes a user in the database
-/// </summary>
-/// <param name="id"></param>
-/// <returns></returns>
+	/// <summary>
+	/// removes a user in the database
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
 	public async Task<bool> DeleteUser(int id)
 	{
 		try

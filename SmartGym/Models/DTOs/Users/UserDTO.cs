@@ -12,4 +12,6 @@ public class UserDto
 	public int Status { get; set; }
 	public DateTime CreatedDate { get; set; }
 	public DateTime UpdatedDate { get; set; }
+	// public ICollection<CheckinDTO> Checkins { get; set; } //undecided about this
+
 }

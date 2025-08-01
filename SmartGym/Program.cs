@@ -61,4 +61,6 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
+DbSeed.SeedDatabase(app.Services, app.Environment.IsDevelopment());
+
 app.Run();

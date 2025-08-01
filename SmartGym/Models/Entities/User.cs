@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Bogus.DataSets;
 
 namespace SmartGym.Models;
 
@@ -26,4 +25,5 @@ public class User
 	public DateTime CreatedDate { get; set; }
 	[Required]
 	public DateTime UpdatedDate { get; set; }
+	public ICollection<Checkin>? Checkins { get; set; }
 }
