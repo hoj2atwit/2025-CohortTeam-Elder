@@ -14,7 +14,11 @@ public class OrderService : IOrderService
     _unitOfWork = unitOfWork;
     _mapper = mapper;
   }
-
+  /// <summary>
+  /// Creates an order 
+  /// </summary>
+  /// <param name="newOrderData"></param>
+  /// <returns>created order</returns>
   public async Task<OrderDTO> CreateOrder(OrderDTO newOrderData)
   {
     try
@@ -30,6 +34,12 @@ public class OrderService : IOrderService
       throw;
     }
   }
+
+  /// <summary>
+  /// Gets an order by Id 
+  /// </summary>
+  /// <param name="id"></param>
+  /// <returns>An specific order and its details</returns>
   public async Task<OrderDTO> GetOrderById(int id)
   {
     try
@@ -43,6 +53,12 @@ public class OrderService : IOrderService
       return null;
     }
   }
+
+  /// <summary>
+  /// Gets all orders from a specific user
+  /// </summary>
+  /// <param name="userId">comes from query based on the user who is logged in</param>
+  /// <returns>order from that specific user</returns>
   public async Task<List<OrderDTO>> GetAllUserOrders(int userId)
   {
     try
@@ -57,6 +73,11 @@ public class OrderService : IOrderService
       return null;
     }
   }
+  /// <summary>
+  /// Gets the time that the order is supposed to be ready
+  /// </summary>
+  /// <param name="id"></param>
+  /// <returns></returns>
   public async Task<DateTime?> GetOrderTime(int id)
   {
     try
@@ -75,7 +96,14 @@ public class OrderService : IOrderService
       throw;
     }
   }
-
+  /// <summary>
+  /// Updates an order if anything changes before it is ready
+  /// Maybe we can soft delete orders once they're ready (something like changing it to ready or resolved) - otherwise, getting all orders from user wouldn't make sense
+  /// Implement status?
+  /// </summary>
+  /// <param name="id"></param>
+  /// <param name="newOrderData"></param>
+  /// <returns></returns>
   public async Task<OrderDTO?> UpdateOrder(int id, OrderPatchDTO newOrderData)
   {
     try
@@ -96,6 +124,11 @@ public class OrderService : IOrderService
       return null;
     }
   }
+  /// <summary>
+  /// deletes an order
+  /// </summary>
+  /// <param name="id"></param>
+  /// <returns></returns>
   public async Task<bool> DeleteOrder(int id)
   {
     try
