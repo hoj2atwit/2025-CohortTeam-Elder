@@ -1,0 +1,7 @@
+﻿<!-- Search box -->
+<input @onchange=@((ChangeEventArgs e) => eventCallBack.InvokeAsync("" + e.Value)) type="text" placeholder="Search..." class="!relative w-full min-w-full px-2 py-1 rounded border" />
+
+@code {
+    [Parameter]
+    public EventCallback<string> eventCallBack { get; set; }
+}

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="abb69dc6-d9bf-4088-9a01-2a65267c55e2" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSON File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Rebase.Settings">
+    <option name="NEW_BASE" value="main" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/App.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/Layout/MainLayout.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/Layout/NavMenu.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/Pages/Counter.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/Pages/Error.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/Pages/Home.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/Pages/Weather.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/Routes.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Components/_Imports.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Constants/Enums/SomeEnum.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Controllers/ClassesController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Data/SmartGymContext.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Models/DTOs/Classes/ClassDTO.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/Felipe/Desktop/DOTNET/Smart Gym/SmartGym/Services/ClassService/ClassService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SmartGym/obj/Debug/net9.0/SmartGym.AssemblyInfo.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="301fzRsLVnXYtLP6FSaFQVlgPgg" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "/Users/Felipe/Library/Application Support/JetBrains/Rider2023.3/resharper-host/DecompilerCache",
+      "/Users/Felipe/Library/Application Support/JetBrains/Rider2023.3/resharper-host/SourcesCache",
+      "/Users/Felipe/.local/share/Symbols/src"
+    ]
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="abb69dc6-d9bf-4088-9a01-2a65267c55e2" name="Changes" comment="" />
+      <created>1752800262999</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1752800262999</updated>
+      <workItem from="1752800265853" duration="1151000" />
+      <workItem from="1752971881649" duration="26048000" />
+      <workItem from="1753924335117" duration="2863000" />
+    </task>
+    <task id="LOCAL-00001" summary="adding name to project">
+      <option name="closed" value="true" />
+      <created>1752800542218</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1752800542218</updated>
+    </task>
+    <task id="LOCAL-00002" summary="testing PR through Rider">
+      <option name="closed" value="true" />
+      <created>1752971931027</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1752971931027</updated>
+    </task>
+    <task id="LOCAL-00003" summary="commiting before rebasing with main">
+      <option name="closed" value="true" />
+      <created>1753406080381</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1753406080381</updated>
+    </task>
+    <task id="LOCAL-00004" summary="rebasing">
+      <option name="closed" value="true" />
+      <created>1753474285862</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1753474285862</updated>
+    </task>
+    <task id="LOCAL-00005" summary="adding Class DTO">
+      <option name="closed" value="true" />
+      <created>1753479229458</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1753479229458</updated>
+    </task>
+    <task id="LOCAL-00006" summary="initial work on new classes frontend">
+      <option name="closed" value="true" />
+      <created>1753639879458</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1753639879458</updated>
+    </task>
+    <task id="LOCAL-00007" summary="trying to resolve conflicts">
+      <option name="closed" value="true" />
+      <created>1753925511237</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1753925511237</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="adding name to project" />
+    <MESSAGE value="testing PR through Rider" />
+    <MESSAGE value="commiting before rebasing with main" />
+    <MESSAGE value="rebasing" />
+    <MESSAGE value="adding Class DTO" />
+    <MESSAGE value="initial work on new classes frontend" />
+    <MESSAGE value="trying to resolve conflicts" />
+    <option name="LAST_COMMIT_MESSAGE" value="trying to resolve conflicts" />
+  </component>
+</project>
