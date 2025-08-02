@@ -55,7 +55,7 @@ public class OrderService : IOrderService
   }
 
   /// <summary>
-  /// Gets all orders from a specific user
+  /// Gets all orders from a specific user 
   /// </summary>
   /// <param name="userId">comes from query based on the user who is logged in</param>
   /// <returns>order from that specific user</returns>
