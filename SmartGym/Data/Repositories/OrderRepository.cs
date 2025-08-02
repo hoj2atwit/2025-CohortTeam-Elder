@@ -3,7 +3,7 @@ using SmartGym.Models;
 
 namespace SmartGym.Data;
 
-public class OrderRepository : Repository<Order>, IOrderRepository
+public class OrderRepository : Repository<Order>
 {
 	private readonly DbSet<Order> _dbSet;
 	private readonly SmartGymContext _context;
@@ -16,10 +16,6 @@ public class OrderRepository : Repository<Order>, IOrderRepository
 
 
 	#region Custom Methods
-	public async Task<List<Order>> GetAllOrdersByUserIdAsync(int userId)
-	{
-		return await _dbSet.Where(o => o.UserId == userId).ToListAsync();
-	}
 
 	#endregion
 

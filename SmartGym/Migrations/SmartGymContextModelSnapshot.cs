@@ -79,6 +79,40 @@ namespace SmartGym.Migrations
                     b.ToTable("Classes");
                 });
 
+            modelBuilder.Entity("SmartGym.Models.MenuItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Calories")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Ingredients")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Tag")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MenuItems");
+                });
+
             modelBuilder.Entity("SmartGym.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -174,11 +208,6 @@ namespace SmartGym.Migrations
                     b.Navigation("Trainer");
                 });
 
-            modelBuilder.Entity("SmartGym.Models.User", b =>
-                {
-                    b.Navigation("Checkins");
-                });
-
             modelBuilder.Entity("SmartGym.Models.Order", b =>
                 {
                     b.HasOne("SmartGym.Models.User", "User")
@@ -188,6 +217,11 @@ namespace SmartGym.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SmartGym.Models.User", b =>
+                {
+                    b.Navigation("Checkins");
                 });
 #pragma warning restore 612, 618
         }

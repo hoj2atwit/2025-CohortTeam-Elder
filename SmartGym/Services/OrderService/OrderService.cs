@@ -63,7 +63,7 @@ public class OrderService : IOrderService
   {
     try
     {
-      var userOrders = await _unitOfWork.OrderRepository.GetAllOrdersByUserIdAsync(userId);
+      var userOrders = await _unitOfWork.OrderRepository.GetAsync(o => o.UserId == userId);
       var OrderList = _mapper.Map<List<OrderDTO>>(userOrders);
       return OrderList.ToList();
     }

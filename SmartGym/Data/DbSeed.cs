@@ -58,7 +58,6 @@ namespace SmartGym.Data
 				//Orders
 				if (!context.Orders.Any())
 				{
-					var userIds = context.Users.Select(u => u.Id).ToList();
 					var users = context.Users.ToList();
 
 					if (users.Any())
