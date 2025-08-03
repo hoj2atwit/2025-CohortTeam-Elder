@@ -1,15 +1,15 @@
 ﻿namespace SmartGym.Components.UIClasses.Cafe
 {
-    public class CartVM
+    public class CartModel
     {
-        public OrderedDictionary<int, CartItemVM> CartItems = new();
+        public OrderedDictionary<int, CartItemModel> CartItems = new();
         private decimal Total = 0;
         public string TotalString = "";
 
         /// <summary>
         /// Cart constructor. Applies correct formatting currency formatting.
         /// </summary>
-        public CartVM()
+        public CartModel()
         {
             updateTotal();
         }
@@ -29,7 +29,7 @@
         /// If the Item already exists in cart, increment amount of that Item by 1.
         /// </summary>
         /// <param name="Item"> MenuItem selected by user </param>
-        public void addItem(MenuItemVM Item)
+        public void addItem(MenuItemModel Item)
         {
             if (CartItems.ContainsKey(Item.ItemId))
             {
@@ -37,7 +37,7 @@
             }
             else
             {
-                CartItems.Add(Item.ItemId, new CartItemVM(Item, 1));
+                CartItems.Add(Item.ItemId, new CartItemModel(Item, 1));
             }
             updateTotal();
         }
@@ -48,7 +48,7 @@
         public void updateTotal()
         {
             Total = 0;
-            foreach (CartItemVM ci in CartItems.Values)
+            foreach (CartItemModel ci in CartItems.Values)
             {
                 Total += ci.CurrentPrice;
             }
@@ -58,9 +58,9 @@
         /// <summary>
         /// Class of an individual CartItem
         /// </summary>
-        public class CartItemVM
+        public class CartItemModel
         {
-            public MenuItemVM? Item;
+            public MenuItemModel? Item;
             public int Amount = 0;
             public decimal CurrentPrice;
             public string? CurrentPriceString;
@@ -71,7 +71,7 @@
             /// </summary>
             /// <param name="Item">Menu Item associated with cartItem</param>
             /// <param name="Amount">Amount of MenuItem desired by user</param>
-            public CartItemVM(MenuItemVM Item, int Amount)
+            public CartItemModel(MenuItemModel Item, int Amount)
             {
                 this.Item = Item;
                 updatePrice(Amount);
