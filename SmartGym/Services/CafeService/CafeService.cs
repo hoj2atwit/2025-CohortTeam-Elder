@@ -32,6 +32,12 @@ public class CafeService : ICafeService
 			return null;
 		}
 	}
+
+	/// <summary>
+	/// gets single menu item by id
+	/// </summary>
+	/// <param name="itemId"></param>
+	/// <returns></returns>
 	public async Task<MenuItemsDTO> GetMenuItem(int itemId)
 	{
 		try
@@ -46,6 +52,12 @@ public class CafeService : ICafeService
 		}
 	}
 
+	/// <summary>
+	/// updates a menu item's details
+	/// </summary>
+	/// <param name="itemId"></param>
+	/// <param name="menuItemDto"></param>
+	/// <returns></returns>
 	public async Task<MenuItemsDTO?> UpdateMenuItem(int itemId, MenuItemsDTO menuItemDto)
 	{
 		try
@@ -66,7 +78,11 @@ public class CafeService : ICafeService
 			return null;
 		}
 	}
-
+	/// <summary>
+	/// remove menu item from inventory
+	/// </summary>
+	/// <param name="itemId"></param>
+	/// <returns></returns>
 	public async Task<bool> DeleteMenuItem(int itemId)
 	{
 		try
