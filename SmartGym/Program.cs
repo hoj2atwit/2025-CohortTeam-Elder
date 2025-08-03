@@ -6,7 +6,6 @@ using SmartGym.Data;
 using Microsoft.EntityFrameworkCore;
 using SmartGym.Services.UserService;
 using SmartGym.Models;
-using SmartGym.Services.OrderService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +30,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //Services
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICafeService, CafeService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
@@ -60,11 +59,6 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
-}
-using (var scope = app.Services.CreateScope())
-{
-	var services = scope.ServiceProvider;
-	DbSeed.SeedDatabase(services, app.Environment.IsDevelopment());
 }
 
 DbSeed.SeedDatabase(app.Services, app.Environment.IsDevelopment());
