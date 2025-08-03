@@ -2,7 +2,7 @@ using AutoMapper;
 using SmartGym.Data;
 using SmartGym.Models;
 
-namespace SmartGym.Services.UserService;
+namespace SmartGym.Services;
 
 public class UserService : IUserService
 {

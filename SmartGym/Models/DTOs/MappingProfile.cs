@@ -18,6 +18,7 @@ public class MappingProfile : Profile
     //Orders
     CreateMap<Order, OrderDTO>().ReverseMap();
     CreateMap<Order, OrderPatchDTO>().ReverseMap();
+    CreateMap<MenuItem, MenuItemsDTO>().ReverseMap();
 
   }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace SmartGym.Models.DTOs;
+namespace SmartGym.Models;
 
 public class MenuItemsDTO
 {
