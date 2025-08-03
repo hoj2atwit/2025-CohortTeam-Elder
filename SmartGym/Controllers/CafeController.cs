@@ -17,17 +17,48 @@ public class CafeController : ControllerBase
 	}
 
 	#region Menu Items
+	[HttpGet("menu")]
+	public async Task<ActionResult<IEnumerable<Order>>> GetFullMenu()
+	{
+		var menuItems = await _cafeService.GetFullMenu();
+		return Ok(menuItems);
+	}
+	[HttpGet("menu/{id:int}")]
+	public async Task<ActionResult<MenuItemsDTO>> GetMenuItem(int id)
+	{
+		var menuItem = await _cafeService.GetMenuItem(id);
+		if (menuItem == null)
+		{
+			return NotFound();
+		}
+		return menuItem;
+	}
+	[HttpPatch("menu/{id:int}")]
+	public async Task<ActionResult<MenuItemsDTO>> UpdateMenuItem(int id, [FromBody] MenuItemsDTO menuItemDto)
+	{
+		var menuItem = await _cafeService.UpdateMenuItem(id, menuItemDto);
+		if (menuItem == null)
+		{
+			return NotFound();
+		}
+		return Ok(menuItem);
+	}
+
+	[HttpDelete("menu/{id:int}")]
+	public async Task<IActionResult> DeleteMenuItem(int id)
+	{
+		var removed = await _cafeService.DeleteMenuItem(id);
+		if (!removed)
+			return NotFound();
+		return Ok();
+	}
+
 	// public void GetCafeItemModifications()
 	// {
 	// 	throw new NotImplementedException();
 	// }
 
 	// public void GetCurrentPromos()
-	// {
-	// 	throw new NotImplementedException();
-	// }
-
-	// public void GetFullMenu()
 	// {
 	// 	throw new NotImplementedException();
 	// }
@@ -42,12 +73,12 @@ public class CafeController : ControllerBase
 	/// <summary>
 	/// Get entire user order history
 	/// </summary>
-	/// <param name="userId"></param>
+	/// <param name="id"></param>
 	/// <returns></returns>
-	[HttpGet("orders/user/{userId:int}")]
-	public async Task<ActionResult<IEnumerable<Order>>> GetAllUserOrders(int userId)
+	[HttpGet("orders/user/{id:int}")]
+	public async Task<ActionResult<IEnumerable<Order>>> GetAllUserOrders(int id)
 	{
-		var orderList = await _cafeService.GetAllUserOrders(userId);
+		var orderList = await _cafeService.GetAllUserOrders(id);
 		return Ok(orderList);
 	}
 	/// <summary>
@@ -55,7 +86,7 @@ public class CafeController : ControllerBase
 	/// </summary>
 	/// <param name="id"></param>
 	/// <returns></returns>
-	[HttpGet("orders/{orderId:int}")]
+	[HttpGet("orders/{id:int}")]
 	public async Task<ActionResult<OrderDTO>> GetOrderById(int id)
 	{
 		var orderItem = await _cafeService.GetOrderById(id);
@@ -70,7 +101,7 @@ public class CafeController : ControllerBase
 	/// </summary>
 	/// <param name="id"></param>
 	/// <returns></returns>
-	[HttpGet("orders/{orderId:int}/time")]
+	[HttpGet("orders/{id:int}/time")]
 	public async Task<ActionResult<DateTime?>> GetOrderTime(int id)
 	{
 		var orderTime = await _cafeService.GetOrderTime(id);
@@ -88,7 +119,7 @@ public class CafeController : ControllerBase
 		return CreatedAtAction(nameof(GetOrderById), new { id = created.Id }, created);
 	}
 
-	[HttpPatch("orders/{orderId:int}")]
+	[HttpPatch("orders/{id:int}")]
 	public async Task<ActionResult<OrderDTO>> UpdateOrder(int id, [FromBody] OrderPatchDTO orderToPatch)
 	{
 		var patchedOrder = await _cafeService.UpdateOrder(id, orderToPatch);

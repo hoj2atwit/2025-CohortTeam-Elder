@@ -22,8 +22,8 @@ namespace SmartGym.Data
 			{
 				using var scope = services.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<SmartGymContext>();
-				context.Database.Migrate(); // Catch up your database
-													 //Users
+				// context.Database.Migrate(); // Catch up your database
+				//Users
 				if (!context.Users.Any())
 				{
 					var faker = new Faker<User>()
