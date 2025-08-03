@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartGym.Data;
 
@@ -11,9 +12,11 @@ using SmartGym.Data;
 namespace SmartGym.Migrations
 {
     [DbContext(typeof(SmartGymContext))]
-    partial class SmartGymContextModelSnapshot : ModelSnapshot
+    [Migration("20250801012842_CreateOrdersTable")]
+    partial class CreateOrdersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,31 +24,6 @@ namespace SmartGym.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("SmartGym.Models.Checkin", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CheckinTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Method")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Checkins");
-                });
 
             modelBuilder.Entity("SmartGym.Models.Class", b =>
                 {
@@ -77,40 +55,6 @@ namespace SmartGym.Migrations
                     b.HasIndex("TrainerId");
 
                     b.ToTable("Classes");
-                });
-
-            modelBuilder.Entity("SmartGym.Models.MenuItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Calories")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Ingredients")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Tag")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MenuItems");
                 });
 
             modelBuilder.Entity("SmartGym.Models.Order", b =>
@@ -186,17 +130,6 @@ namespace SmartGym.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SmartGym.Models.Checkin", b =>
-                {
-                    b.HasOne("SmartGym.Models.User", "User")
-                        .WithMany("Checkins")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SmartGym.Models.Class", b =>
                 {
                     b.HasOne("SmartGym.Models.User", "Trainer")
@@ -217,11 +150,6 @@ namespace SmartGym.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SmartGym.Models.User", b =>
-                {
-                    b.Navigation("Checkins");
                 });
 #pragma warning restore 612, 618
         }

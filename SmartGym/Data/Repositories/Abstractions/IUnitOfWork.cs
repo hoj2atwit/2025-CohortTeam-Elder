@@ -6,6 +6,7 @@ public interface IUnitOfWork
 {
 	public IRepository<Class> ClassRepository { get; }
 	public IRepository<User> UserRepository { get; }
+	public IRepository<Order> OrderRepository { get; }
 	public IRepository<Checkin> CheckinRepository { get; }
 	public Task SaveAsync();
 }
