@@ -1,9 +1,10 @@
 ﻿@page "/POS"
+@using Components.UIClasses.Cafe
 <title>@username's Order</title>
 <h1> @username's Order </h1>
 <div class="flex gap-2">
     <div class="flex h-full w-full flex-col overflow-y-hidden border border-black p-4">
-        <section class=" w-full p-2 flex flex-row justify-between ">
+        <section class="flex w-full flex-row justify-between p-2">
             <div class="w-full">
 
                 @* TODO: Add Search Functionality to menu, updating the menu when input is updated *@
@@ -20,7 +21,7 @@
             <div class="flex w-96 flex-col">
 
                     @* TODO: Add Filters and have them update the menu when selected *@
-                    <button class="h-45 w-full rounded-4 border border-black px-2 py-2">
+                    <button class="rounded-4 h-45 w-full border border-black px-2 py-2">
                         Filter
                     </button>
 
@@ -31,10 +32,10 @@
             <div class="flex max-w-1/12 flex-row">
                 
                 <div class="" >
-                    <div class="flex h-full min-h-0 flex-wrap gap-2 overflow-y-auto border p-4 items-center justify-center">
+                    <div class="flex h-full min-h-0 flex-wrap items-center justify-center gap-2 overflow-y-auto border p-4">
                         @* Fill with MenuItemContainerLayout depending on amount of items desired *@
                         @* TODO: Dynamically update depending on filters *@
-                        @foreach (var item in POS.instance.filteredMenu)
+                        @foreach (var item in PointOfSaleModel.instance.FilteredMenu)
                         {
                             <MenuItemLayout item=@item OnClickCallback=@(() => addToCart(@item))/>
                         }
@@ -57,7 +58,7 @@
     {
         //TODO: Get User's Name
         username = "Test";
-        POS.instance.refresh();
+        PointOfSaleModel.instance.refresh();
         //TODO: Load Cart from User
         return Task.CompletedTask;
     }
@@ -65,14 +66,16 @@
     {
         await InitializeMenu();
     }
-    public void addToCart(MenuItem item)
+    public Task addToCart(MenuItemModel item)
     {
         menuCart.addToCart(item);
+        return Task.CompletedTask;
     }
-    public void updateMenu()
+    public Task updateMenu()
     {
-        POS.instance.search(searchText);
+        PointOfSaleModel.instance.search(searchText);
         StateHasChanged();
+        return Task.CompletedTask;
     }
 
 }

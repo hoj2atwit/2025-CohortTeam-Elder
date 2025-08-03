@@ -1,6 +1,6 @@
 ﻿namespace SmartGym.Components.UIClasses.Cafe
 {
-    public class MenuItemVM
+    public class MenuItemModel
     {
         public int ItemId = 0;
         public decimal Price = 0.0m;
@@ -12,7 +12,7 @@
         /// <summary>
         /// Default constructor for MenuItem.
         /// </summary>
-        public MenuItemVM()
+        public MenuItemModel()
         {
             setPrice(0);
             Name = "None";
@@ -28,7 +28,7 @@
         /// <param name="Price"> The decimal value Price of the given item </param>
         /// <param name="ItemId"> The MenuItem's unique id </param>
         /// <param name="Description"> The Description of the menu item </param>
-        public MenuItemVM(string Name, decimal Price, int ItemId, string Description)
+        public MenuItemModel(string Name, decimal Price, int ItemId, string Description)
         {
             setPrice(Price);
             this.Name = Name;
@@ -66,13 +66,13 @@
         /// Ideally pulls from the database but currently just generates 50 almost identical items.
         /// </summary>
         /// <returns> List<MenuItem> that is filled full list of MenuItems </returns>
-        public static List<MenuItemVM> generateItemList()
+        public static List<MenuItemModel> generateItemList()
         {
-            List<MenuItemVM> menuItems = new List<MenuItemVM>();
+            List<MenuItemModel> menuItems = new List<MenuItemModel>();
             //TODO: Have this generate a list of menu items from the database
             for (int i = 0; i < 50; i++)
             {
-                menuItems.Add(new MenuItemVM("Coffee " + i, 6.99m, i, "Cup of Coffee"));
+                menuItems.Add(new MenuItemModel("Coffee " + i, 6.99m, i, "Cup of Coffee"));
             }
 
             return menuItems;
@@ -82,13 +82,13 @@
         /// Generates a dictionary of MenuItems. This is so the menu is searchable by name.
         /// </summary>
         /// <returns> A Dictionary<string,MenuItem> filled with all of the MenuItems available as the values and names as the keys </returns>
-        public static Dictionary<string, MenuItemVM> generateItemDict()
+        public static Dictionary<string, MenuItemModel> generateItemDict()
         {
-            Dictionary<string, MenuItemVM> menuItems = new Dictionary<string, MenuItemVM>();
+            Dictionary<string, MenuItemModel> menuItems = new Dictionary<string, MenuItemModel>();
             //TODO: Have this generate a list of menu items from the database
             for (int i = 0; i < 50; i++)
             {
-                menuItems.Add("Coffee " + i, new MenuItemVM("Coffee " + i, 6.99m, i, "Cup of Coffee"));
+                menuItems.Add("Coffee " + i, new MenuItemModel("Coffee " + i, 6.99m, i, "Cup of Coffee"));
             }
 
             return menuItems;

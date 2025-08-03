@@ -1,15 +1,16 @@
 ﻿
+@using Components.UIClasses.Cafe;
 <div class="flex min-h-0 flex-row rounded-full border border-black px-50 py-3">
-    <h3 class="px-2 py-1">@cartItem.item.name</h3>
+    <h3 class="px-2 py-1">@cartItem.Item.Name</h3>
     <button class="aspect-square w-10 rounded-full border border-black p-5 text-xl font-bold" @onclick=increaseAmount>+</button>
     @* Input field for quantity of cart item. If quantity input is invalid then default to 0 as input *@
-    <input type="number" class="field-sizing-content min-w-0 border border-black" value=@cartItem.amount @onchange="@((ChangeEventArgs e) => { try { cartItem.amount = int.Parse(e.Value.ToString()); } catch (Exception ex) { e.Value = 0; cartItem.amount = 0; } updateAmount(); })" />
+    <input type="number" class="field-sizing-content min-w-0 border border-black" value=@cartItem.Amount @onchange="@((ChangeEventArgs e) => { try { cartItem.Amount = int.Parse(e.Value.ToString()); } catch (Exception ex) { e.Value = 0; cartItem.Amount = 0; } updateAmount(); })" />
     <button class="aspect-square w-10 rounded-full border border-black p-5 text-xl font-bold" @onclick=decreaseAmount>-</button>
-    <h3 class="px-2 py-1">@cartItem.currentPriceString</h3>
+    <h3 class="px-2 py-1">@cartItem.CurrentPriceString</h3>
 </div>
 @code {
     [Parameter]
-    public Cart.CartItem? cartItem { get; set; }
+    public CartModel.CartItemModel? cartItem { get; set; }
     [Parameter]
     public MenuCartLayout cartMain { get; set; }
 
@@ -28,9 +29,9 @@
     /// </summary>
     async public void decreaseAmount()
     {
-        if (cartItem.amount - 1 <= 0)
+        if (cartItem.Amount - 1 <= 0)
         {
-            cartMain.removeFromCart(cartItem.item.itemId);
+            cartMain.removeFromCart(cartItem.Item.ItemId);
         }
         else
         {
@@ -46,9 +47,9 @@
     /// </summary>
     async public void updateAmount()
     {
-        if (cartItem.amount <= 0)
+        if (cartItem.Amount <= 0)
         {
-            cartMain.removeFromCart(cartItem.item.itemId);
+            cartMain.removeFromCart(cartItem.Item.ItemId);
         }
         else
         {

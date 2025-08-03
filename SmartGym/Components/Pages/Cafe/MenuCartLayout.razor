@@ -1,19 +1,20 @@
-﻿<div class="h-full w-2/6 min-w-2/6 border border-black">
+﻿@using Components.UIClasses.Cafe;
+<div class="h-full w-2/6 min-w-2/6 border border-black">
     <h5 class="mb-2 justify-center px-2 py-1 text-lg font-semibold">
         Cart
     </h5>
     <div class="h-fit w-full overflow-y-scroll border border-black">
-        @foreach (var cartItem in instance.currentCart.cartItems.Values)
+        @foreach (var cartItem in instance.CurrentCart.CartItems.Values)
         {
             <MenuCartItemLayout cartMain="this" cartItem=@cartItem/>
         }
     </div>
     <button class="bottom-0 w-full border border-black py-4" @onclick=checkout>
-        Total: @instance.currentCart.totalString
+        Total: @instance.CurrentCart.TotalString
     </button>
 </div>
 @code {
-    private POS instance = POS.instance;
+    private PointOfSaleModel instance = PointOfSaleModel.instance;
 
     protected override async Task OnInitializedAsync()
     {
@@ -22,26 +23,27 @@
 
     public Task updateCart()
     {
-        instance.currentCart.updateTotal();
+        instance.CurrentCart.updateTotal();
         StateHasChanged();
         return Task.CompletedTask;
     }
 
-    async public void removeFromCart(int id)
+    async public Task removeFromCart(int id)
     {
-        instance.currentCart.removeItem(id);
+        instance.CurrentCart.removeItem(id);
         await updateCart();
     }
 
-    async public void addToCart(MenuItem item)
+    async public Task addToCart(MenuItemModel item)
     {
-        instance.currentCart.addItem(item);
+        instance.CurrentCart.addItem(item);
         await updateCart();
     }
 
-    public void checkout()
+    public Task checkout()
     {
         //Go to Checkout page and bring cart information over for receipt
         instance.checkout();
+        return Task.CompletedTask;
     }
 }

@@ -2,19 +2,19 @@
 
 namespace SmartGym.Components.UIClasses.Cafe
 {
-    public class PointOfSaleVM
+    public class PointOfSaleModel
     {
-        public static PointOfSaleVM instance = new PointOfSaleVM();
+        public static PointOfSaleModel instance = new PointOfSaleModel();
 
-        public CartVM? CurrentCart = new();
-        public List<MenuItemVM> FullMenuList = new();
-        private Dictionary<string, MenuItemVM> FullMenuDict = new();
-        public List<MenuItemVM> FilteredMenu = new();
+        public CartModel? CurrentCart = new();
+        public List<MenuItemModel> FullMenuList = new();
+        private Dictionary<string, MenuItemModel> FullMenuDict = new();
+        public List<MenuItemModel> FilteredMenu = new();
         
         /// <summary>
         /// Constructor for POS that ensures that a static instance of POS exists. Also Resets the values of the instance.
         /// </summary>
-        public PointOfSaleVM()
+        public PointOfSaleModel()
         {
             refresh();
 
@@ -33,9 +33,9 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// </summary>
         public void refresh() 
         {
-            CurrentCart = new CartVM();
-            FullMenuList = MenuItemVM.generateItemList();
-            FullMenuDict = MenuItemVM.generateItemDict();
+            CurrentCart = new CartModel();
+            FullMenuList = MenuItemModel.generateItemList();
+            FullMenuDict = MenuItemModel.generateItemDict();
             FilteredMenu = FullMenuList;
         }
 
@@ -43,7 +43,7 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// Allows user to load a given cart
         /// </summary>
         /// <param name="cart"></param>
-        public void loadCart(CartVM cart) 
+        public void loadCart(CartModel cart) 
         { 
             CurrentCart = cart;
         }
@@ -60,7 +60,7 @@ namespace SmartGym.Components.UIClasses.Cafe
                 return;
             }
             //Use search value to apply regex requirements to keys in menu or DB
-            List<MenuItemVM> filteredList = new List<MenuItemVM>();
+            List<MenuItemModel> filteredList = new List<MenuItemModel>();
             foreach (string name in FullMenuDict.Keys)
             {
                 if (name.Contains(search))
