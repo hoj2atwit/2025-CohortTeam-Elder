@@ -29,11 +29,11 @@ public class UnitOfWork : IUnitOfWork
 			return _userRepository;
 		}
 	}
-	public IOrderRepository OrderRepository
+	public IRepository<Order> OrderRepository
 	{
 		get
 		{
-			_orderRepository ??= new OrderRepository(_context);
+			_orderRepository ??= new Repository<Order>(_context);
 			return _orderRepository;
 		}
 	}
