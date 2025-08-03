@@ -1,4 +1,5 @@
 using AutoMapper;
+using Newtonsoft.Json;
 using SmartGym.Data;
 using SmartGym.Models;
 
@@ -27,6 +28,9 @@ public class OrderService : IOrderService
 	{
 		try
 		{
+			
+			newOrderData.OrderCart = JsonConvert.SerializeObject(newOrderData.OrderCartList);
+
 			Order newOrder = _mapper.Map<Order>(newOrderData);
 			await _unitOfWork.OrderRepository.AddAsync(newOrder);
 			await _unitOfWork.SaveAsync();

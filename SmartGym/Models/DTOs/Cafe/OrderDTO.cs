@@ -10,6 +10,7 @@ public class OrderDTO
 	public DateTime CreatedAt { get; set; }
 	public DateTime UpdatedAt { get; set; }
 	public List<MenuItemsDTO> OrderCartList { get; set; }
+	public string? OrderCart { get; set; }
 	public string? Notes { get; set; }
 	public int UserId { get; set; }
 }
