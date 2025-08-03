@@ -44,7 +44,7 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_orderRepository ??= new Repository<Order>(_context);
+			_orderRepository ??= new Repository<MenuItem>(_context);
 			return _orderRepository;
 		}
 	}
@@ -56,14 +56,7 @@ public class UnitOfWork : IUnitOfWork
 			return _checkinRepository;
 		}
 	}
-	public IRepository<Checkin> CheckinRepository
-	{
-		get
-		{
-			_checkinRepository ??= new Repository<Checkin>(_context);
-			return _checkinRepository;
-		}
-	}
+	
 	public async Task SaveAsync()
 	{
 		await _context.SaveChangesAsync();
