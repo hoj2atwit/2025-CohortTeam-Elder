@@ -5,7 +5,7 @@ namespace SmartGym.Constants.Enums;
 public enum RoleId
 {
 	[Display(Name = "Base")]
-	MemberBase,
+	Member,
 	[Display(Name = "Plus")]
 	MemberPlus,
 	[Display(Name = "Premium")]
