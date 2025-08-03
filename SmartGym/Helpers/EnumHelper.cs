@@ -8,8 +8,13 @@ using SmartGym.Constants.Enums;
 
 namespace SmartGym.Helpers
 {
-    public class EnumHelper
+    public static class EnumHelper
     {
+		/// <summary>
+		/// helper method to grab display name from enum value
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns>string</returns>
 		public static string GetDisplayName(Enum value)
 		{
 			var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
