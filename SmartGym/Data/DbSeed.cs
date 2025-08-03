@@ -28,13 +28,15 @@ namespace SmartGym.Data
 				{
 					var faker = new Faker<User>()
 						 .RuleFor(x => x.Name, f => f.Name.FullName())
+						 .RuleFor(x => x.FirstName, f => f.Name.FirstName())
+						 .RuleFor(x => x.LastName, f => f.Name.LastName())
 						 .RuleFor(x => x.Email, f => f.Internet.Email())
 						 .RuleFor(x => x.CreatedDate, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
 						 .RuleFor(x => x.UpdatedDate, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
 						 .RuleFor(x => x.DateOfBirth, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
-						 .RuleFor(x => x.RoleId, f => (int)f.Random.Enum<UserStatus>())
-						 .RuleFor(x => x.Status, f => (int)f.Random.Enum<RoleId>());
-					var fakeUsers = faker.Generate(100); // Generate 100 random Users
+						 .RuleFor(x => x.RoleId, f => (int)f.Random.Enum<RoleId>())
+						 .RuleFor(x => x.Status, f => (int)f.Random.Enum<UserStatus>());
+					var fakeUsers = faker.Generate(300); // Generate 100 random Users
 					context.Users.AddRange(fakeUsers);
 					context.SaveChanges();
 				}
@@ -76,7 +78,6 @@ namespace SmartGym.Data
 						context.SaveChanges();
 					}
 				}
-
 				List<int> userIds = context.Users.Select(x => x.Id).ToList();
 				if (!context.Checkins.Any())
 				{
