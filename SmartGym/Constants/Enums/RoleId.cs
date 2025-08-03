@@ -2,7 +2,9 @@ namespace SmartGym.Constants.Enums;
 
 public enum RoleId
 {
-	Member,
+	MemberBase,
+	MemberPlus,
+	MemberPremium,
 	Staff,
 	Trainer,
 	Manager
