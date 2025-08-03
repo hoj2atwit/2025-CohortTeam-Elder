@@ -12,39 +12,41 @@ public class OrdersController : ControllerBase
 
 	public OrderDTO sample => new OrderDTO
 	{
-		TotalPrice = 15.99m,
+		TotalPrice = 199.99m,
 		OrderTime = DateTime.Now,
 		CreatedAt = DateTime.Now,
 		UpdatedAt = DateTime.Now,
-		OrderCartList = new List<MenuItemsDTO>
-				{
-					 new MenuItemsDTO
-					 {
-						  Id = 1,
-						  Name = "Latte",
-						  Price = 4.50m,
-						  Calories = 120,
-						  Ingredients = "Espresso, Milk",
-						  Description = "A creamy latte.",
-						  Tags = "coffee,hot"
-					 },
-					 new MenuItemsDTO
-					 {
-						  Id = 2,
-						  Name = "Protein Bar",
-						  Price = 2.99m,
-						  Calories = 200,
-						  Ingredients = "Whey, Oats, Honey",
-						  Description = "High-protein snack.",
-						  Tags = "snack,protein"
-					 }
-				},
+		OrderCartList = new List<CartItemsDTO>
+	 {
+		  new CartItemsDTO { MenuItemId = 1, Quantity = 5 },   // latte
+        new CartItemsDTO { MenuItemId = 2, Quantity = 4 },   // espresso
+        new CartItemsDTO { MenuItemId = 3, Quantity = 3 },   // americano
+        new CartItemsDTO { MenuItemId = 4, Quantity = 2 },   // cappuccino
+        new CartItemsDTO { MenuItemId = 5, Quantity = 6 },   // flat white
+        new CartItemsDTO { MenuItemId = 6, Quantity = 2 },   // macchiato
+        new CartItemsDTO { MenuItemId = 7, Quantity = 3 },   // mocha
+        new CartItemsDTO { MenuItemId = 8, Quantity = 4 },   // cold brew
+        new CartItemsDTO { MenuItemId = 9, Quantity = 2 },   // nitro cold brew
+        new CartItemsDTO { MenuItemId = 10, Quantity = 5 },  // drip coffee
+        new CartItemsDTO { MenuItemId = 11, Quantity = 3 },  // iced coffee
+        new CartItemsDTO { MenuItemId = 12, Quantity = 2 },  // dirty chai
+        new CartItemsDTO { MenuItemId = 13, Quantity = 4 },  // matcha latte
+        new CartItemsDTO { MenuItemId = 14, Quantity = 2 },  // iced matcha
+        new CartItemsDTO { MenuItemId = 15, Quantity = 3 },  // hot chocolate
+        new CartItemsDTO { MenuItemId = 16, Quantity = 2 },  // iced chocolate
+        new CartItemsDTO { MenuItemId = 17, Quantity = 3 },  // turmeric latte
+        new CartItemsDTO { MenuItemId = 18, Quantity = 2 },  // golden milk
+        new CartItemsDTO { MenuItemId = 19, Quantity = 4 },  // london fog
+        new CartItemsDTO { MenuItemId = 20, Quantity = 2 },  // earl grey tea
+        new CartItemsDTO { MenuItemId = 21, Quantity = 3 },  // green tea
+        new CartItemsDTO { MenuItemId = 22, Quantity = 2 },  // black tea
+    },
 		OrderCart = null,
-		Notes = "No sugar in the latte, please.",
+		Notes = "Please package drinks separately and label each item.",
 		UserId = 5
 	};
 
-  public OrdersController(IOrderService service)
+	public OrdersController(IOrderService service)
 	{
 		_service = service;
 	}

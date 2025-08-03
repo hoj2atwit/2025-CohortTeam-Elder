@@ -28,9 +28,7 @@ public class OrderService : IOrderService
 	{
 		try
 		{
-			
-			newOrderData.OrderCart = JsonConvert.SerializeObject(newOrderData.OrderCartList);
-
+			newOrderData.OrderCart = JsonConvert.SerializeObject(newOrderData.OrderCartList); // CartItemsDTO
 			Order newOrder = _mapper.Map<Order>(newOrderData);
 			await _unitOfWork.OrderRepository.AddAsync(newOrder);
 			await _unitOfWork.SaveAsync();

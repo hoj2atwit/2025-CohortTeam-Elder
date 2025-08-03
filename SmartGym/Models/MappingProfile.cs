@@ -21,8 +21,8 @@ public class MappingProfile : Profile
 		  .AfterMap((src, dest) =>
 		  {
 			  dest.OrderCartList = string.IsNullOrEmpty(src.OrderCart)
-			  ? new List<MenuItemsDTO>()
-			  : JsonConvert.DeserializeObject<List<MenuItemsDTO>>(src.OrderCart);
+			  ? new List<CartItemsDTO>()
+			  : JsonConvert.DeserializeObject<List<CartItemsDTO>>(src.OrderCart);
 		  })
 		  .ReverseMap();
 		CreateMap<Order, OrderPatchDTO>().ReverseMap();
