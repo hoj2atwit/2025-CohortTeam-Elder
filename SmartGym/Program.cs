@@ -67,6 +67,4 @@ using (var scope = app.Services.CreateScope())
 	DbSeed.SeedDatabase(services, app.Environment.IsDevelopment());
 }
 
-DbSeed.SeedDatabase(app.Services, app.Environment.IsDevelopment());
-
 app.Run();

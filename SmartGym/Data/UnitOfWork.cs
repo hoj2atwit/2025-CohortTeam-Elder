@@ -44,8 +44,16 @@ public class UnitOfWork : IUnitOfWork
 	{
 		get
 		{
-			_menuItemRepository ??= new Repository<MenuItem>(_context);
-			return _menuItemRepository;
+			_orderRepository ??= new Repository<Order>(_context);
+			return _orderRepository;
+		}
+	}
+	public IRepository<Checkin> CheckinRepository
+	{
+		get
+		{
+			_checkinRepository ??= new Repository<Checkin>(_context);
+			return _checkinRepository;
 		}
 	}
 	public IRepository<Checkin> CheckinRepository
