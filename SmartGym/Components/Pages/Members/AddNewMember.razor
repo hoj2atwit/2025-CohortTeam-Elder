@@ -1,14 +1,12 @@
 ﻿@page "/addnewmember"
 @using SmartGym.Constants.Enums
 @using SmartGym.Models
-@using SmartGym.Services.UserService
+@using SmartGym.Services
 @using System.Net.Mail
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
 
 <PageTitle>Add New Member</PageTitle>
-
-@* id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" *@
 
 <div>
     <div>
@@ -36,7 +34,7 @@
             <div>
                 <p>Birthday</p>
                 <label for="dob"></label>
-                <input @bind=DateOfBirth type ="date" id="dob" name="DOB" />
+                <input @bind=DateOfBirth type="date" id="dob" name="DOB" />
             </div>
             <div>
                 <p>Membership Plan</p>
@@ -82,7 +80,9 @@
             tempUser.UpdatedDate = DateTime.Now;
             await service.CreateUser(tempUser);
             navManager.NavigateTo("/members", true);
-        } else {
+        }
+        else
+        {
             await Task.CompletedTask;
         }
     }
@@ -120,7 +120,8 @@
         {
             MailAddress m = new MailAddress(Email);
             return true;
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return false;
         }

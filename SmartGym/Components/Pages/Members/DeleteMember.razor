@@ -1,6 +1,6 @@
 ﻿@page "/deletemember/{id:int}"
 @using SmartGym.Models
-@using SmartGym.Services.UserService
+@using SmartGym.Services
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
 
@@ -16,34 +16,34 @@
         {
             <div>
                 <h4>Delete Member</h4>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div>
-                <p>@user.FirstName</p>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div>
+                    <p>@user.FirstName</p>
+                </div>
+                <div>
+                    <p>@user.LastName</p>
+                </div>
+                <div>
+                    <p>@user.Email</p>
+                </div>
+                <div>
+                    <p>@user.DateOfBirth.ToString("MM/dd/yyyy")</p>
+                </div>
+                <div>
+                    <p>Plan</p>
+                </div>
+                <div>
+                    <p>@user.Status</p>
+                </div>
+                <div>
+                    <p>Are you sure you want to delete this member?</p>
+                    <p>This member will be permanantly deleted.</p>
+                    <input hidden asp-for="Id" />
+
+                </div>
             </div>
-            <div>
-                <p>@user.LastName</p>
-            </div>
-            <div>
-                <p>@user.Email</p>
-            </div>
-            <div>
-                <p>@user.DateOfBirth.ToString("MM/dd/yyyy")</p>
-            </div>
-            <div>
-                <p>Plan</p>
-            </div>
-            <div>
-                <p>@user.Status</p>
-            </div>
-            <div>
-                <p>Are you sure you want to delete this member?</p>
-                <p>This member will be permanantly deleted.</p>
-                <input hidden asp-for="Id" />
-                
-            </div>
-        </div>
-         <button @onclick=DelMember class="">Delete</button>
+            <button @onclick=DelMember class="">Delete</button>
         }
         <a href="/members">Cancel</a>
     </div>
@@ -56,7 +56,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Populate userList, potentially using MyInjectedService
+        // Populate userList
         user = await service.GetUserById(id);
         StateHasChanged();
     }

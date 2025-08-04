@@ -1,7 +1,7 @@
 ﻿@page "/members"
 @using SmartGym.Constants.Enums
 @using SmartGym.Models
-@using SmartGym.Services.UserService
+@using SmartGym.Services
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
 @attribute [StreamRendering]
@@ -49,7 +49,7 @@
                         <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
                     </tr>
                 }
-        </tbody>
+            </tbody>
         </table>
     }
 </div>
@@ -60,25 +60,21 @@
 
     <!-- link 2 -->
     <a href="/updatemember">Update Member</a>
-
-    <!-- link 3 -->
-    @* <a href="/deletemember">Delete Member</a> *@
 </div>
 
 
 
 @code {
-    private List<UserDto> userList = new ();
+    private List<UserDto> userList = new();
 
     protected override async Task OnInitializedAsync()
     {
-        // Populate userList, potentially using MyInjectedService
+        // Populate userList
         userList = await service.GetAllUsers();
     }
 
     private Task DeleteUser(UserDto u)
     {
-        <!-- -->
         navManager.NavigateTo($"/deletemember/{u.Id}");
         return Task.CompletedTask;
     }
