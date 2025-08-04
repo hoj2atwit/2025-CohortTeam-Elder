@@ -1,0 +1,16 @@
+.cards {
+  display: grid;
+  grid-template-columns: 1fr; /* Default for below 780px */
+}
+
+@media (min-width: 780px) and (max-width: 999px) {
+  .cards {
+    grid-template-columns: 1fr 1fr; /* 2 columns between 780 and 999 */
+  }
+}
+
+@media (min-width: 1000px) {
+  .cards {
+    grid-template-columns: 1fr 1fr 1fr; /* 3 columns at 1000 and above */
+  }
+}
