@@ -22,8 +22,8 @@ namespace SmartGym.Data
 			{
 				using var scope = services.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<SmartGymContext>();
-				context.Database.Migrate(); // Catch up your database
-																		//Users
+				// context.Database.Migrate(); // Catch up your database
+				//Users
 				if (!context.Users.Any())
 				{
 					var faker = new Faker<User>()
@@ -88,6 +88,29 @@ namespace SmartGym.Data
 
 					var fakeCheckins = faker.Generate(1000); // Generate 20 random classes
 					context.Checkins.AddRange(fakeCheckins);
+					context.SaveChanges();
+				}
+
+				List<string> menuItems = new()
+				{
+					"latte","espresso","americano","cappuccino","flat white","macchiato","mocha","cold brew","nitro cold brew","drip coffee","iced coffee","chai latte","dirty chai","matcha latte","iced matcha","hot chocolate","iced chocolate","turmeric latte","golden milk","london fog","earl grey tea","green tea","black tea","herbal tea","iced tea","lemonade","iced lemonade","sparkling water","still water","protein shake vanilla","protein shake chocolate","protein shake strawberry","protein shake mocha","protein shake peanut butter","protein shake cookies and cream","smoothie berry","smoothie mango","smoothie green","smoothie tropical","smoothie avocado","smoothie peanut butter banana","smoothie protein powder","smoothie collagen","oatmeal plain","oatmeal with berries","oatmeal with nuts","oatmeal with seeds","oatmeal with protein powder","greek yogurt plain","greek yogurt with honey","greek yogurt with granola","greek yogurt with fruit","parfait with yogurt","parfait with granola","parfait with berries","acai bowl","pitaya bowl","smoothie bowl","chia seed pudding","overnight oats","avocado toast","avocado toast with egg","avocado toast with tomato","avocado toast with feta","avocado toast with chili flakes","egg white omelette","scrambled eggs","hard-boiled eggs","turkey bacon","chicken sausage","protein pancakes","protein waffles","spinach and feta wrap","turkey and cheese wrap","chicken caesar wrap","vegetarian wrap","hummus and veggie wrap","tuna salad sandwich","chicken salad sandwich","turkey and avocado sandwich","grilled cheese","BLT sandwich","veggie burger","beef burger","chicken burger","salmon filet","grilled chicken breast","sweet potato fries","quinoa salad","lentil soup","tomato soup","chicken noodle soup","side salad","fruit cup","apple slices","banana","orange","protein bar","protein cookie","energy bites","trail mix","almonds","walnuts","cashews","jerky","rice cakes","rice cakes with peanut butter","rice cakes with avocado","dark chocolate squares","sugar-free gummies","kombucha","coconut water","electrolyte drink","pre-workout drink","post-workout drink","collagen water","almond milk","soy milk","oat milk","coconut milk","protein powder scoop","collagen scoop","BCAA powder","creatine powder","pre-workout scoop","espresso shot","extra shot of syrup","extra shot of flavor","extra shot of espresso","extra shot of protein","extra shot of collagen","extra shot of BCAA","extra shot of creatine","extra shot of whipped cream","extra shot of toppings","extra shot of nuts","extra shot of seeds","extra shot of fruit","extra shot of granola","extra shot of honey","extra shot of maple syrup","extra shot of agave","extra shot of stevia","extra shot of monk fruit","extra shot of sugar","extra shot of salt","extra shot of pepper"
+				};
+				var uniqueMenuItems = menuItems.Distinct().ToList();
+				if (!context.MenuItems.Any())
+				{
+					var faker = new Faker<MenuItem>()
+						 .RuleFor(m => m.Price, f => f.Finance.Amount(1.50m, 15.00m, 2))
+						 .RuleFor(m => m.Calories, f => f.Random.Int(100, 3000))
+						 .RuleFor(m => m.Ingredients, f => string.Join(", ", f.Commerce.ProductMaterial()))
+						 .RuleFor(m => m.Description, f => f.Lorem.Sentence(5))
+						 .RuleFor(m => m.Tags, f => string.Join(", ", f.Random.Words(3)));
+
+					var fakeMenuItems = faker.Generate(uniqueMenuItems.Count());
+					for (int i = 0; i < uniqueMenuItems.Count(); i++)
+					{
+						fakeMenuItems[i].Name = uniqueMenuItems[i];
+					}
+					context.MenuItems.AddRange(fakeMenuItems);
 					context.SaveChanges();
 				}
 			}

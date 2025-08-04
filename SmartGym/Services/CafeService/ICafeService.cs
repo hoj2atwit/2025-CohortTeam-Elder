@@ -4,10 +4,11 @@ namespace SmartGym.Services;
 
 public interface ICafeService
 {
-	void GetOrderHistory(User user);
-	void GetFullMenu();
-	void GetMealPrepItems();
-	void GetCafeItemModifications();
-	void GetCurrentPromos();
-
+	Task<List<MenuItemsDTO>> GetFullMenu();
+	Task<MenuItemsDTO> GetMenuItem(int itemId);
+	Task<MenuItemsDTO?> UpdateMenuItem(int itemId, MenuItemsDTO menuItemDto);
+	Task<bool> DeleteMenuItem(int itemId);
+	// void GetMealPrepItems();
+	// void GetCafeItemModifications();
+	// void GetCurrentPromos();
 }

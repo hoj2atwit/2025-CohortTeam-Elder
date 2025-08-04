@@ -1,4 +1,5 @@
 using AutoMapper;
+using Newtonsoft.Json;
 
 namespace SmartGym.Models;
 
@@ -15,9 +16,17 @@ public class MappingProfile : Profile
     CreateMap<Class, ClassPostDTO>().ReverseMap();
     CreateMap<Class, ClassPatchDTO>().ReverseMap();
 
-    //Orders
-    CreateMap<Order, OrderDTO>().ReverseMap();
-    CreateMap<Order, OrderPatchDTO>().ReverseMap();
+		//Orders
+		CreateMap<Order, OrderDTO>()
+		  .AfterMap((src, dest) =>
+		  {
+			  dest.OrderCartList = string.IsNullOrEmpty(src.OrderCart)
+			  ? new List<CartItemsDTO>()
+			  : JsonConvert.DeserializeObject<List<CartItemsDTO>>(src.OrderCart);
+		  })
+		  .ReverseMap();
+		CreateMap<Order, OrderPatchDTO>().ReverseMap();
+    CreateMap<MenuItem, MenuItemsDTO>().ReverseMap();
 
   }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace SmartGym.Models.DTOs;
+namespace SmartGym.Models;
 
 public class MenuItemsDTO
 {
@@ -8,7 +8,7 @@ public class MenuItemsDTO
 	public string Name { get; set; } = string.Empty;
 	public decimal Price { get; set; }
 	public int Calories { get; set; }
-	public int Ingredients { get; set; }
+	public string Ingredients { get; set; }
 	public string Description { get; set; }
-	public int Tag { get; set; }
+	public string Tags { get; set; }
 }

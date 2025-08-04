@@ -8,5 +8,6 @@ public interface IUnitOfWork
 	public IRepository<User> UserRepository { get; }
 	public IRepository<Order> OrderRepository { get; }
 	public IRepository<Checkin> CheckinRepository { get; }
+	public IRepository<MenuItem> MenuItemRepository { get; }
 	public Task SaveAsync();
 }

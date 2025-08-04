@@ -1,9 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace SmartGym.Models;
+
 [Table("MenuItems")]
+[Index(nameof(Name), IsUnique = true)]
 public class MenuItem
 {
 	[Required]
@@ -16,9 +19,9 @@ public class MenuItem
 	[Required]
 	public int Calories { get; set; }
 	[Required]
-	public int Ingredients { get; set; }
+	public string Ingredients { get; set; }
 	[Required]
 	public string Description { get; set; }
-	public int Tag { get; set; }
+	public string Tags { get; set; }
 }
 
