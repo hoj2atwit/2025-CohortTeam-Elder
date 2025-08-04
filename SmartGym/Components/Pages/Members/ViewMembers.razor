@@ -1,0 +1,85 @@
+﻿@page "/members"
+@using SmartGym.Constants.Enums
+@using SmartGym.Models
+@using SmartGym.Services.UserService
+@inject SmartGym.Services.IUserService service
+@inject NavigationManager navManager
+@attribute [StreamRendering]
+
+<PageTitle>View Members</PageTitle>
+
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<h3>View Members</h3>
+
+<div>
+    <h1 style="font-size:40px"><b>List of Members</b></h1>
+    @if (userList == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table style="width:100%">
+            <thead>
+                <tr>
+                    <th>FName</th>
+                    <th>LName</th>
+                    <th>Email</th>
+                    <th>Birthday</th>
+                    <th>Membership Plan</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (UserDto userDto in userList)
+                {
+                    <tr>
+                        <td>@userDto.FirstName</td>
+                        <td>@userDto.LastName</td>
+                        <td>@userDto.Email</td>
+                        <td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
+                        <td>@((RoleId)userDto.RoleId)</td>
+                        <td>@userDto.Status</td>
+                        <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
+                    </tr>
+                }
+        </tbody>
+        </table>
+    }
+</div>
+
+<div>
+    <!-- link 1 -->
+    <a href="/addnewmember">Add New Member</a>
+
+    <!-- link 2 -->
+    <a href="/updatemember">Update Member</a>
+
+    <!-- link 3 -->
+    @* <a href="/deletemember">Delete Member</a> *@
+</div>
+
+
+
+@code {
+    private List<UserDto> userList = new ();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Populate userList, potentially using MyInjectedService
+        userList = await service.GetAllUsers();
+    }
+
+    private Task DeleteUser(UserDto u)
+    {
+        <!-- -->
+        navManager.NavigateTo($"/deletemember/{u.Id}");
+        return Task.CompletedTask;
+    }
+}

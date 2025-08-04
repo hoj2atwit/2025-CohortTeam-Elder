@@ -1,0 +1,128 @@
+﻿@page "/addnewmember"
+@using SmartGym.Constants.Enums
+@using SmartGym.Models
+@using SmartGym.Services.UserService
+@using System.Net.Mail
+@inject SmartGym.Services.IUserService service
+@inject NavigationManager navManager
+
+<PageTitle>Add New Member</PageTitle>
+
+@* id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" *@
+
+<div>
+    <div>
+        <div>
+            <h4>Register a New Member</h4>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <p>First Name</p>
+                <input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="first name" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div>
+                <p>Last Name</p>
+                <input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="last name" />
+                <label asp-for="Input.LastName"></label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div>
+                <p>Email</p>
+                <input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="email address" />
+                <label asp-for="Input.Email"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div>
+                <p>Birthday</p>
+                <label for="dob"></label>
+                <input @bind=DateOfBirth type ="date" id="dob" name="DOB" />
+            </div>
+            <div>
+                <p>Membership Plan</p>
+                <label for="plans"></label>
+                <select @bind=Role name="plans" id="plans">
+                    <option value="" disabled selected>Select a plan</option>
+                    <option value="0">Basic</option>
+                    <option value="1">Plus</option>
+                    <option value="2">Premium</option>
+                    <option value="3">Staff</option>
+                    <option value="4">Trainer</option>
+                    <option value="5">Manager</option>
+                </select>
+            </div>
+            <button @onclick=AddMember class="">[Register]</button>
+            <a href="/members">Cancel</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string Role { get; set; }
+    public DateTime DateOfBirth { get; set; } = DateTime.Now;
+
+    private async Task AddMember()
+    {
+        // check first name, last name
+        if (pageIsValid())
+        {
+            // TODO: popup error
+            UserDto tempUser = new UserDto();
+            tempUser.Name = $"{FirstName} {LastName}";
+            tempUser.FirstName = FirstName;
+            tempUser.LastName = LastName;
+            tempUser.Email = Email;
+            tempUser.RoleId = int.Parse(Role);
+            tempUser.DateOfBirth = DateOfBirth;
+            tempUser.Status = 0;
+            tempUser.CreatedDate = DateTime.Now;
+            tempUser.UpdatedDate = DateTime.Now;
+            await service.CreateUser(tempUser);
+            navManager.NavigateTo("/members", true);
+        } else {
+            await Task.CompletedTask;
+        }
+    }
+
+    bool pageIsValid()
+    {
+        if (isEmpty(FirstName))
+        {
+            // TODO: popup error
+            return false;
+        }
+        else if (isEmpty(LastName))
+        {
+            return false;
+        }
+        else if (!emailIsValid())
+        {
+            return false;
+        }
+        else if (isEmpty(Role))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool isEmpty(string s)
+    {
+        return (s.Trim() == "");
+    }
+
+    private bool emailIsValid()
+    {
+        try
+        {
+            MailAddress m = new MailAddress(Email);
+            return true;
+        } catch (Exception e)
+        {
+            return false;
+        }
+    }
+}
