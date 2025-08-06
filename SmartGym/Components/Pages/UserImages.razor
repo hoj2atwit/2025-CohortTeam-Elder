@@ -121,18 +121,41 @@
 				}
 			}
 
-			// Save file to wwwroot/users
+			const long maxFileSize = 600 * 600 * 4;
+
+			if (file.Size > maxFileSize)
+			{
+				await JS.InvokeVoidAsync("alert", "File is too large. Maximum allowed size is 600px x 600px.");
+				return;
+			}
+
 			var filePath = Path.Combine(usersFolder, fileName);
 			Directory.CreateDirectory(usersFolder);
 			using (var stream = new FileStream(filePath, FileMode.Create))
 			{
-				await file.OpenReadStream().CopyToAsync(stream);
+				try
+				{
+					await file.OpenReadStream(maxFileSize).CopyToAsync(stream);
+				}
+				catch (Exception ex)
+				{
+					await JS.InvokeVoidAsync("alert", $"File upload failed: {ex.Message}");
+					return;
+				}
 			}
 
 			byte[] imageBytes;
 			using (var ms = new MemoryStream())
 			{
-				await file.OpenReadStream().CopyToAsync(ms);
+				try
+				{
+					await file.OpenReadStream(maxFileSize).CopyToAsync(ms);
+				}
+				catch (Exception ex)
+				{
+					await JS.InvokeVoidAsync("alert", $"File upload failed: {ex.Message}");
+					return;
+				}
 				imageBytes = ms.ToArray();
 			}
 
