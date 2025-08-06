@@ -16,6 +16,8 @@ public class MappingProfile : Profile
     CreateMap<Class, ClassPostDTO>().ReverseMap();
     CreateMap<Class, ClassPatchDTO>().ReverseMap();
     CreateMap<Booking, BookingDTO>().ReverseMap();
+    CreateMap<Booking, BookingPostDTO>().ReverseMap();
+    CreateMap<Booking, BookingPatchDTO>().ReverseMap();
 
     //Orders
     CreateMap<Order, OrderDTO>()
