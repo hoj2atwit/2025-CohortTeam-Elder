@@ -1,5 +1,6 @@
 ﻿@page "/members"
 @using SmartGym.Constants.Enums
+@using SmartGym.Helpers
 @using SmartGym.Models
 @using SmartGym.Services
 @inject SmartGym.Services.IUserService service
@@ -15,10 +16,11 @@
     }
 </style>
 
-<h3>View Members</h3>
-
 <div>
     <h1 style="font-size:40px"><b>List of Members</b></h1>
+    <div>
+        <a href="/addnewmember">Add New Member</a>
+    </div>
     @if (userList == null)
     {
         <p><em>Loading...</em></p>
@@ -37,6 +39,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Display each member -->
                 @foreach (UserDto userDto in userList)
                 {
                     <tr>
@@ -45,24 +48,15 @@
                         <td>@userDto.Email</td>
                         <td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
                         <td>@((RoleId)userDto.RoleId)</td>
-                        <td>@userDto.Status</td>
+                        <td>@((UserStatus)userDto.Status)</td>
                         <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
+                        <td><button onclick=@(() => UpdateUser(@userDto))>Update Member</button></td>
                     </tr>
                 }
             </tbody>
         </table>
     }
 </div>
-
-<div>
-    <!-- link 1 -->
-    <a href="/addnewmember">Add New Member</a>
-
-    <!-- link 2 -->
-    <a href="/updatemember">Update Member</a>
-</div>
-
-
 
 @code {
     private List<UserDto> userList = new();
@@ -76,6 +70,12 @@
     private Task DeleteUser(UserDto u)
     {
         navManager.NavigateTo($"/deletemember/{u.Id}");
+        return Task.CompletedTask;
+    }
+
+    private Task UpdateUser(UserDto u)
+    {
+        navManager.NavigateTo($"/updatemember/{u.Id}");
         return Task.CompletedTask;
     }
 }

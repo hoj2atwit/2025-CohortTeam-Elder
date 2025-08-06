@@ -1,68 +1,163 @@
-﻿@page "/updatemember"
+﻿@page "/updatemember/{id:int}"
+@using SmartGym.Constants.Enums
+@using SmartGym.Models
+@using SmartGym.Services
+@using System.Net.Mail
+@inject SmartGym.Services.IUserService service
+@inject NavigationManager navManager
 
 <PageTitle>Update Member</PageTitle>
 
-@* id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" *@
-
 <div>
     <div>
-        <form>
-            <h4>Update Member</h4>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (user == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
             <div>
-                <p>First Name</p>
-                <input asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="first name" />
-                <label asp-for="Input.FirstName"></label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                <h4 style="font-size:40px;"><b>Update Member</b></h4>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="CreatedDate" />
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div>
+                    <label asp-for="Input.FirstName">First Name: </label>
+                    <input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="@user.FirstName" />
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="Input.LastName">Last Name: </label>
+                    <input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="@user.LastName" />
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+                <div>
+                    <label asp-for="Input.Email">Email: </label>
+                    <input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="@user.Email" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div>
+                    <label for="dob">DOB: </label>
+                    <input @bind=DateOfBirth type="date" id="dob" name="DOB">
+                </div>
+                <div>
+                    <label for="plans">Membership Plan: </label>
+                    <select @bind=Role name="plans" id="plans">
+                        <option value="" disabled selected>Select a plan</option>
+                        <option value="0">Member</option>
+                        <option value="1">MemberPlus</option>
+                        <option value="2">MemberPremium</option>
+                        <option value="3">Staff</option>
+                        <option value="4">Trainer</option>
+                        <option value="5">Manager</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="status">Status: </label>
+                    <select @bind=Status name="status" id="status">
+                        <option value="0" disabled selected>Select a status</option>
+                        <option value="1">Active</option>
+                        <option value="2">Inactive</option>
+                    </select>
+                </div>
+                <button @onclick="() => EditMember(id, user)" class="">[Update]</button>
+                <a href="/members">Cancel</a>
             </div>
-            <div>
-                <p>Last Name</p>
-                <input asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="last name" />
-                <label asp-for="Input.LastName"></label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div>
-                <p>Email</p>
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="email address" />
-                <label asp-for="Input.Email"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div>
-                <p>Birthday</p>
-                <label for="dob"></label>
-                <input type="date" id="dob" name="DOB">
-            </div>
-            <div>
-                <p>Membership Plan</p>
-                <label for="plans"></label>
-                <select name="plans" id="plans">
-                    <option value="" disabled selected>Select a plan</option>
-                    <option value="basic">Basic</option>
-                    <option value="premium">Premium</option>
-                </select>
-            </div>
-            <div>
-                <p>Status</p>
-                <label for="status"></label>
-                <select name="status" id="status">
-                    <option value="" disabled selected>Select status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
-            <div>
-                <p>Observations</p>
-                <input asp-for="Input.Observations" class="form-control" autocomplete="username" aria-required="true" placeholder="observations" />
-                <label asp-for="Input.Observations"></label>
-                <span asp-validation-for="Input.Observations" class="text-danger"></span>
-            </div>
-            <button id="updateSubmit" type="submit" class="">[Update]</button>
-            <a href="/members">Cancel</a>
-        </form>
+        }
     </div>
 </div>
 
 @code {
+    [Parameter]
+    public int id { get; set; }
+    private UserDto user { get; set; }
 
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string Role { get; set; }
+    public string Status { get; set; }
+    public DateTime DateOfBirth { get; set; } = DateTime.Now;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Populate userList
+        user = await service.GetUserById(id);
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Updates a member
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="userObj"></param>
+    /// <returns></returns>
+    private async Task EditMember(int userId, UserDto userObj)
+    {
+        // check first name, last name
+        if (pageIsValid())
+        {
+            // TODO: popup error
+            userObj.Name = $"{FirstName} {LastName}";
+            userObj.FirstName = FirstName;
+            userObj.LastName = LastName;
+            userObj.Email = Email;
+            userObj.RoleId = int.Parse(Role);
+            userObj.DateOfBirth = DateOfBirth;
+            userObj.Status = int.Parse(Status);
+            userObj.UpdatedDate = DateTime.Now;
+            await service.UpdateUser(userId, userObj);
+            navManager.NavigateTo("/members", true);
+        }
+        else
+        {
+            await Task.CompletedTask;
+        }
+
+    }
+
+    bool pageIsValid()
+    {
+        if (isEmpty(FirstName))
+        {
+            // TODO: popup error
+            return false;
+        }
+        else if (isEmpty(LastName))
+        {
+            return false;
+        }
+        else if (!emailIsValid())
+        {
+            return false;
+        }
+        else if (isEmpty(Role))
+        {
+            return false;
+        }
+        else if (isEmpty(Status))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool isEmpty(string s)
+    {
+        return (s.Trim() == "");
+    }
+
+    private bool emailIsValid()
+    {
+        try
+        {
+            MailAddress m = new MailAddress(Email);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 }
