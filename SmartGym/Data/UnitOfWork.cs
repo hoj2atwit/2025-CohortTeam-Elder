@@ -10,6 +10,7 @@ public class UnitOfWork : IUnitOfWork
 	private IRepository<Order>? _orderRepository;
 	private IRepository<Checkin>? _checkinRepository;
 	private IRepository<MenuItem>? _menuItemRepository;
+	private IRepository<Images>? _imagesRepository;
 
 	public UnitOfWork(SmartGymContext context)
 	{
@@ -54,6 +55,14 @@ public class UnitOfWork : IUnitOfWork
 		{
 			_checkinRepository ??= new Repository<Checkin>(_context);
 			return _checkinRepository;
+		}
+	}
+	public IRepository<Images> ImagesRepository
+	{
+		get
+		{
+			_imagesRepository ??= new Repository<Images>(_context);
+			return _imagesRepository;
 		}
 	}
 	public async Task SaveAsync()

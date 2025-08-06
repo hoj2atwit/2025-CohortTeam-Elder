@@ -117,7 +117,7 @@ public class UserService : IUserService
 	{
 		throw new NotImplementedException();
 	}
-	
+
 	/// <summary>
 	/// updates the user in the database
 	/// </summary>
@@ -142,6 +142,57 @@ public class UserService : IUserService
 		{
 			Console.WriteLine($"Error while updating user: {ex.Message}");
 			return null;
+		}
+	}
+	/// <summary>
+	/// Updates the user image in the database and stores the image bytes.
+	/// </summary>
+	/// <param name="id">user item ID</param>
+	/// <param name="imageRef">New image URL or file name</param>
+	/// <param name="imageBytes">Image file bytes</param>
+	/// <param name="guid">Unique identifier for the image</param>
+	/// <returns>True if update was successful, false otherwise</returns>
+	public async Task<(bool Success, string Message)> UploadUserImageBlob(int id, string imageRef, byte[] imageBytes, string guid)
+	{
+		try
+		{
+			var user = await _unitOfWork.UserRepository.GetAsync(id);
+			if (user == null)
+				return (false, "user item not found");
+
+			var existingImage = (await _unitOfWork.ImagesRepository
+				.GetAsync(x => x.ImageRef != null && x.ImageRef.Contains(guid)))
+				.FirstOrDefault();
+
+			if (existingImage != null)
+			{
+				existingImage.ImageRef = imageRef;
+				existingImage.Data = imageBytes;
+				existingImage.UpdatedUtcDate = DateTime.UtcNow;
+				_unitOfWork.ImagesRepository.Update(existingImage);
+				user.ImageRef = existingImage.ImageRef;
+			}
+			else
+			{
+				var newImage = new Images
+				{
+					ImageRef = imageRef,
+					Data = imageBytes,
+					IsUserImage = false,
+					UpdatedUtcDate = DateTime.UtcNow
+				};
+				await _unitOfWork.ImagesRepository.AddAsync(newImage);
+				user.ImageRef = newImage.ImageRef;
+			}
+
+			_unitOfWork.UserRepository.Update(user);
+			await _unitOfWork.SaveAsync();
+
+			return (true, "User image uploaded and reference updated successfully");
+		}
+		catch (Exception ex)
+		{
+			return (false, $"Error while uploading user image: {ex.Message}");
 		}
 	}
 	/// <summary>

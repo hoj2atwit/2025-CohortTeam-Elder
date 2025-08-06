@@ -23,5 +23,7 @@ public class MenuItem
 	[Required]
 	public string Description { get; set; }
 	public string Tags { get; set; }
+	public string? ImageRef { get; set; }
+	
 }
 

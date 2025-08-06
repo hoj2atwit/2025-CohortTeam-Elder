@@ -14,5 +14,6 @@ public class SmartGymContext : DbContext
 	public DbSet<Order>? Orders { get; set; }
 	public DbSet<Checkin>? Checkins { get; set; }
 	public DbSet<MenuItem>? MenuItems { get; set; }
+	public DbSet<Images>? Images { get; set; }
 
 }

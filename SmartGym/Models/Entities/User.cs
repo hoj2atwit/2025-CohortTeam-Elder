@@ -32,4 +32,5 @@ public class User
 	[Required]
 	public DateTime UpdatedDate { get; set; }
 	public ICollection<Checkin>? Checkins { get; set; }
+	public string? ImageRef { get; set; }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartGym.Data;
 
@@ -11,9 +12,11 @@ using SmartGym.Data;
 namespace SmartGym.Migrations
 {
     [DbContext(typeof(SmartGymContext))]
-    partial class SmartGymContextModelSnapshot : ModelSnapshot
+    [Migration("20250805223811_AddImageRefsToMenuUsers")]
+    partial class AddImageRefsToMenuUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,33 +80,6 @@ namespace SmartGym.Migrations
                     b.HasIndex("TrainerId");
 
                     b.ToTable("Classes");
-                });
-
-            modelBuilder.Entity("SmartGym.Models.Images", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<byte[]>("Data")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("ImageRef")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsUserImage")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("UpdatedUtcDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("SmartGym.Models.MenuItem", b =>
