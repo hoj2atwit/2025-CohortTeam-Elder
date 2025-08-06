@@ -113,6 +113,47 @@ namespace SmartGym.Data
 					context.MenuItems.AddRange(fakeMenuItems);
 					context.SaveChanges();
 				}
+
+				if (!context.Bookings.Any())
+				{
+					var users = context.Users.ToList();
+					var classesToBook = context.Classes.ToList();
+					var bookings = new List<Booking>();
+					var random = new Random();
+
+					foreach (var gymClass in classesToBook)
+					{
+						int numberOfBookings = random.Next(0, gymClass.Capacity);
+
+						var bookedUserIds = users.OrderBy(_ => Guid.NewGuid())
+												 .Take(numberOfBookings)
+												 .Select(u => u.Id)
+												 .ToList();
+
+						foreach (var userId in bookedUserIds)
+						{
+							var status = (BookingStatus)random.Next(0, Enum.GetValues(typeof(BookingStatus)).Length);
+							var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+							var confirmedAt = (status == BookingStatus.Confirmed)
+								? createdAt.AddMinutes(random.Next(5, 120))
+								: DateTime.MinValue;
+
+							bookings.Add(new Booking
+							{
+								UserId = userId,
+								ClassId = gymClass.Id,
+								Status = status,
+								CreatedAt = createdAt,
+								ConfirmedAt = confirmedAt,
+								UpdatedAt = createdAt.AddMinutes(random.Next(10, 500))
+							});
+						}
+					}
+
+					context.Bookings.AddRange(bookings);
+					context.SaveChanges();
+				}
+
 			}
 		}
 	}

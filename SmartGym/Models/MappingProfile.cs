@@ -15,17 +15,20 @@ public class MappingProfile : Profile
     CreateMap<Class, ClassDTO>().ReverseMap();
     CreateMap<Class, ClassPostDTO>().ReverseMap();
     CreateMap<Class, ClassPatchDTO>().ReverseMap();
+    CreateMap<Booking, BookingDTO>().ReverseMap();
+    CreateMap<Booking, BookingPostDTO>().ReverseMap();
+    CreateMap<Booking, BookingPatchDTO>().ReverseMap();
 
-		//Orders
-		CreateMap<Order, OrderDTO>()
-		  .AfterMap((src, dest) =>
-		  {
-			  dest.OrderCartList = string.IsNullOrEmpty(src.OrderCart)
-			  ? new List<CartItemsDTO>()
-			  : JsonConvert.DeserializeObject<List<CartItemsDTO>>(src.OrderCart);
-		  })
-		  .ReverseMap();
-		CreateMap<Order, OrderPatchDTO>().ReverseMap();
+    //Orders
+    CreateMap<Order, OrderDTO>()
+      .AfterMap((src, dest) =>
+      {
+        dest.OrderCartList = string.IsNullOrEmpty(src.OrderCart)
+        ? new List<CartItemsDTO>()
+        : JsonConvert.DeserializeObject<List<CartItemsDTO>>(src.OrderCart);
+      })
+      .ReverseMap();
+    CreateMap<Order, OrderPatchDTO>().ReverseMap();
     CreateMap<MenuItem, MenuItemsDTO>().ReverseMap();
 
   }
