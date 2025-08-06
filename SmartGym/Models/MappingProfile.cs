@@ -5,16 +5,16 @@ namespace SmartGym.Models;
 
 public class MappingProfile : Profile
 {
-  public MappingProfile()
-  {
-    //Users
-    CreateMap<User, UserDto>().ReverseMap();
-    CreateMap<Checkin, CheckinDTO>().ReverseMap();
+	public MappingProfile()
+	{
+		//Users
+		CreateMap<User, UserDto>().ReverseMap();
+		CreateMap<Checkin, CheckinDTO>().ReverseMap();
 
-    //Classes
-    CreateMap<Class, ClassDTO>().ReverseMap();
-    CreateMap<Class, ClassPostDTO>().ReverseMap();
-    CreateMap<Class, ClassPatchDTO>().ReverseMap();
+		//Classes
+		CreateMap<Class, ClassDTO>().ReverseMap();
+		CreateMap<Class, ClassPostDTO>().ReverseMap();
+		CreateMap<Class, ClassPatchDTO>().ReverseMap();
     CreateMap<Booking, BookingDTO>().ReverseMap();
     CreateMap<Booking, BookingPostDTO>().ReverseMap();
     CreateMap<Booking, BookingPatchDTO>().ReverseMap();
@@ -29,7 +29,8 @@ public class MappingProfile : Profile
       })
       .ReverseMap();
     CreateMap<Order, OrderPatchDTO>().ReverseMap();
-    CreateMap<MenuItem, MenuItemsDTO>().ReverseMap();
+		CreateMap<MenuItem, MenuItemsDTO>().ReverseMap();
 
-  }
+		CreateMap<Images, ImagesDTO>().ReverseMap();
+	}
 }

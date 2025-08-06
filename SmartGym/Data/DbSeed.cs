@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using SmartGym.Constants.Enums;
@@ -23,6 +24,8 @@ namespace SmartGym.Data
 				using var scope = services.CreateScope();
 				var context = scope.ServiceProvider.GetRequiredService<SmartGymContext>();
 				// context.Database.Migrate(); // Catch up your database
+				//If images arent present on the local machine, create the image
+				UpdateImageFolder(context);
 				//Users
 				if (!context.Users.Any())
 				{
@@ -154,6 +157,44 @@ namespace SmartGym.Data
 					context.SaveChanges();
 				}
 
+			}
+		}
+
+		private static void UpdateImageFolder(SmartGymContext context)
+		{
+			var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "lib", "images");
+			if (!Directory.Exists(wwwrootPath))
+			{
+				Directory.CreateDirectory(wwwrootPath);
+			}
+			var fileImages = Directory.GetFiles(wwwrootPath)
+				.Select(f => Path.GetFileName(f))
+				.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+			var dbImages = context.Images.ToList();
+
+			foreach (var record in dbImages)
+			{
+				// Remove any files with the same gui regardless of extension
+				var guid = Path.GetFileNameWithoutExtension(record.ImageRef);
+				var matchingFiles = Directory.GetFiles(wwwrootPath, guid + ".*", SearchOption.TopDirectoryOnly);
+
+				foreach (var file in matchingFiles)
+				{
+					if (!file.EndsWith(record.ImageRef, StringComparison.OrdinalIgnoreCase)) //if guid matches but ext does not
+					{
+						File.Delete(file);
+					}
+				}
+
+				var imagePath = Path.Combine(wwwrootPath, record.ImageRef);
+				bool fileExists = File.Exists(imagePath);
+				if (!fileExists || record.UpdatedUtcDate.ToUniversalTime() > File.GetLastWriteTimeUtc(imagePath))
+				if (!fileExists || record.UpdatedUtcDate > File.GetLastWriteTimeUtc(imagePath))
+				{
+					File.WriteAllBytes(imagePath, record.Data);
+					File.SetLastWriteTimeUtc(imagePath, record.UpdatedUtcDate); // keep timestamps in sync
+				}
 			}
 		}
 	}
