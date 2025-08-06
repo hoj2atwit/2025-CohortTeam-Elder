@@ -162,7 +162,7 @@ namespace SmartGym.Data
 
 		private static void UpdateImageFolder(SmartGymContext context)
 		{
-			var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "lib", "images");
+			var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "lib", "db_images");
 			if (!Directory.Exists(wwwrootPath))
 			{
 				Directory.CreateDirectory(wwwrootPath);

@@ -35,7 +35,13 @@
 					<td>
 						@if (!string.IsNullOrEmpty(user.ImageRef))
 						{
-							<img src="lib/Images/@user.ImageRef" alt="Profile" width="50" height="50" />
+							var defaultSvgs = new[] { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
+							bool isDefaultSvg = user.ImageRef.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
+								defaultSvgs.Any(svg => user.ImageRef.Equals(svg, StringComparison.OrdinalIgnoreCase));
+							var imgSrc = isDefaultSvg
+								? $"/lib/images/{user.ImageRef}"
+								: $"/lib/db_images/{user.ImageRef}?cachebust={Guid.NewGuid()}";
+							<img src="@imgSrc" alt="Profile" width="50" height="50" />
 						}
 					</td>
 					<td>@user.DateOfBirth</td>
@@ -76,7 +82,7 @@
 	}
 	private async Task OnFileSelected(InputFileChangeEventArgs e, UserDto user)
 	{
-		var usersFolder = Path.Combine("wwwroot", "lib", "images");
+		var usersFolder = Path.Combine("wwwroot", "lib", "db_images");
 		var file = e.File;
 		if (file != null)
 		{

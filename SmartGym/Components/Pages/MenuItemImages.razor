@@ -33,7 +33,11 @@
 					<td>
 						@if (!string.IsNullOrEmpty(menuItem.ImageRef))
 						{
-							<img src="lib/Images/@menuItem.ImageRef?cachebust=@Guid.NewGuid()" alt="img" width="50" height="50" />
+							var isDefault = menuItem.ImageRef.Equals("default_food.svg", StringComparison.OrdinalIgnoreCase);
+							var imgSrc = isDefault
+								? $"/lib/images/{menuItem.ImageRef}"
+								: $"/lib/db_images/{menuItem.ImageRef}?cachebust={Guid.NewGuid()}";
+							<img src="@imgSrc" alt="img" width="50" height="50" />
 						}
 					</td>
 					<td>@menuItem.Description</td>
@@ -75,7 +79,7 @@
 
 	private async Task OnFileSelected(InputFileChangeEventArgs e, MenuItemsDTO menuItem)
 	{
-		var menuItemsFolder = Path.Combine("wwwroot", "lib", "images");
+		var menuItemsFolder = Path.Combine("wwwroot", "lib", "db_images");
 		var file = e.File;
 		if (file != null)
 		{
