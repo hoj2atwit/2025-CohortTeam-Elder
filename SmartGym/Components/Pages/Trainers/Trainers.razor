@@ -1,0 +1,205 @@
+@page "/dashboard/trainers"
+@using SmartGym.Models
+@using SmartGym.Services
+@inject NavigationManager Navigation
+@inject IUserService UserService
+
+<PageTitle>Trainers - Admin Portal</PageTitle>
+
+<!-- Main trainers content -->
+<div class="flex-1 overflow-y-auto p-4 lg:p-6 bg-[#f3f4f6]">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <div>
+                <h1 class="text-2xl lg:text-3xl font-bold text-gray-900">Trainers</h1>
+                <p class="text-gray-600 mt-1">Manage your gym trainers and their schedules</p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <input type="text" 
+                       @bind="searchQuery" 
+                       @onkeyup="FilterTrainers"
+                       placeholder="Search trainers..." 
+                       class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f34f5d] focus:border-transparent w-full sm:w-64" />
+                <button class="bg-[#f34f5d] hover:bg-[#f34f5d-600] text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
+                    Add Trainer
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+       @if (isLoading)
+        {
+            <div class="flex items-center justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            </div>
+        }
+         else if (filteredTrainers?.Any() == true)
+        {
+            <!-- Debug Info -->
+            <p class="text-sm text-gray-600 mb-4">Found @filteredTrainers.Count trainers</p>
+            
+            <!-- Trainers Grid -->
+          <div class="cards grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach (var trainer in filteredTrainers)
+                {
+                    <TrainerCard Trainer="trainer" OnTrainerClick="NavigateToTrainerDetails" />
+                }
+            </div>
+
+            <!-- Pagination (if needed) -->
+            @if (totalTrainers > pageSize)
+            {
+                <div class="flex justify-center mt-8">
+                    <nav class="flex items-center gap-2">
+                        <button @onclick="() => ChangePage(currentPage - 1)" 
+                                disabled="@(currentPage <= 1)"
+                                class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Previous
+                        </button>
+                        
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <button @onclick="() => ChangePage(i)" 
+                                    class="px-3 py-2 text-sm font-medium @(i == currentPage ? "text-blue-600 bg-blue-50 border-blue-300" : "text-gray-500 bg-white border-gray-300") border rounded-lg hover:bg-gray-50">
+                                @i
+                            </button>
+                        }
+                        
+                        <button @onclick="() => ChangePage(currentPage + 1)" 
+                                disabled="@(currentPage >= totalPages)"
+                                class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Next
+                        </button>
+                    </nav>
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="text-center py-12">
+                <p class="text-red-500 mb-4">Debug: isLoading=@isLoading, filteredTrainers=@(filteredTrainers?.Count ?? 0), trainers=@(trainers?.Count ?? 0)</p>
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 01 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 919.288 0M15 7a3 3 0 11-6 0 3 3 0 616 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No trainers found</h3>
+                <p class="mt-1 text-sm text-gray-500">Get started by adding a new trainer.</p>
+                <div class="mt-6">
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        Add First Trainer
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<UserDto>? trainers = new();
+    private List<UserDto>? filteredTrainers = new();
+    private string searchQuery = "";
+    private bool isLoading = true;
+    
+    // Assuming trainer role ID - you'll need to adjust this based on your actual role IDs
+    private const int TRAINER_ROLE_ID = 2; // Update this to match your actual trainer role ID
+    
+    // Pagination
+    private int currentPage = 1;
+    private int pageSize = 12;
+    private int totalTrainers = 0;
+    private int totalPages => (int)Math.Ceiling((double)totalTrainers / pageSize);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTrainers();
+    }
+
+
+    private async Task LoadTrainers()
+    {
+        try
+        {
+            isLoading = true;
+            // Get all users and filter trainers by RoleId
+            var allUsers = await UserService.GetAllUsers();
+            
+            // Debug: Log all users and their roles
+            Console.WriteLine($"Total users loaded: {allUsers?.Count ?? 0}");
+            if (allUsers != null)
+            {
+                foreach (var user in allUsers)
+                {
+                    Console.WriteLine($"User: {user.Name}, RoleId: {user.RoleId}");
+                }
+            }
+            
+            trainers = allUsers?.Where(u => u.RoleId == TRAINER_ROLE_ID).ToList() ?? new List<UserDto>();
+            Console.WriteLine($"Trainers found with RoleId {TRAINER_ROLE_ID}: {trainers.Count}");
+            
+            filteredTrainers = trainers?.ToList() ?? new List<UserDto>();
+            totalTrainers = filteredTrainers.Count;
+            
+            // Apply pagination
+            ApplyPagination();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading trainers: {ex.Message}");
+            trainers = new List<UserDto>();
+            filteredTrainers = new List<UserDto>();
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+
+    private void FilterTrainers()
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            filteredTrainers = trainers?.ToList() ?? new List<UserDto>();
+        }
+        else
+        {
+            filteredTrainers = trainers?.Where(t => 
+                t.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                t.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+            ).ToList() ?? new List<UserDto>();
+        }
+        
+        totalTrainers = filteredTrainers.Count;
+        currentPage = 1; // Reset to first page
+        ApplyPagination();
+        StateHasChanged();
+    }
+
+    private void ApplyPagination()
+    {
+        if (filteredTrainers?.Any() == true)
+        {
+            filteredTrainers = filteredTrainers
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+    }
+
+    private void ChangePage(int page)
+    {
+        if (page >= 1 && page <= totalPages)
+        {
+            currentPage = page;
+            ApplyPagination();
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateToTrainerDetails(UserDto trainer)
+    {
+        Navigation.NavigateTo($"/dashboard/trainers/{trainer.Id}");
+    }
+}

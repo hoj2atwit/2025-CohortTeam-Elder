@@ -1,0 +1,127 @@
+@using SmartGym.Models
+
+<div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 cursor-pointer transform hover:-translate-y-1"
+     @onclick="() => OnTrainerClick.InvokeAsync(Trainer)">
+    
+    <!-- Profile Section -->
+    <div class="p-4 text-center">
+        <!-- Profile Picture -->
+        <div class="card-pic-parent mx-auto mb-3 relative">
+            <div class="card-pic flex items-center justify-center shadow-sm">
+                <span class="text-black text-lg font-semibold">
+                    @GetInitials()
+                </span>
+            </div>
+            <!-- Online Status Indicator -->
+            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
+        </div>
+        
+        <!-- Name and Role -->
+        <h3 class="font-semibold text-gray-900 text-base mb-1 truncate">@Trainer.Name</h3>
+        <p class="text-xs text-gray-500 mb-3">Personal Trainer</p>
+        
+        <!-- Quick Stats -->
+        <div class="flex justify-center gap-3 text-xs text-gray-600 mb-4">
+            <div class="text-center">
+                <div class="font-semibold text-gray-900 text-sm">@(GetRandomValue(2, 8))</div>
+                <div class="text-xs">Years</div>
+            </div>
+            <div class="text-center border-l border-gray-200 pl-3">
+                <div class="font-semibold text-gray-900 text-sm">@(GetRandomValue(15, 50))</div>
+                <div class="text-xs">Clients</div>
+            </div>
+            <div class="text-center border-l border-gray-200 pl-3">
+                <div class="font-semibold text-gray-900 text-sm">⭐ @(GetRandomRating())</div>
+                <div class="text-xs">Rating</div>
+            </div>
+        </div>
+    </div>
+    
+ 
+    <!-- Action Buttons -->
+    <div class="px-4 pb-4">
+        <div class="flex gap-2">
+            <button class="flex-1 bg-[#f34f5d] hover:bg-[#f34f5d-600] text-white text-xs py-2 px-3 rounded-md transition-colors flex items-center justify-center"
+                    @onclick:stopPropagation="true"
+                    @onclick='() => QuickAction("schedule")'>
+                <span class="mr-1">📅</span>
+                Schedule
+            </button>
+            <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-2 px-2 rounded-md transition-colors flex items-center justify-center"
+                    @onclick:stopPropagation="true"
+                    @onclick='() => QuickAction("message")'>
+                <span>💬</span>
+            </button>
+        </div>
+        
+        <!-- Availability Status -->
+        <div class="mt-2 text-center">
+            @if (IsAvailableToday())
+            {
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                    <span class="w-1.5 h-1.5 mr-1 bg-green-400 rounded-full"></span>
+                    Available
+                </span>
+            }
+            else
+            {
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                    <span class="w-1.5 h-1.5 mr-1 bg-red-400 rounded-full"></span>
+                    Busy
+                </span>
+            }
+        </div>
+    </div>
+
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public UserDto Trainer { get; set; } = default!;
+    
+    [Parameter]
+    public EventCallback<UserDto> OnTrainerClick { get; set; }
+
+    private string GetInitials()
+    {
+        if (string.IsNullOrEmpty(Trainer.Name)) return "?";
+        
+        var parts = Trainer.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length >= 2)
+        {
+            return $"{parts[0][0]}{parts[1][0]}".ToUpper();
+        }
+        return Trainer.Name[0].ToString().ToUpper();
+    }
+
+    private bool IsAvailableToday()
+    {
+        return Trainer.Id % 2 == 0;
+    }
+
+    private int GetRandomValue(int min, int max)
+    {
+        var seed = Trainer.Id;
+        return (seed % (max - min + 1)) + min;
+    }
+
+    private string GetRandomRating()
+    {
+        var seed = Trainer.Id;
+        var rating = 4.0 + (seed % 11) / 10.0;
+        return rating.ToString("F1");
+    }
+
+    private async Task QuickAction(string action)
+    {
+        switch (action)
+        {
+            case "schedule":
+                Console.WriteLine($"Schedule action for trainer {Trainer.Name}");
+                break;
+            case "message":
+                Console.WriteLine($"Message action for trainer {Trainer.Name}");
+                break;
+        }
+    }
+}
