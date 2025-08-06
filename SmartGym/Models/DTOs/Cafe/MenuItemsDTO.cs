@@ -11,4 +11,10 @@ public class MenuItemsDTO
 	public string Ingredients { get; set; }
 	public string Description { get; set; }
 	public string Tags { get; set; }
+	private string _imageRef;
+	public string ImageRef // basically filename guid+ext
+	{
+		get => string.IsNullOrEmpty(_imageRef) ? "default_food.svg" : _imageRef;
+		set => _imageRef = value;
+	}
 }

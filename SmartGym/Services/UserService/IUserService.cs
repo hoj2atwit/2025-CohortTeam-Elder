@@ -14,4 +14,6 @@ public interface IUserService
 	void GetTrafficData(DateTime startDate, DateTime endDate);
 	Task<UserDto?> UpdateUser(int id, UserDto userDto);
 	Task<bool> DeleteUser(int id);
+	Task<(bool Success, string Message)> UploadUserImageBlob(int id, string imageRef, byte[] imageBytes, string guid);
+
 }
