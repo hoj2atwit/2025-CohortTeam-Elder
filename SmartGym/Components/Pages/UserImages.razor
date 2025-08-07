@@ -2,8 +2,10 @@
 @using SmartGym.Models
 @using SmartGym.Helpers
 @using SmartGym.Constants.Enums
+@using Microsoft.AspNetCore.Identity
 @attribute [StreamRendering]
 @inject SmartGym.Services.IUserService usersService
+@inject UserManager<AppUser> UserManager
 
 <PageTitle>Edit Members Images</PageTitle>
 
@@ -30,17 +32,17 @@
 			{
 				<tr>
 					<td>@user.Id</td>
-					<td>@EnumHelper.GetDisplayName((RoleId)user.RoleId)</td>
+					<td>@(userRoles.ContainsKey(user.Id) ? userRoles[user.Id] : "No role")</td>
 					<td>@user.Name</td>
 					<td>
 						@if (!string.IsNullOrEmpty(user.ImageRef))
 						{
 							var defaultSvgs = new[] { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
 							bool isDefaultSvg = user.ImageRef.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
-								defaultSvgs.Any(svg => user.ImageRef.Equals(svg, StringComparison.OrdinalIgnoreCase));
+							defaultSvgs.Any(svg => user.ImageRef.Equals(svg, StringComparison.OrdinalIgnoreCase));
 							var imgSrc = isDefaultSvg
-								? $"/lib/images/{user.ImageRef}"
-								: $"/lib/db_images/{user.ImageRef}?cachebust={Guid.NewGuid()}";
+							? $"/lib/images/{user.ImageRef}"
+							: $"/lib/db_images/{user.ImageRef}?cachebust={Guid.NewGuid()}";
 							<img src="@imgSrc" alt="Profile" width="50" height="50" />
 						}
 					</td>
@@ -67,10 +69,17 @@
 	[Inject]
 	private IJSRuntime JS { get; set; }
 	private List<UserDto> userList;
+	private Dictionary<int, string> userRoles = new();
 
 	protected override async Task OnInitializedAsync()
 	{
 		userList = await usersService.GetAllUsers();
+		foreach (var user in userList)
+		{
+			var identityUser = await UserManager.FindByIdAsync(user.Id.ToString());
+			var roles = await UserManager.GetRolesAsync(identityUser);
+			userRoles[user.Id] = roles.FirstOrDefault() ?? "No role";
+		}
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -90,8 +99,8 @@
 			// Check if the current image was never updated
 			var defaultSvgs = new[] { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
 			bool isDefaultSvg = string.IsNullOrWhiteSpace(user.ImageRef) ||
-				(user.ImageRef.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
-				 defaultSvgs.Any(svg => user.ImageRef.Equals(svg, StringComparison.OrdinalIgnoreCase)));
+			(user.ImageRef.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
+			defaultSvgs.Any(svg => user.ImageRef.Equals(svg, StringComparison.OrdinalIgnoreCase)));
 			string guid = "";
 			if (isDefaultSvg)
 			{

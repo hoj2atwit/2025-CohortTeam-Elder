@@ -19,4 +19,15 @@ public class SmartGymContext : IdentityDbContext<AppUser, IdentityRole<int>, int
 	public DbSet<Images>? Images { get; set; }
 	public DbSet<Booking>? Bookings { get; set; }
 
+	protected override void OnModelCreating(ModelBuilder builder)
+	{
+		base.OnModelCreating(builder);
+
+		builder.Entity<Class>()
+			.HasOne(c => c.Trainer)
+			.WithMany()
+			.HasForeignKey(c => c.TrainerId)
+			.OnDelete(DeleteBehavior.Restrict);
+	}
+
 }
