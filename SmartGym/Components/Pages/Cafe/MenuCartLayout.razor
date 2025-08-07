@@ -1,5 +1,5 @@
 ﻿@using Components.UIClasses.Cafe;
-<div class="h-full w-2/6 min-w-2/6 border border-black">
+<div class="min-w-2/6 h-full w-2/6 border border-black">
     <h5 class="mb-2 justify-center px-2 py-1 text-lg font-semibold">
         Cart
     </h5>
@@ -40,10 +40,10 @@
         await updateCart();
     }
 
-    public Task checkout()
+    public async Task checkout()
     {
         //Go to Checkout page and bring cart information over for receipt
-        instance.checkout();
-        return Task.CompletedTask;
+        await instance.checkout();
+        StateHasChanged();
     }
 }

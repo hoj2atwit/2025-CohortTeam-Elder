@@ -65,6 +65,8 @@ namespace SmartGym.Components.UIClasses.Cafe
             dto.UpdatedAt = DateTime.Now;
             dto.Notes = "None";
             dto.OrderCartList = new List<CartItemsDTO>();
+            dto.TotalPrice = Total;
+            dto.UserId = 1;
 
             foreach (CartItemModel cartItem in CartItems.Values.ToList()) 
             {
