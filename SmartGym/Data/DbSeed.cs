@@ -106,6 +106,7 @@ namespace SmartGym.Data
 						 .RuleFor(m => m.Calories, f => f.Random.Int(100, 3000))
 						 .RuleFor(m => m.Ingredients, f => string.Join(", ", f.Commerce.ProductMaterial()))
 						 .RuleFor(m => m.Description, f => f.Lorem.Sentence(5))
+						 .RuleFor(m => m.StockLevel, f => f.Random.Int(0, 9999))
 						 .RuleFor(m => m.Tags, f => string.Join(", ", f.Random.Words(3)));
 
 					var fakeMenuItems = faker.Generate(uniqueMenuItems.Count());
