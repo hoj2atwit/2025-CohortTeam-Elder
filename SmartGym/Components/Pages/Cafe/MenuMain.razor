@@ -1,5 +1,8 @@
 ﻿@page "/POS"
 @using Components.UIClasses.Cafe
+@using SmartGym.Services
+@inject IOrderService orderService
+@inject ICafeService cafeService
 <title>@username's Order</title>
 <h1> @username's Order </h1>
 <div class="flex gap-2">
@@ -27,24 +30,30 @@
 
                 </div>
         </section>
-       
-        <section class="h-11/12 max-h-11/12 w-screen max-w-screen">
-            <div class="flex max-w-1/12 flex-row">
-                
-                <div class="" >
-                    <div class="flex h-full min-h-0 flex-wrap items-center justify-center gap-2 overflow-y-auto border p-4">
-                        @* Fill with MenuItemContainerLayout depending on amount of items desired *@
-                        @* TODO: Dynamically update depending on filters *@
-                        @foreach (var item in PointOfSaleModel.instance.FilteredMenu)
-                        {
-                            <MenuItemLayout item=@item OnClickCallback=@(() => addToCart(@item))/>
-                        }
+        @if (PointOfSaleModel.instance.FilteredMenu == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <section class="h-11/12 max-h-11/12 max-w-screen w-screen">
+                <div class="max-w-1/12 flex flex-row">
 
+                    <div class="" >
+                        <div class="flex h-full min-h-0 flex-wrap items-center justify-center gap-2 overflow-y-auto border p-4">
+                            @* Fill with MenuItemContainerLayout depending on amount of items desired *@
+                            @* TODO: Dynamically update depending on filters *@
+                            @foreach (var item in PointOfSaleModel.instance.FilteredMenu)
+                            {
+                                <MenuItemLayout item=@item OnClickCallback=@(() => addToCart(@item))/>
+                            }
+
+                        </div>
                     </div>
-                </div>
 
-            </div>
-        </section>
+                </div>
+            </section>
+        }
     </div>
     <MenuCartLayout @ref="menuCart"/>
 </div>
@@ -54,28 +63,27 @@
     public string username = "";
     private MenuCartLayout menuCart;
 
-    Task InitializeMenu()
+    async Task InitializeMenu()
     {
         //TODO: Get User's Name
         username = "Test";
-        PointOfSaleModel.instance.refresh();
+        PointOfSaleModel.instance = new PointOfSaleModel(orderService,  cafeService);
+        await PointOfSaleModel.instance.refresh();
+        await updateMenu();
         //TODO: Load Cart from User
-        return Task.CompletedTask;
     }
     protected override async Task OnInitializedAsync()
     {
         await InitializeMenu();
     }
-    public Task addToCart(MenuItemModel item)
+    public async Task addToCart(MenuItemModel item)
     {
-        menuCart.addToCart(item);
-        return Task.CompletedTask;
+        await menuCart.addToCart(item);
     }
-    public Task updateMenu()
+    public async Task updateMenu()
     {
-        PointOfSaleModel.instance.search(searchText);
+        await PointOfSaleModel.instance.search(searchText);
         StateHasChanged();
-        return Task.CompletedTask;
     }
 
 }

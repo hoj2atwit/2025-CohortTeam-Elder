@@ -1,6 +1,14 @@
 ﻿@using Components.UIClasses.Cafe;
-<button class="flex max-w-1/4 min-w-50 flex-col border border-black shadow-2xl" @onclick="OnClickCallback">
-    <img class="aspect-square h-50" id="menuItemImage" src=@Assets[@item.ImageLocation] />
+<button class="max-w-1/4 min-w-50 flex flex-col border border-black shadow-2xl" @onclick="OnClickCallback">
+    @if (item.ImageLocation.ToLower().Contains("default"))
+    {
+        <img class="h-50 aspect-square" id="menuItemImage" src=@Assets[$"lib/images/{item.ImageLocation}"] />
+    }
+    else
+    {
+        <img class="h-50 aspect-square" id="menuItemImage" src=@Assets[$"lib/db_images/{item.ImageLocation}"] />
+    }
+    
     <div class="p-4 text-gray-800">
         <h5 class="mb-2 text-lg font-semibold" >@item.Name</h5>
         <p class="text-base">@item.Description</p>
@@ -13,5 +21,4 @@
     public MenuItemModel? item { get; set; }
     [Parameter]
     public EventCallback OnClickCallback { get; set; }
-
 }

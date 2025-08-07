@@ -1,4 +1,6 @@
-﻿namespace SmartGym.Components.UIClasses.Cafe
+﻿using SmartGym.Models;
+
+namespace SmartGym.Components.UIClasses.Cafe
 {
     public class CartModel
     {
@@ -53,6 +55,25 @@
                 Total += ci.CurrentPrice;
             }
             TotalString = string.Format("{0:C}", Total);
+        }
+
+        public OrderDTO toDTO() 
+        { 
+            OrderDTO dto = new OrderDTO();
+            dto.CreatedAt = DateTime.Now;
+            dto.OrderTime = DateTime.Now;
+            dto.UpdatedAt = DateTime.Now;
+            dto.Notes = "None";
+            dto.OrderCartList = new List<CartItemsDTO>();
+            dto.TotalPrice = Total;
+            dto.UserId = 1;
+
+            foreach (CartItemModel cartItem in CartItems.Values.ToList()) 
+            {
+                dto.OrderCartList.Add(cartItem.toCartItemsDTO());
+            }
+            
+            return dto;
         }
 
         /// <summary>
@@ -113,6 +134,15 @@
             {
                 Amount--;
                 updatePrice();
+            }
+
+            public CartItemsDTO toCartItemsDTO() 
+            {
+                CartItemsDTO dto = new CartItemsDTO();
+                dto.MenuItemId = Item.ItemId;
+                dto.Quantity = Amount;
+                dto.ImageRef = Item.ImageLocation;
+                return dto;
             }
         }
 
