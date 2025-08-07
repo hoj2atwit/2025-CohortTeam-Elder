@@ -14,3 +14,4 @@ obj/
 .fake
 node_modules/
 /SmartGym/appsettings.Development.json
+/SmartGym/wwwroot/lib/db_images

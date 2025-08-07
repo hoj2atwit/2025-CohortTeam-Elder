@@ -1,4 +1,5 @@
-﻿namespace SmartGym.Components.UIClasses.Cafe
+﻿using SmartGym.Models;
+namespace SmartGym.Components.UIClasses.Cafe
 {
     public class MenuItemModel
     {
@@ -8,6 +9,8 @@
         public string Description = "";
         public string PriceString = "";
         public string ImageLocation = "";
+        public string Tags = "";
+        public string Ingredients = "";
 
         /// <summary>
         /// Default constructor for MenuItem.
@@ -19,6 +22,22 @@
             setImageLocation("None");
             ItemId = 0;
             Description = "No Description";
+            Tags = "Food";
+            Ingredients = "None";
+        }
+
+        /// <summary>
+        /// Default constructor for MenuItem.
+        /// </summary>
+        public MenuItemModel(MenuItemsDTO menuItemDTO)
+        {
+            setPrice(menuItemDTO.Price);
+            Name = menuItemDTO.Name;
+            setImageLocation(menuItemDTO.ImageRef);
+            ItemId = menuItemDTO.Id;
+            Description = menuItemDTO.Description;
+            Tags = menuItemDTO.Tags;
+            Ingredients = menuItemDTO.Ingredients;
         }
 
         /// <summary>
@@ -28,13 +47,15 @@
         /// <param name="Price"> The decimal value Price of the given item </param>
         /// <param name="ItemId"> The MenuItem's unique id </param>
         /// <param name="Description"> The Description of the menu item </param>
-        public MenuItemModel(string Name, decimal Price, int ItemId, string Description)
+        public MenuItemModel(string Name, decimal Price, int ItemId, string Description, string Tags, string Ingredients)
         {
             setPrice(Price);
             this.Name = Name;
             setImageLocation(Name);
             this.ItemId = ItemId;
             this.Description = Description;
+            this.Tags = Tags;
+            this.Ingredients = Ingredients;
         }
 
         /// <summary>
@@ -43,12 +64,12 @@
         /// TODO: Might name based off of ItemId Later as a more unique Identifier.
         /// </summary>
         /// <param name="Name"> Name of the given item </param>
-        private void setImageLocation(string name)
+        private void setImageLocation(string imageRef)
         {
             //True Implementation of image location. Adapt to naming convention
-            //ImageLocation = $"lib/images/{name}.jpg";
+            ImageLocation =  imageRef;
             //Just using Coffee Image for now
-            ImageLocation = $"lib/images/Coffee.jpg";
+            //ImageLocation = $"lib/images/Coffee.jpg";
         }
 
         /// <summary>
@@ -72,7 +93,7 @@
             //TODO: Have this generate a list of menu items from the database
             for (int i = 0; i < 50; i++)
             {
-                menuItems.Add(new MenuItemModel("Coffee " + i, 6.99m, i, "Cup of Coffee"));
+                menuItems.Add(new MenuItemModel("Coffee " + i, 6.99m, i, "Cup of Coffee", "", ""));
             }
 
             return menuItems;
@@ -88,10 +109,31 @@
             //TODO: Have this generate a list of menu items from the database
             for (int i = 0; i < 50; i++)
             {
-                menuItems.Add("Coffee " + i, new MenuItemModel("Coffee " + i, 6.99m, i, "Cup of Coffee"));
+                menuItems.Add("Coffee " + i, new MenuItemModel("Coffee " + i, 6.99m, i, "Cup of Coffee", "", ""));
             }
 
             return menuItems;
+        }
+
+        public static List<MenuItemModel> DTOListToMenuItemModelList(List<MenuItemsDTO> menuItemsDTO) {
+            List<MenuItemModel> menuItems = new List<MenuItemModel>();
+
+            foreach (MenuItemsDTO itemDTO in menuItemsDTO)
+            {
+                menuItems.Add(new MenuItemModel(itemDTO));
+            }
+
+            return menuItems;
+        }
+
+        public static Dictionary<string, MenuItemModel> convertListToDict(List<MenuItemModel> model)
+        {
+            Dictionary<string, MenuItemModel> d = new Dictionary<string, MenuItemModel>();
+            foreach (MenuItemModel item in model) 
+            {
+                d[item.ItemId.ToString()] = item;
+            }
+            return d;
         }
     }
 }
