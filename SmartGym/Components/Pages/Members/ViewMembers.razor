@@ -7,58 +7,73 @@
 @inject NavigationManager navManager
 @attribute [StreamRendering]
 
+
 <PageTitle>View Members</PageTitle>
 
-<style>
+@* <style>
     table, th, td {
         border: 1px solid black;
         border-collapse: collapse;
     }
-</style>
+</style> *@
 
-<div>
+<h1 class="text-5xl mb-4">View Members</h1>
+<div class="bg-background bg-primary-900">
     <h1 style="font-size:40px"><b>List of Members</b></h1>
-    <div>
-        <a href="/addnewmember">Add New Member</a>
-    </div>
     @if (userList == null)
     {
         <p><em>Loading...</em></p>
     }
     else
     {
-        <table style="width:100%">
-            <thead>
+        <div class="inline-flex">
+            <a href="/addnewmember" class="text-right bg-text hover:bg-blue-700 text-white font-bold py-5 px-4 rounded inline-flex items-center">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Add New Member</span>
+            </a>
+            <a href="/updatemember" class="text-right bg-accent hover:bg-blue-700 text-white font-bold py-5 px-4 rounded">
+                <i class="fa-solid fa-pen-to-square"></i>
+              Update Member
+              </a>
+        </div>
+        <table class="w-full table-auto border-collapse text-sm">
+            <caption class="caption-top">List of Members</caption>
+            <thead class="border border-gray-200 bg-gray-50 text-left  dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
                 <tr>
-                    <th>FName</th>
-                    <th>LName</th>
-                    <th>Email</th>
-                    <th>Birthday</th>
-                    <th>Membership Plan</th>
-                    <th>Status</th>
+                    <th  class="p-4 py-3">FName</th>
+                    <th  class="p-4 py-3">LName</th>
+                    <th  class="p-4 py-3">Email</th>
+                    <th  class="p-4 py-3">Birthday</th>
+                    <th  class="p-4 py-3">Membership Plan</th>
+                    <th  class="p-4 py-3">Status</th>
+                    <th  class="p-4 py-3">Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Display each member -->
+           
+            <tbody class="bg-white dark:bg-gray-800">
                 @foreach (UserDto userDto in userList)
                 {
-                    <tr>
-                        <td>@userDto.FirstName</td>
-                        <td>@userDto.LastName</td>
-                        <td>@userDto.Email</td>
-                        <td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
-                        <td>@((RoleId)userDto.RoleId)</td>
-                        <td>@((UserStatus)userDto.Status)</td>
-                        <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
-                        <td><button onclick=@(() => UpdateUser(@userDto))>Update Member</button></td>
+                    <tr class="border border-gray-200text-gray-500 dark:border-gray-600 dark:text-gray-400">
+                        <td  class=" p-4 pr-8 ">@userDto.FirstName</td>
+                        <td  class=" p-4 pr-8 ">@userDto.LastName</td>
+                        <td  class=" p-4 pr-8 ">@userDto.Email</td>
+                        <td  class=" p-4 pr-8 ">@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
+                        <td  class=" p-4 pr-8 ">@((RoleId)userDto.RoleId)</td>
+                        <td  class=" p-4 pr-8 ">@userDto.Status</td>
+                        <td  class=" p-4 pr-8 "><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
                     </tr>
+                    userIndex++;
                 }
             </tbody>
         </table>
     }
 </div>
 
+    
+
+
 @code {
+    private int userIndex = 0;
     private List<UserDto> userList = new();
 
     protected override async Task OnInitializedAsync()
