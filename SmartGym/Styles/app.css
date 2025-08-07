@@ -4,7 +4,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: "Outfit", sans-serif;
+  --font-funnel: "Funnel Display", sans-serif;
   /*Primary Color and Shades*/
   --color-primary: #5e22d3;
   --color-primary-100: #9e7ae5;
@@ -28,7 +29,7 @@
 
 html,
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
 }
 
 a,
@@ -97,7 +98,7 @@ h1:focus {
 
 
 .hero {
-  background: url('img/overlay.png'), url('img/header.svg'), linear-gradient(90deg, #090416, #170937), url('img/gym.jpg');
+  background: url('img/overlay.png'), url('img/header.svg'), linear-gradient(90deg, hsla(257, 69%, 5%, 0.5), #170937), url('img/gym.jpg');
   background-color: #170937;
   background-size: contain;
   background-size: 128px 128px, 100% 100%, auto, cover;
@@ -122,6 +123,7 @@ main {
 
 .sidebar {
   background-image: linear-gradient(180deg, var(--color-secondary-700) 100%, #f34f5d 0%);
+  font-family: var(--font-funnel);
 }
 
 .top-row {

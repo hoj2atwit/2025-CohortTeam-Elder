@@ -1,7 +1,103 @@
 ﻿@page "/home"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Smart Gym</PageTitle>
+<style>
+	main {
+		margin: 0;
+	}
+	.home-bar {
+		background:transparent;
+	}
 
-<h1>Hello, world!</h1>
+	.logo {
+		filter: invert(50%) sepia(39%) saturate(2%) hue-rotate(214deg) brightness(118%) contrast(134%) ;
+		max-height: 10vh;
+	}
 
-Welcome to your new app.
+	h1{
+	  font-size:10em;
+	 font-family: "Funnel Display", sans-serif;
+	}
+
+	h2{
+		font-family: "Funnel Display", sans-serif;
+		font-weight: bold;
+		font-size: 2.5em;
+	}
+
+	#outer {
+		text-align: center;
+		position: relative;
+		overflow: hidden;
+		min-height: 100vh;
+	}
+
+	#home-top-video:before {
+		content: "";
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		bottom: 0;
+		background: linear-gradient(to right,hsla(257, 69%, 5%, 0.5), #170937);
+	}
+
+	#home-top-video {
+		left: 0%;
+		top: 0%;
+		height: 100vh;
+		width: 100%;
+		overflow: hidden;
+		position: absolute;
+	}
+
+	#home-text {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		-webkit-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
+		color: #fff;
+		z-index: 1;
+	}
+	.btn-join{
+		height: 15vh;
+		width: 40vh;
+		font-size: 2.5em;
+	}
+</style>
+
+<section id="outer">
+	<div id="home-top-video">
+		<video autoplay loop muted width="100%">
+			<source src="./lib/videos/home.mp4" type="video/mp4" /> Your browser does not support the video tag. We suggest you upgrade your browser.
+		</video>
+		<div id="home-text">
+			<h1 class="p5">Smart Gym</h1>
+			Home of the Gains
+		</div>
+	</div>
+	<div class="absolute  inset-x-0 bottom-0 z-1">
+		<button class="p-5 mx-5 bg-accent text-xl hover:bg-violet-600 focus:outline-2 btn-join">Join Today!</button>
+	</div>
+</section>
+<section class="hero text-white text-3xl flex">
+	<article class="p-6 m-5 bg-primary-500 flex-row">
+		<h2 class="mb-3">Strength, Endurance, Transformation</h2>
+		Join over 500+ members to achieve your fitness goals with expert guidance and state-of-the-art facilities.
+	</article>
+	<article class="p-6 m-5 bg-primary-900">
+		<h2 class="mb-3">Become a Member Today!</h2>
+		Enjoy many perks of being part of our family.
+		<ul class="list-image-[url(/lib/images/checkmark.png)]">
+			<li>24/7 Access</li>
+			<li>Modern equipment</li>
+			<li>Friendly staff</li>
+		</ul>
+	</article>
+	<article class="p-6 m-5 bg-secondary">
+		<h2 class="mb-3">Summer sale!</h2>
+		Become a member for only $0.99
+	</article>
+	
+</section>

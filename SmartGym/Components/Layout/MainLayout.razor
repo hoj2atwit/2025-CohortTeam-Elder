@@ -1,12 +1,27 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
-<div class="page">
-    <nav class="sidebar border-black-500 border-r-2 bg-primary-900">
-        <NavMenu />
-    </nav>
-    <main class="content hero text-white">
-            @Body
-    </main>
+<div class="font-sans">
+    @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "home")
+    {
+        <HomeLayout />
+        <main>
+          @Body
+        </main>
+    }
+    else
+    {
+      <div class="page">
+			<nav class="sidebar border-black-500 border-r-2 bg-primary-900">
+				<NavMenu />
+			</nav>
+			<main class="content hero text-white">
+				@Body
+			</main>
+      </div>
+        
+    }
+    
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>

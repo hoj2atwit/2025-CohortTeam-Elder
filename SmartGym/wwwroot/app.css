@@ -3,7 +3,7 @@
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
-    --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-sans: "Outfit", sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-red-50: oklch(97.1% 0.013 17.38);
@@ -89,7 +89,9 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
+    --font-funnel: "Funnel Display", sans-serif;
     --color-primary-900: #2f116a;
+    --color-secondary: #3d2ddd;
     --color-secondary-700: #181258;
     --color-background: #170937;
     --color-accent: #b2d152;
@@ -785,6 +787,9 @@
   .bg-red-500 {
     background-color: var(--color-red-500);
   }
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
   .bg-text {
     background-color: var(--color-text);
   }
@@ -895,6 +900,9 @@
   }
   .text-right {
     text-align: right;
+  }
+  .font-sans {
+    font-family: var(--font-sans);
   }
   .text-2xl {
     font-size: var(--text-2xl);
@@ -1414,7 +1422,7 @@
   }
 }
 html, body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
 }
 a, .btn-link {
   color: #006bb7;
@@ -1461,7 +1469,7 @@ h1:focus {
   text-align: start;
 }
 .hero {
-  background: url('img/overlay.png'), url('img/header.svg'), linear-gradient(90deg, #090416, #170937), url('img/gym.jpg');
+  background: url('img/overlay.png'), url('img/header.svg'), linear-gradient(90deg, hsla(257, 69%, 5%, 0.5), #170937), url('img/gym.jpg');
   background-color: #170937;
   background-size: contain;
   background-size: 128px 128px, 100% 100%, auto, cover;
@@ -1481,6 +1489,7 @@ main {
 }
 .sidebar {
   background-image: linear-gradient(180deg, var(--color-secondary-700) 100%, #f34f5d 0%);
+  font-family: var(--font-funnel);
 }
 .top-row {
   border-bottom: 1px solid #d6d5d5;
