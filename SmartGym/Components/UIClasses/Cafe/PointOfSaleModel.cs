@@ -78,14 +78,14 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// <summary>
         /// Some Checkout function that does checkout things :^)
         /// </summary>
-        public async Task checkout()
+        public async void checkout()
         {
             //TODO: Go To Payment window. If payment succeeds, Send order to DB.
             if (CurrentCart != null) 
             {
                 await _orderService.CreateOrder(CurrentCart.toDTO());
             }
-            await refresh();
+            refresh();
             
         }
 
