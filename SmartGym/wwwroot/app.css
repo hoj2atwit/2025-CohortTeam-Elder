@@ -70,3 +70,16 @@ h1:focus {
 .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* for QR Code */
+.col {
+    float: left;
+    width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}

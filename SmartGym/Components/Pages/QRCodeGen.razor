@@ -1,0 +1,43 @@
+﻿@page "/qrcode"
+@using IronBarCode
+@using SmartGym.Models
+@using SmartGym.Services
+@inject SmartGym.Services.IUserService service
+
+<PageTitle>QR Code Generator</PageTitle>
+
+<div class="row">
+    <div class="col">
+        <h4>Welcome to Blazor QR Code Generator</h4>
+        <p>Enter the value to Generate QR Code:</p>
+        <!-- Input field for QR code text -->
+        <input @bind="text" />
+        <button @onclick="QRCodeGenerator">[Generate QR Code]</button>
+    </div>
+    <div class="col">
+        <!-- Button to trigger QR code generation -->
+        <p style="font-size:20px"><b>Generated QR Code:</b></p>
+
+        @((MarkupString)qrCode)
+    </div>
+</div>
+
+@code {
+
+    // Variable to hold the generated QR code HTML
+    private string qrCode = "";
+
+    // Variable to hold user input text
+    private string text = "";
+
+    // Method to generate QR code from user input
+    private void QRCodeGenerator()
+    {
+        // Create a QR code from the input text
+        GeneratedBarcode myQRCode = QRCodeWriter.CreateQrCode(text);
+
+        // Convert the generated QR code to HTML tag
+        qrCode = Convert.ToString(myQRCode.ToHtmlTag());
+    }
+}
+
