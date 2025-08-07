@@ -17,7 +17,7 @@ namespace SmartGym.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+		public async Task<ActionResult<IEnumerable<AppUser>>> GetAllUsers()
 		{
 			var userList = await _service.GetAllUsers();
 			return Ok(userList);
@@ -34,7 +34,7 @@ namespace SmartGym.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<User>> CreateUser(UserDto newUserData)
+		public async Task<ActionResult<AppUser>> CreateUser(UserDto newUserData)
 		{
 			var newUser = await _service.CreateUser(newUserData);
 			return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);

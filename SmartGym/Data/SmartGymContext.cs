@@ -1,16 +1,18 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SmartGym.Models;
 
 namespace SmartGym.Data;
 
-public class SmartGymContext : DbContext
+public class SmartGymContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
 {
 	public SmartGymContext(DbContextOptions<SmartGymContext> options) : base(options)
 	{
 
 	}
 	public DbSet<Class>? Classes { get; set; }
-	public DbSet<User>? Users { get; set; }
+	// public DbSet<AppUser>? Users { get; set; }
 	public DbSet<Order>? Orders { get; set; }
 	public DbSet<Checkin>? Checkins { get; set; }
 	public DbSet<MenuItem>? MenuItems { get; set; }

@@ -18,6 +18,6 @@ public class Class
 	[Required]
 	public int TrainerId { get; set; }
 	[Required]
-	public User Trainer { get; set; }
+	public AppUser Trainer { get; set; }
 	public int? CategoryId { get; set; }
 }

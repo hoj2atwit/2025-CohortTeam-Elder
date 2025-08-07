@@ -5,12 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using SmartGym.Data;
 using Microsoft.EntityFrameworkCore;
 using SmartGym.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
 		.AddInteractiveServerComponents();
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,6 +24,16 @@ builder.Services.AddDbContext<SmartGymContext>(options =>
 	var connectionString = builder.Configuration.GetConnectionString("DBConnectionString");
 	options.UseSqlServer(connectionString);
 });
+//Identity
+builder.Services.AddIdentity<AppUser, IdentityRole<int>>(options =>
+		{
+			options.Password.RequireDigit = true;
+			options.Password.RequireUppercase = true;
+			options.Password.RequireNonAlphanumeric = false;
+			options.Password.RequiredLength = 8;
+		})
+		.AddEntityFrameworkStores<SmartGymContext>()
+		.AddDefaultTokenProviders();
 //Automapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 //Data Repositories
@@ -45,6 +58,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 
 app.UseAntiforgery();
@@ -63,9 +78,7 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
 	var services = scope.ServiceProvider;
-	DbSeed.SeedDatabase(services, app.Environment.IsDevelopment());
+	await DbSeed.SeedDatabaseAsync(services, app.Environment.IsDevelopment());
 }
-
-DbSeed.SeedDatabase(app.Services, app.Environment.IsDevelopment());
 
 app.Run();
