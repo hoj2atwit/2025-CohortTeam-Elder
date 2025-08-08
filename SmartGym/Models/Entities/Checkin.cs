@@ -14,6 +14,8 @@ public class Checkin
 	[Required]
 	public string Method { get; set; }
 	[Required]
+	public string AccessPoint { get; set; }
+	[Required]
 	public int UserId { get; set; }
 	public AppUser User { get; set; }
 }
