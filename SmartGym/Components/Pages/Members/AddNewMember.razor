@@ -16,17 +16,20 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div>
                 <label asp-for="Input.FirstName">First Name: </label>
-                <input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="first name" />
+                <input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true"
+                    placeholder="first name" />
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
             <div>
                 <label asp-for="Input.LastName">Last Name: </label>
-                <input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="last name" />
+                <input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true"
+                    placeholder="last name" />
                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
             </div>
             <div>
                 <label asp-for="Input.Email">Email: </label>
-                <input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="email address" />
+                <input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username"
+                    aria-required="true" placeholder="email address" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div>
@@ -73,7 +76,6 @@
             tempUser.FirstName = FirstName;
             tempUser.LastName = LastName;
             tempUser.Email = Email;
-            tempUser.RoleId = int.Parse(Role);
             tempUser.DateOfBirth = DateOfBirth;
             tempUser.Status = 0;
             tempUser.CreatedDate = DateTime.Now;

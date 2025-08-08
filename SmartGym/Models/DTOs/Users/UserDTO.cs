@@ -10,7 +10,6 @@ public class UserDto
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
 	public string Email { get; set; }
-	public int RoleId { get; set; }
 	public DateTime DateOfBirth { get; set; }
 	public int Status { get; set; }
 	public DateTime CreatedDate { get; set; }
@@ -25,13 +24,7 @@ public class UserDto
 			if (!string.IsNullOrEmpty(_imageRef))
 				return _imageRef;
 
-			return RoleId switch
-			{
-				(int)Constants.Enums.RoleId.Trainer => "trainer.svg",
-				(int)Constants.Enums.RoleId.Staff => "staff.svg",
-				(int)Constants.Enums.RoleId.Manager => "manager.svg",
-				_ => "user.svg"
-			};
+			return "user.svg";
 		}
 		set => _imageRef = value;
 	}

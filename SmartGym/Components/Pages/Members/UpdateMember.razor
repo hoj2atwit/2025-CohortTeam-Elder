@@ -3,8 +3,10 @@
 @using SmartGym.Models
 @using SmartGym.Services
 @using System.Net.Mail
+@using Microsoft.AspNetCore.Identity
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
+@inject UserManager<AppUser> UserManager
 
 <PageTitle>Update Member</PageTitle>
 
@@ -24,17 +26,20 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div>
                     <label asp-for="Input.FirstName">First Name: </label>
-                    <input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true" placeholder="@user.FirstName" />
+                    <input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true"
+                        placeholder="@user.FirstName" />
                     <span asp-validation-for="Input.FirstName" class="text-danger"></span>
                 </div>
                 <div>
                     <label asp-for="Input.LastName">Last Name: </label>
-                    <input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true" placeholder="@user.LastName" />
+                    <input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true"
+                        placeholder="@user.LastName" />
                     <span asp-validation-for="Input.LastName" class="text-danger"></span>
                 </div>
                 <div>
                     <label asp-for="Input.Email">Email: </label>
-                    <input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="@user.Email" />
+                    <input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username"
+                        aria-required="true" placeholder="@user.Email" />
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
                 <div>
@@ -61,7 +66,7 @@
                         <option value="2">Inactive</option>
                     </select>
                 </div>
-                <button @onclick="() => EditMember(id, user)" class="">[Update]</button>
+                <button @onclick="() => EditMember(id)" class="">[Update]</button>
                 <a href="/members">Cancel</a>
             </div>
         }
@@ -76,14 +81,24 @@
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
-    public string Role { get; set; }
+    public string Role { get; set; } = "";
     public string Status { get; set; }
     public DateTime DateOfBirth { get; set; } = DateTime.Now;
+
+    private List<string> userRoles = new();
 
     protected override async Task OnInitializedAsync()
     {
         // Populate userList
         user = await service.GetUserById(id);
+        var appUser = await UserManager.FindByIdAsync(id.ToString());
+        var currentRoles = await UserManager.GetRolesAsync(appUser);
+        Role = currentRoles.FirstOrDefault() ?? "";
+        FirstName = user.FirstName;
+        LastName = user.LastName;
+        Email = user.Email;
+        Status = user.Status.ToString();
+        DateOfBirth = user.DateOfBirth;
         StateHasChanged();
     }
 
@@ -93,21 +108,27 @@
     /// <param name="userId"></param>
     /// <param name="userObj"></param>
     /// <returns></returns>
-    private async Task EditMember(int userId, UserDto userObj)
+    private async Task EditMember(int userId)
     {
         // check first name, last name
         if (pageIsValid())
         {
             // TODO: popup error
-            userObj.Name = $"{FirstName} {LastName}";
-            userObj.FirstName = FirstName;
-            userObj.LastName = LastName;
-            userObj.Email = Email;
-            userObj.RoleId = int.Parse(Role);
-            userObj.DateOfBirth = DateOfBirth;
-            userObj.Status = int.Parse(Status);
-            userObj.UpdatedDate = DateTime.Now;
-            await service.UpdateUser(userId, userObj);
+            var appUser = await UserManager.FindByIdAsync(userId.ToString());
+            if (appUser is null) return;
+            appUser.FirstName = FirstName;
+            appUser.LastName = LastName;
+            appUser.Email = Email;
+            appUser.DateOfBirth = DateOfBirth;
+            appUser.Status = int.Parse(Status);
+            appUser.UpdatedDate = DateTime.Now;
+
+            var currentRoles = await UserManager.GetRolesAsync(appUser);
+            await UserManager.RemoveFromRolesAsync(appUser, currentRoles);
+            if (!string.IsNullOrEmpty(Role))
+                await UserManager.AddToRoleAsync(appUser, Role);
+
+            await UserManager.UpdateAsync(appUser);
             navManager.NavigateTo("/members", true);
         }
         else
@@ -129,10 +150,6 @@
             return false;
         }
         else if (!emailIsValid())
-        {
-            return false;
-        }
-        else if (isEmpty(Role))
         {
             return false;
         }

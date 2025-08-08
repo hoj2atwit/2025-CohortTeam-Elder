@@ -15,7 +15,7 @@ public class OrderService : IOrderService
 		_mapper = mapper;
 	}
 
-	public void GetOrderHistory(User user)
+	public void GetOrderHistory(AppUser user)
 	{
 		throw new NotImplementedException();
 	}

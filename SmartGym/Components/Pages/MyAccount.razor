@@ -1,7 +1,9 @@
 @page "/myAccount"
+@using Microsoft.AspNetCore.Identity
 @using SmartGym.Constants.Enums
 @using SmartGym.Models
 @attribute [StreamRendering]
+@inject UserManager<AppUser> UserManager
 
 <PageTitle>My Account</PageTitle>
 
@@ -9,20 +11,20 @@
 
 <h3>Account Information</h3>
 <div>
-@* <span>First Name: @user.firstName</span>
+    @* <span>First Name: @user.firstName</span>
 <hr/>
 <span>Last Name: @user.lastName</span>
 <hr/>
 <span>Member Since: @user.accountActivationDate</span>
 <hr/>
 <span>Current Status: @user.accountStatus</span> *@
-<span>Account ID: @user.Id</span>
-<hr/>
-<span>First Name: @user.Name</span>
-<hr/>
-<span>Last Name: @user.Email</span>
-<hr/>
-<span>Membership: @user.RoleId</span>
+    <span>Account ID: @user.Id</span>
+    <hr />
+    <span>First Name: @user.Name</span>
+    <hr />
+    <span>Last Name: @user.Email</span>
+    <hr />
+    <span>Membership: @(string.Join(", ", roles))</span>
 </div>
 
 @* <h3>Billing Information</h3>
@@ -34,13 +36,14 @@
 </div> *@
 
 <h3>Personal Information</h3>
-<div>  
+<div>
 
 </div>
 
 @code {
 
-    private User user;
+    private AppUser user;
+    private IList<string> roles = new List<string>();
     //private Payment payment;
     protected override async Task OnInitializedAsync()
     {
@@ -55,11 +58,12 @@
             accountStatus = "Active",
             accountType = "Standard"
         }; *@
-        user = new User {
+        user = new AppUser
+        {
             Id = 23456789,
-            Name = "Johnny Danger",
-            Email = "dangerj@test.com",
-            RoleId = (int)RoleId.Member
+            FirstName = "Johnny",
+            LastName = "Danger",
+            Email = "dangerj@test.com"
         };
         @* payment = new Payment {
             cardholderName = "Johnathan Maximus Decimus Meridius Danger",
@@ -69,11 +73,11 @@
             secCode = 404
         }; *@
     }
-        @* private class Payment {
+    @* private class Payment {
             public string cardholderName {get; set;}
             public string cardNumber {get; set;}
             public int monthExpiry {get; set;}
             public int yearExpiry {get; set;}
             public int secCode {get; set;}
         } *@
-    }
+}

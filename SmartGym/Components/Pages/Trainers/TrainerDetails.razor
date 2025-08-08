@@ -1,8 +1,10 @@
 @page "/dashboard/trainers/{TrainerId:int}"
 @using SmartGym.Models
 @using SmartGym.Services
+@using Microsoft.AspNetCore.Identity
 @inject NavigationManager Navigation
 @inject IUserService UserService
+@inject UserManager<AppUser> UserManager
 
 <PageTitle>@(trainer != null ? trainer.Name : "Trainer Details") - Admin Portal</PageTitle>
 
@@ -274,9 +276,15 @@
             trainer = await UserService.GetUserById(TrainerId);
             
             // Verify the user is actually a trainer
-            if (trainer != null && trainer.RoleId != TRAINER_ROLE_ID)
+            if (trainer != null)
             {
-                trainer = null;
+                var user = await UserManager.FindByIdAsync(trainer.Id.ToString());
+                var roles = await UserManager.GetRolesAsync(user);
+
+                if (!roles.Contains("Trainer"))
+                {
+                    trainer = null;
+                }
             }
         }
         catch (Exception ex)

@@ -11,7 +11,7 @@ public class Booking
   public int Id { get; set; }
   [Required]
   public int UserId { get; set; }
-  public User User { get; set; }
+  public AppUser User { get; set; }
   [Required]
   public int ClassId { get; set; }
   public Class Class { get; set; }
