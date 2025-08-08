@@ -1,19 +1,23 @@
 ﻿@page "/POS"
-@using Components.UIClasses.Cafe
+@using SmartGym.Components.UIClasses.Cafe
+@using SmartGym.Components.Display
 @using SmartGym.Services
 @inject IOrderService orderService
 @inject ICafeService cafeService
 <title>@username's Order</title>
-<h1> @username's Order </h1>
-<div class="flex gap-2">
-    <div class="flex h-full w-full flex-col overflow-y-hidden border border-black p-4">
-        <section class="flex w-full flex-row justify-between p-2">
+<h1>  </h1>
+<div class="sticky top-0 z-10 bg-[#f3f4f6]">
+    <SearchNavBar title=@($"Username's Order") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })" />
+</div>
+<div class="flex">
+    <div class="border border-black p-4" style="max-width:65vw;">
+        <section class="flex flex-row justify-between p-2">
             <div class="w-full">
 
                 @* TODO: Add Search Functionality to menu, updating the menu when input is updated *@
-                <input type="text" @onchange="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })"
+                @*<input type="text" @onchange="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })"
                        class="relative rounded-full border px-2 py-2 text-slate-700 shadow-lg transition duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:shadow focus:outline-none"
-                       style="width: 55%;" placeholder="Search..." />
+                       style="width: 55%;" placeholder="Search..." />*@
 
                 @* Depending on decided functionality, might be removed *@
                 @*<button class="rounded-r-full border py-2 shadow-lg transition"
@@ -36,32 +40,34 @@
         }
         else
         {
-            <section class="h-11/12 max-h-11/12 max-w-screen w-screen">
-                <div class="max-w-1/12 flex flex-row">
-
-                    <div class="" >
-                        <div class="flex h-full min-h-0 flex-wrap items-center justify-center gap-2 overflow-y-auto border p-4">
-                            @* Fill with MenuItemContainerLayout depending on amount of items desired *@
-                            @* TODO: Dynamically update depending on filters *@
-                            @foreach (var item in PointOfSaleModel.instance.FilteredMenu)
-                            {
-                                <MenuItemLayout item=@item OnClickCallback=@(() => addToCart(@item))/>
-                            }
-
-                        </div>
-                    </div>
+            <div class="rounded-lg border p-4">
+                <div class="flex flex-wrap justify-center gap-2 overflow-y-auto" style="max-height:80vh;">
+                    @* Fill with MenuItemContainerLayout depending on amount of items desired *@
+                    @* TODO: Dynamically update depending on filters *@
+                    @foreach (var item in PointOfSaleModel.instance.FilteredMenu)
+                    {
+                        <MenuItemLayout item=@item OnClickCallback=@(() => addToCart(@item)) />
+                    }
 
                 </div>
-            </section>
+            </div>
+            
+
         }
     </div>
-    <MenuCartLayout @ref="menuCart"/>
+    <MenuCartLayout @ref="menuCart" OnClickCallBack=showCheckout/>
 </div>
+@if (showModal)
+{
+    <MenuCheckoutModal checkoutOnClickCallback=finishCheckout cancelOnClickCallback=cancelCheckout/>
+}
 
 @code {
     public string searchText = "";
     public string username = "";
     private MenuCartLayout menuCart;
+    private bool showModal = false;
+
 
     async Task InitializeMenu()
     {
@@ -72,6 +78,30 @@
         await updateMenu();
         //TODO: Load Cart from User
     }
+
+    public async Task finishCheckout()
+    {
+        await PointOfSaleModel.instance.checkout();
+        showModal = false;
+        await menuCart.updateCart();
+        StateHasChanged();
+
+    }
+
+    public Task cancelCheckout()
+    {
+        showModal = false;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    public Task showCheckout()
+    {
+        showModal = true;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await InitializeMenu();

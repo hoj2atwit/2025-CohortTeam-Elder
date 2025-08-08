@@ -131,7 +131,7 @@ namespace SmartGym.Components.UIClasses.Cafe
             Dictionary<string, MenuItemModel> d = new Dictionary<string, MenuItemModel>();
             foreach (MenuItemModel item in model) 
             {
-                d[item.ItemId.ToString()] = item;
+                d[item.Name] = item;
             }
             return d;
         }
