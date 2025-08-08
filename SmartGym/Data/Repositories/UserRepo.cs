@@ -3,7 +3,7 @@ using SmartGym.Models;
 
 namespace SmartGym.Data;
 
-public class UserRepo : Repository<User>
+public class UserRepo : Repository<AppUser>
 {
 	private readonly SmartGymContext _context;
 	private readonly DbSet<Class> _dbSet;
@@ -13,7 +13,7 @@ public class UserRepo : Repository<User>
 		_context = context;
 		_dbSet = context.Set<Class>();
 	}
-	
+
 	#region Custom Methods
 
 	#endregion

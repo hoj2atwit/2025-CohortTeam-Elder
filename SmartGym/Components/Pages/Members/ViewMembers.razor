@@ -3,15 +3,19 @@
 @using SmartGym.Helpers
 @using SmartGym.Models
 @using SmartGym.Services
+@using Microsoft.AspNetCore.Identity
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
+@inject UserManager<AppUser> UserManager
 @attribute [StreamRendering]
 
 
 <PageTitle>View Members</PageTitle>
 
-@* <style>
-    table, th, td {
+<style>
+    table,
+    th,
+    td {
         border: 1px solid black;
         border-collapse: collapse;
     }
@@ -53,14 +57,16 @@
             <tbody class="bg-white dark:bg-gray-800">
                 @foreach (UserDto userDto in userList)
                 {
-                    <tr class="border border-gray-200text-gray-500 dark:border-gray-600 dark:text-gray-400">
-                        <td  class=" p-4 pr-8 ">@userDto.FirstName</td>
-                        <td  class=" p-4 pr-8 ">@userDto.LastName</td>
-                        <td  class=" p-4 pr-8 ">@userDto.Email</td>
-                        <td  class=" p-4 pr-8 ">@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
-                        <td  class=" p-4 pr-8 ">@((RoleId)userDto.RoleId)</td>
-                        <td  class=" p-4 pr-8 ">@userDto.Status</td>
-                        <td  class=" p-4 pr-8 "><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
+                    <tr>
+                        <td>@userDto.FirstName</td>
+                        <td>@userDto.LastName</td>
+                        <td>@userDto.Email</td>
+                        <td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
+                        <td>@(userRolesDict.ContainsKey(userDto.Id) ? userRolesDict[userDto.Id].FirstOrDefault() ?? "No role" :
+                                                "No role")</td>
+                        <td>@((UserStatus)userDto.Status)</td>
+                        <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
+                        <td><button onclick=@(() => UpdateUser(@userDto))>Update Member</button></td>
                     </tr>
                     userIndex++;
                 }
@@ -75,11 +81,23 @@
 @code {
     private int userIndex = 0;
     private List<UserDto> userList = new();
+    private Dictionary<int, List<string>> userRolesDict = new();
 
     protected override async Task OnInitializedAsync()
     {
         // Populate userList
         userList = await service.GetAllUsers();
+        userRolesDict = new();
+
+        foreach (var user in userList)
+        {
+            var identityUser = await UserManager.FindByIdAsync(user.Id.ToString());
+            if (identityUser != null)
+            {
+                var roles = await UserManager.GetRolesAsync(identityUser);
+                userRolesDict[user.Id] = roles.ToList();
+            }
+        }
     }
 
     private Task DeleteUser(UserDto u)

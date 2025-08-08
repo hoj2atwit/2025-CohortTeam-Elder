@@ -19,7 +19,7 @@ public class UserService : IUserService
 	{
 		try
 		{
-			User newUser = _mapper.Map<User>(newUserData);
+			AppUser newUser = _mapper.Map<AppUser>(newUserData);
 			await _unitOfWork.UserRepository.AddAsync(newUser);
 			await _unitOfWork.SaveAsync();
 			return _mapper.Map<UserDto>(newUser);
@@ -113,7 +113,7 @@ public class UserService : IUserService
 	}
 
 
-	public void GetUserPaymentMethod(User user)
+	public void GetUserPaymentMethod(AppUser user)
 	{
 		throw new NotImplementedException();
 	}

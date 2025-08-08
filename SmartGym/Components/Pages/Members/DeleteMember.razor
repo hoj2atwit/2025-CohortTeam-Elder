@@ -2,8 +2,10 @@
 @using SmartGym.Models
 @using SmartGym.Constants.Enums
 @using SmartGym.Services
+@using Microsoft.AspNetCore.Identity
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
+@inject UserManager<AppUser> UserManager
 
 <PageTitle>Delete Member</PageTitle>
 
@@ -36,7 +38,7 @@
                 </div>
                 <hr />
                 <div>
-                    <p>Plan: @((RoleId)user.RoleId)</p>
+                    <p>Plan: @(userRoles.FirstOrDefault() ?? "No role")</p>
                 </div>
                 <hr />
                 <div>
@@ -60,11 +62,18 @@
     [Parameter]
     public int id { get; set; }
     private UserDto user { get; set; }
+    private List<string> userRoles = new();
 
     protected override async Task OnInitializedAsync()
     {
         // Populate userList
+
         user = await service.GetUserById(id);
+        var appUser = await UserManager.FindByIdAsync(id.ToString());
+        if (appUser != null)
+        {
+            userRoles = (await UserManager.GetRolesAsync(appUser)).ToList();
+        }
         StateHasChanged();
     }
 
@@ -78,4 +87,3 @@
         navManager.NavigateTo("/members");
     }
 }
-

@@ -1,10 +1,16 @@
-﻿namespace SmartGym.Components.UIClasses.Cafe
+﻿using Bogus;
+using SmartGym.Models;
+
+namespace SmartGym.Components.UIClasses.Cafe
 {
     public class CartModel
     {
         public OrderedDictionary<int, CartItemModel> CartItems = new();
-        private decimal Total = 0;
+        public decimal Total = 0;
+        public decimal Subtotal = 0;
+        public decimal Tax = 0;
         public string TotalString = "";
+        private static readonly decimal TAXRATE = 0.07m;
 
         /// <summary>
         /// Cart constructor. Applies correct formatting currency formatting.
@@ -47,12 +53,33 @@
         /// </summary>
         public void updateTotal()
         {
-            Total = 0;
+            Subtotal = 0;
             foreach (CartItemModel ci in CartItems.Values)
             {
-                Total += ci.CurrentPrice;
+                Subtotal += ci.CurrentPrice;
             }
+            Tax = Subtotal * TAXRATE;
+            Total = Tax + Subtotal;
             TotalString = string.Format("{0:C}", Total);
+        }
+
+        public OrderDTO toDTO() 
+        { 
+            OrderDTO dto = new OrderDTO();
+            dto.CreatedAt = DateTime.Now;
+            dto.OrderTime = DateTime.Now;
+            dto.UpdatedAt = DateTime.Now;
+            dto.Notes = "None";
+            dto.OrderCartList = new List<CartItemsDTO>();
+            dto.TotalPrice = Total;
+            dto.UserId = 1;
+
+            foreach (CartItemModel cartItem in CartItems.Values.ToList()) 
+            {
+                dto.OrderCartList.Add(cartItem.toCartItemsDTO());
+            }
+            
+            return dto;
         }
 
         /// <summary>
@@ -113,6 +140,15 @@
             {
                 Amount--;
                 updatePrice();
+            }
+
+            public CartItemsDTO toCartItemsDTO() 
+            {
+                CartItemsDTO dto = new CartItemsDTO();
+                dto.MenuItemId = Item.ItemId;
+                dto.Quantity = Amount;
+                dto.ImageRef = Item.ImageLocation;
+                return dto;
             }
         }
 

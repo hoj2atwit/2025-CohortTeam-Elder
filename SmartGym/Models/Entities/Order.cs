@@ -18,5 +18,5 @@ public class Order
 	public string Notes { get; set; } = string.Empty;
 	[Required]
 	public int UserId { get; set; }
-	public required User User { get; set; }
+	public required AppUser User { get; set; }
 }
