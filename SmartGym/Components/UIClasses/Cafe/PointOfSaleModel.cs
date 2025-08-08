@@ -19,14 +19,14 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// </summary>
         public PointOfSaleModel(IOrderService orderService, ICafeService cafeService)
         {
+            _orderService = orderService;
+            _cafeService = cafeService;
             if (instance != null)
             {
                 return;
             }
             else
             {
-                _orderService = orderService;
-                _cafeService = cafeService;
                 instance = this;
             }
         }
