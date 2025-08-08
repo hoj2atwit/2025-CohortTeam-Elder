@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SmartGym.Constants;
 
 namespace SmartGym.Models;
 
@@ -14,7 +15,7 @@ public class Checkin
 	[Required]
 	public string Method { get; set; }
 	[Required]
-	public string AccessPoint { get; set; }
+	public AccessPoint AccessPoint { get; set; }
 	[Required]
 	public int UserId { get; set; }
 	public AppUser User { get; set; }
