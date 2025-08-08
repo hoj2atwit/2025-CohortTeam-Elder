@@ -1,12 +1,16 @@
-﻿using SmartGym.Models;
+﻿using Bogus;
+using SmartGym.Models;
 
 namespace SmartGym.Components.UIClasses.Cafe
 {
     public class CartModel
     {
         public OrderedDictionary<int, CartItemModel> CartItems = new();
-        private decimal Total = 0;
+        public decimal Total = 0;
+        public decimal Subtotal = 0;
+        public decimal Tax = 0;
         public string TotalString = "";
+        private static readonly decimal TAXRATE = 0.07m;
 
         /// <summary>
         /// Cart constructor. Applies correct formatting currency formatting.
@@ -49,11 +53,13 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// </summary>
         public void updateTotal()
         {
-            Total = 0;
+            Subtotal = 0;
             foreach (CartItemModel ci in CartItems.Values)
             {
-                Total += ci.CurrentPrice;
+                Subtotal += ci.CurrentPrice;
             }
+            Tax = Subtotal * TAXRATE;
+            Total = Tax + Subtotal;
             TotalString = string.Format("{0:C}", Total);
         }
 
