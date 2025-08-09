@@ -32,7 +32,7 @@ namespace SmartGym.Data
 			// if (isDevelopment)
 			// {
 			// 	context.Database.EnsureDeleted();
-			// 	context.Database.Migrate();
+				context.Database.Migrate();
 			// }
 
 			//Roles
