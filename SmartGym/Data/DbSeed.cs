@@ -29,11 +29,11 @@ namespace SmartGym.Data
 			var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
 			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-			if (isDevelopment)
-			{
-				context.Database.EnsureDeleted();
-				context.Database.Migrate();
-			}
+			// if (isDevelopment)
+			// {
+			// 	context.Database.EnsureDeleted();
+			// 	context.Database.Migrate();
+			// }
 
 			//Roles
 			// Use RoleId enum and EnumHelper to get role names
@@ -173,10 +173,11 @@ namespace SmartGym.Data
 			}
 
 			List<string> menuItems = new()
-				{
-					"latte","espresso","americano","cappuccino","flat white","macchiato","mocha","cold brew","nitro cold brew","drip coffee","iced coffee","chai latte","dirty chai","matcha latte","iced matcha","hot chocolate","iced chocolate","turmeric latte","golden milk","london fog","earl grey tea","green tea","black tea","herbal tea","iced tea","lemonade","iced lemonade","sparkling water","still water","protein shake vanilla","protein shake chocolate","protein shake strawberry","protein shake mocha","protein shake peanut butter","protein shake cookies and cream","smoothie berry","smoothie mango","smoothie green","smoothie tropical","smoothie avocado","smoothie peanut butter banana","smoothie protein powder","smoothie collagen","oatmeal plain","oatmeal with berries","oatmeal with nuts","oatmeal with seeds","oatmeal with protein powder","greek yogurt plain","greek yogurt with honey","greek yogurt with granola","greek yogurt with fruit","parfait with yogurt","parfait with granola","parfait with berries","acai bowl","pitaya bowl","smoothie bowl","chia seed pudding","overnight oats","avocado toast","avocado toast with egg","avocado toast with tomato","avocado toast with feta","avocado toast with chili flakes","egg white omelette","scrambled eggs","hard-boiled eggs","turkey bacon","chicken sausage","protein pancakes","protein waffles","spinach and feta wrap","turkey and cheese wrap","chicken caesar wrap","vegetarian wrap","hummus and veggie wrap","tuna salad sandwich","chicken salad sandwich","turkey and avocado sandwich","grilled cheese","BLT sandwich","veggie burger","beef burger","chicken burger","salmon filet","grilled chicken breast","sweet potato fries","quinoa salad","lentil soup","tomato soup","chicken noodle soup","side salad","fruit cup","apple slices","banana","orange","protein bar","protein cookie","energy bites","trail mix","almonds","walnuts","cashews","jerky","rice cakes","rice cakes with peanut butter","rice cakes with avocado","dark chocolate squares","sugar-free gummies","kombucha","coconut water","electrolyte drink","pre-workout drink","post-workout drink","collagen water","almond milk","soy milk","oat milk","coconut milk","protein powder scoop","collagen scoop","BCAA powder","creatine powder","pre-workout scoop","espresso shot","extra shot of syrup","extra shot of flavor","extra shot of espresso","extra shot of protein","extra shot of collagen","extra shot of BCAA","extra shot of creatine","extra shot of whipped cream","extra shot of toppings","extra shot of nuts","extra shot of seeds","extra shot of fruit","extra shot of granola","extra shot of honey","extra shot of maple syrup","extra shot of agave","extra shot of stevia","extra shot of monk fruit","extra shot of sugar","extra shot of salt","extra shot of pepper"
-				};
+			{
+				"latte","espresso","americano","cappuccino","flat white","macchiato","mocha","cold brew","nitro cold brew","drip coffee","iced coffee","chai latte","dirty chai","matcha latte","iced matcha","hot chocolate","iced chocolate","turmeric latte","golden milk","london fog","earl grey tea","green tea","black tea","herbal tea","iced tea","lemonade","iced lemonade","sparkling water","still water","protein shake vanilla","protein shake chocolate","protein shake strawberry","protein shake mocha","protein shake peanut butter","protein shake cookies and cream","smoothie berry","smoothie mango","smoothie green","smoothie tropical","smoothie avocado","smoothie peanut butter banana","smoothie protein powder","smoothie collagen","oatmeal plain","oatmeal with berries","oatmeal with nuts","oatmeal with seeds","oatmeal with protein powder","greek yogurt plain","greek yogurt with honey","greek yogurt with granola","greek yogurt with fruit","parfait with yogurt","parfait with granola","parfait with berries","acai bowl","pitaya bowl","smoothie bowl","chia seed pudding","overnight oats","avocado toast","avocado toast with egg","avocado toast with tomato","avocado toast with feta","avocado toast with chili flakes","egg white omelette","scrambled eggs","hard-boiled eggs","turkey bacon","chicken sausage","protein pancakes","protein waffles","spinach and feta wrap","turkey and cheese wrap","chicken caesar wrap","vegetarian wrap","hummus and veggie wrap","tuna salad sandwich","chicken salad sandwich","turkey and avocado sandwich","grilled cheese","BLT sandwich","veggie burger","beef burger","chicken burger","salmon filet","grilled chicken breast","sweet potato fries","quinoa salad","lentil soup","tomato soup","chicken noodle soup","side salad","fruit cup","apple slices","banana","orange","protein bar","protein cookie","energy bites","trail mix","almonds","walnuts","cashews","jerky","rice cakes","rice cakes with peanut butter","rice cakes with avocado","dark chocolate squares","sugar-free gummies","kombucha","coconut water","electrolyte drink","pre-workout drink","post-workout drink","collagen water","almond milk","soy milk","oat milk","coconut milk","protein powder scoop","collagen scoop","BCAA powder","creatine powder","pre-workout scoop","espresso shot","extra shot of syrup","extra shot of flavor","extra shot of espresso","extra shot of protein","extra shot of collagen","extra shot of BCAA","extra shot of creatine","extra shot of whipped cream","extra shot of toppings","extra shot of nuts","extra shot of seeds","extra shot of fruit","extra shot of granola","extra shot of honey","extra shot of maple syrup","extra shot of agave","extra shot of stevia","extra shot of monk fruit","extra shot of sugar","extra shot of salt","extra shot of pepper"
+			};
 			var uniqueMenuItems = menuItems.Distinct().ToList();
+
 			if (!context.MenuItems.Any())
 			{
 				var faker = new Faker<MenuItem>()
@@ -184,13 +185,14 @@ namespace SmartGym.Data
 					 .RuleFor(m => m.Calories, f => f.Random.Int(100, 3000))
 					 .RuleFor(m => m.Ingredients, f => string.Join(", ", f.Commerce.ProductMaterial()))
 					 .RuleFor(m => m.Description, f => f.Lorem.Sentence(5))
-					 .RuleFor(m => m.StockLevel, f => f.Random.Int(0, 9999))
-					 .RuleFor(m => m.Tags, f => string.Join(", ", f.Random.Words(3)));
+					 .RuleFor(m => m.StockLevel, f => f.Random.Int(0, 999));
 
 				var fakeMenuItems = faker.Generate(uniqueMenuItems.Count());
 				for (int i = 0; i < uniqueMenuItems.Count(); i++)
 				{
 					fakeMenuItems[i].Name = uniqueMenuItems[i];
+					var tags = GetTagsForMenuItem(uniqueMenuItems[i]);
+					fakeMenuItems[i].Tags = tags.Any() ? string.Join(", ", tags) : "misc";
 				}
 				context.MenuItems.AddRange(fakeMenuItems);
 				await context.SaveChangesAsync();
@@ -278,6 +280,79 @@ namespace SmartGym.Data
 				context.Bookings.AddRange(bookings);
 				await context.SaveChangesAsync();
 			}
+		}
+
+		private static List<string> GetTagsForMenuItem(string name)
+		{
+			var tags = new List<string>();
+			var n = name.ToLower();
+
+			// Drinks
+			if (n.Contains("coffee") || n.Contains("latte") || n.Contains("espresso") || n.Contains("mocha") || n.Contains("macchiato") || n.Contains("cappuccino") || n.Contains("drip")) tags.Add("coffee");
+			if (n.Contains("tea") || n.Contains("chai") || n.Contains("matcha") || n.Contains("earl grey")) tags.Add("tea");
+			if (n.Contains("smoothie")) tags.Add("smoothie");
+			if (n.Contains("protein shake")) tags.Add("protein shake");
+			if (n.Contains("lemonade")) tags.Add("lemonade");
+			if (n.Contains("kombucha")) tags.Add("kombucha");
+			if (n.Contains("water")) tags.Add("water");
+			if (n.Contains("milk")) tags.Add("milk");
+			if (n.Contains("hot chocolate") || n.Contains("iced chocolate")) tags.Add("chocolate");
+			if (n.Contains("pre-workout")) tags.Add("pre-workout");
+			if (n.Contains("post-workout")) tags.Add("post-workout");
+			if (n.Contains("collagen")) tags.Add("collagen");
+			if (n.Contains("bcaa")) tags.Add("bcaa");
+			if (n.Contains("creatine")) tags.Add("creatine");
+			if (n.Contains("electrolyte")) tags.Add("electrolyte");
+
+			// Breakfast
+			if (n.Contains("oatmeal") || n.Contains("overnight oats")) tags.Add("oats");
+			if (n.Contains("greek yogurt") || n.Contains("parfait")) tags.Add("yogurt");
+			if (n.Contains("acai bowl") || n.Contains("pitaya bowl") || n.Contains("smoothie bowl")) tags.Add("bowl");
+			if (n.Contains("chia seed")) tags.Add("chia");
+			if (n.Contains("avocado toast")) tags.Add("toast");
+			if (n.Contains("egg")) tags.Add("egg");
+			if (n.Contains("pancake")) tags.Add("pancake");
+			if (n.Contains("waffle")) tags.Add("waffle");
+
+			// Lunch/Deli
+			if (n.Contains("wrap")) tags.Add("wrap");
+			if (n.Contains("sandwich")) tags.Add("sandwich");
+			if (n.Contains("burger")) tags.Add("burger");
+			if (n.Contains("salad")) tags.Add("salad");
+			if (n.Contains("soup")) tags.Add("soup");
+			if (n.Contains("fries")) tags.Add("fries");
+			if (n.Contains("filet") || n.Contains("grilled chicken")) tags.Add("entree");
+
+			// Snacks
+			if (n.Contains("bar")) tags.Add("bar");
+			if (n.Contains("cookie")) tags.Add("cookie");
+			if (n.Contains("bites")) tags.Add("bites");
+			if (n.Contains("trail mix")) tags.Add("trail mix");
+			if (n.Contains("jerky")) tags.Add("jerky");
+			if (n.Contains("rice cakes")) tags.Add("rice cakes");
+			if (n.Contains("dark chocolate")) tags.Add("chocolate");
+			if (n.Contains("gummies")) tags.Add("gummies");
+			if (n.Contains("fruit cup") || n.Contains("apple") || n.Contains("banana") || n.Contains("orange")) tags.Add("fruit");
+			if (n.Contains("almonds") || n.Contains("walnuts") || n.Contains("cashews") || n.Contains("nuts")) tags.Add("nuts");
+			if (n.Contains("seeds")) tags.Add("seeds");
+			if (n.Contains("granola")) tags.Add("granola");
+
+			// Dietary
+			if (n.Contains("veggie") || n.Contains("vegetarian") || n.Contains("plant")) tags.Add("vegetarian");
+			if (n.Contains("vegan")) tags.Add("vegan");
+			if (n.Contains("gluten free") || n.Contains("gluten-free")) tags.Add("gluten-free");
+			if (n.Contains("protein")) tags.Add("high protein");
+			if (n.Contains("sugar-free")) tags.Add("sugar-free");
+			if (n.Contains("low carb")) tags.Add("low carb");
+
+			// Add-ons/extras
+			if (n.Contains("extra shot")) tags.Add("add-on");
+
+			// Misc
+			if (n.Contains("honey") || n.Contains("maple syrup") || n.Contains("agave") || n.Contains("stevia") || n.Contains("monk fruit") || n.Contains("sugar")) tags.Add("sweetener");
+			if (n.Contains("pepper") || n.Contains("salt")) tags.Add("seasoning");
+
+			return tags.Distinct().ToList();
 		}
 
 		private static void UpdateImageFolder(SmartGymContext context)
