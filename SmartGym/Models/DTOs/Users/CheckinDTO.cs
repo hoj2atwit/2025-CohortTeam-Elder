@@ -1,5 +1,5 @@
 using System;
-using SmartGym.Constants;
+using SmartGym.Constants.Enums;
 
 namespace SmartGym.Models;
 

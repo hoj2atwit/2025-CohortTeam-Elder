@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SmartGym.Constants;
+using SmartGym.Constants.Enums;
 
 namespace SmartGym.Models;
 
