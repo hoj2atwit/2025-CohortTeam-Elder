@@ -11,13 +11,15 @@ public class SmartGymContext : IdentityDbContext<AppUser, IdentityRole<int>, int
 	{
 
 	}
-	public DbSet<Class>? Classes { get; set; }
 	// public DbSet<AppUser>? Users { get; set; }
-	public DbSet<Order>? Orders { get; set; }
+	public DbSet<Class>? Classes { get; set; }
+	public DbSet<ClassSession>? ClassSessions { get; set; }
 	public DbSet<Checkin>? Checkins { get; set; }
+	public DbSet<Booking>? Bookings { get; set; }
+	public DbSet<Waitlist>? Waitlist { get; set; }
+	public DbSet<Order>? Orders { get; set; }
 	public DbSet<MenuItem>? MenuItems { get; set; }
 	public DbSet<Images>? Images { get; set; }
-	public DbSet<Booking>? Bookings { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
