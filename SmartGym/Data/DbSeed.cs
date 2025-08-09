@@ -29,7 +29,15 @@ namespace SmartGym.Data
 			var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
 			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-			await context.Database.MigrateAsync();
+			if (isDevelopment)
+			{
+				context.Database.EnsureDeleted();
+				context.Database.EnsureCreated();
+			}
+			else
+			{
+				context.Database.Migrate();
+			}
 
 			//Roles
 			// Use RoleId enum and EnumHelper to get role names
@@ -52,7 +60,7 @@ namespace SmartGym.Data
 			if (!userManager.Users.Any())
 			{
 				var faker = new Faker();
-				for (int i = 0; i < 20; i++)
+				for (int i = 0; i < 300; i++)
 				{
 					var firstName = faker.Name.FirstName();
 					var lastName = faker.Name.LastName();
@@ -65,7 +73,7 @@ namespace SmartGym.Data
 						FirstName = firstName,
 						LastName = lastName,
 						DateOfBirth = faker.Date.Between(new DateTime(1980, 1, 1), new DateTime(2005, 1, 1)),
-						Status = UserStatus.Active,
+						Status = faker.PickRandom<UserStatus>(),
 						CreatedDate = DateTime.UtcNow,
 						UpdatedDate = DateTime.UtcNow,
 						EmailConfirmed = true
@@ -106,12 +114,20 @@ namespace SmartGym.Data
 
 			}
 
+			var trainerRoleName = Helpers.EnumHelper.GetDisplayName(RoleId.Trainer);
+			var trainerRole = await roleManager.Roles.FirstOrDefaultAsync(r => r.Name == trainerRoleName);
+			var trainerRoleId = trainerRole?.Id;
+			var trainers = await (from user in context.Users
+										 join userRole in context.UserRoles on user.Id equals userRole.UserId
+										 join role in context.Roles on userRole.RoleId equals role.Id
+										 where role.Name == trainerRoleName
+										 select user).ToListAsync();
+
 			//Clases
 			List<string> classes = new() { "Amp It Up!", "Sweat N Sculpt", "Cardio Blast", "Power Surge", "Ignite Fitness", "Adrenaline Rush", "Torch N Tone", "Velocity HIIT", "Explosion Circuit", "Rhythm N Burn", "Grit N Grind", "Ironclad Core", "Sculpt N Define", "Strong Foundations", "Form N Fire", "Titan Training", "Muscle Mania", "Build N Burn", "Resilience Builders", "Powerhouse Physique", "Zen Zone Flow", "Harmony Stretch", "Inner Balance", "Calm N Core", "Mindful Movement", "Flexibility Fusion", "Serenity Sculpt", "Tranquil Strength", "Root N Rise", "Unwind N Restore", "Apex Athletics", "Synergy Session", "Kinetic Flow", "Metabolic Mayhem", "Bodyweight Blitz", "Urban Warrior", "Circuit Breaker", "The Grindhouse", "Fusion Fitness", "Primal Movement", "Warrior Waves", "Cardio Drumming", "Dance Dynamix", "Pilates Powerhouse", "Barre Burn", "Spin N Sculpt", "TRX Territory", "Kettlebell Kommandos", "Agility Ascent", "Gladiators Guild" };
 			if (!context.Classes.Any())
 			{
 
-				var trainers = await userManager.Users.ToListAsync();
 				var faker = new Faker<Class>()
 					 .RuleFor(x => x.Name, f => f.Random.ListItem(classes))
 					 .RuleFor(x => x.Schedule, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
@@ -152,7 +168,8 @@ namespace SmartGym.Data
 				var faker = new Faker<Checkin>()
 					 .RuleFor(x => x.CheckinTime, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
 					 .RuleFor(x => x.Method, f => f.Random.ListItem(new List<string>() { "qr", "desk" }))
-					 .RuleFor(x => x.UserId, f => f.Random.ListItem(userIds));
+					 .RuleFor(x => x.UserId, f => f.Random.ListItem(userIds))
+					 .RuleFor(x => x.AccessPoint, f => f.PickRandom<AccessPoint>());
 
 				var fakeCheckins = faker.Generate(1000); // Generate 20 random classes
 				context.Checkins.AddRange(fakeCheckins);
@@ -196,12 +213,12 @@ namespace SmartGym.Data
 					int sessionCount = sessionFaker.Random.Int(1, 3);
 					for (int i = 0; i < sessionCount; i++)
 					{
-						var startTime = sessionFaker.Date.Between(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(30));
-						var endTime = startTime.AddMinutes(sessionFaker.Random.Int(30, 120));
 						classSessions.Add(new ClassSession
 						{
 							ClassId = gymClass.Id,
-							SessionDateTime = startTime,
+							InstructorId = sessionFaker.PickRandom(trainers).Id,
+							SessionDateTime = sessionFaker.Date.Between(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(30)),
+							Capacity = sessionFaker.Random.Int(0, gymClass.Capacity),
 							LocationId = sessionFaker.PickRandom(new[] { AccessPoint.Pool, AccessPoint.RockClimbing, AccessPoint.Class })
 						});
 					}
@@ -224,7 +241,7 @@ namespace SmartGym.Data
 					if (!sessionsForClass.Any())
 						continue;
 
-					int numberOfBookings = random.Next(0, gymClass.Capacity);
+					int numberOfBookings = random.Next(0, gymClass.Capacity + 1);
 
 					var bookedUserIds = users.OrderBy(_ => Guid.NewGuid())
 											 .Take(numberOfBookings)
@@ -233,19 +250,26 @@ namespace SmartGym.Data
 
 					foreach (var userId in bookedUserIds)
 					{
+						// Assign a random session for this class that still has capacity
+						var availableSessions = sessionsForClass
+							.Where(s =>
+								bookings.Count(b => b.ClassSessionId == s.Id) < s.Capacity)
+							.ToList();
+
+						if (!availableSessions.Any())
+							break;
+
+						var session = availableSessions[random.Next(availableSessions.Count)];
+
 						var status = (BookingStatus)random.Next(0, Enum.GetValues(typeof(BookingStatus)).Length);
 						var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
 						var confirmedAt = (status == BookingStatus.Confirmed)
 							? createdAt.AddMinutes(random.Next(5, 120))
 							: DateTime.MinValue;
 
-						// Assign a random session for this class
-						var session = sessionsForClass[random.Next(sessionsForClass.Count)];
-
 						bookings.Add(new Booking
 						{
 							UserId = userId,
-							ClassId = gymClass.Id,
 							ClassSessionId = session.Id,
 							Status = status,
 							CreatedAt = createdAt,

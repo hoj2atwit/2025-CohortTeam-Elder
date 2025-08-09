@@ -10,8 +10,10 @@ public interface IBookingService
 	Task<bool> DeleteBooking(int id);
 	Task<List<BookingDTO>> GetAllBookings();
 	Task<List<BookingDTO>> GetBookingByUserId(int userId);
-	Task<bool> IsUserAlreadyBooked(int userId, int classId);
+	Task<bool> IsUserAlreadyBooked(int userId, int sessionId);
 	Task<List<BookingDTO>> GetBookingsByClassId(int classId);
+	Task<List<BookingDTO>> GetBookingsBySessionId(int sessionId);
+	Task<int> CountBookingsForSession(int classId);
 	Task<int> CountBookingsForClass(int classId);
 	Task AutoCancelStaleBookings();
 	Task<BookingDTO> GetBooking(int id);

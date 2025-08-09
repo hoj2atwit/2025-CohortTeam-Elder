@@ -13,13 +13,10 @@ public class Booking
 	public int UserId { get; set; }
 	public AppUser User { get; set; }
 	[Required]
-	public int ClassId { get; set; }
-	public Class Class { get; set; }
-	[Required]
 	public BookingStatus Status { get; set; }
 	[Required]
 	public DateTime CreatedAt { get; set; }
-	public DateTime ConfirmedAt { get; set; }
+	public DateTime? ConfirmedAt { get; set; }
 	public DateTime UpdatedAt { get; set; }
 	[Required]
 	public int ClassSessionId { get; set; }
