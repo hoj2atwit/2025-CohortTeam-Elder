@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<DatabaseConfiguration>(builder.Configuration.GetSection(DatabaseConfiguration.ConnectionStrings));
 builder.Services.AddDbContext<SmartGymContext>(options =>
 {
-	var connectionString = builder.Configuration.GetConnectionString("DBConnectionString");
+	var connectionString = builder.Configuration.GetConnectionString("LocalDBConnectionString");
 	options.UseSqlServer(connectionString);
 });
 //Identity

@@ -8,7 +8,7 @@ using SmartGym.Constants.Enums;
 
 namespace SmartGym.Models
 {
-	[Table("ClassSession")]
+	[Table("ClassSessions")]
 	public class ClassSession
 	{
 		[Required]
