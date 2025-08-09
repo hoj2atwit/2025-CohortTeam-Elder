@@ -222,7 +222,9 @@ namespace SmartGym.Data
 
 			if (!context.Bookings.Any())
 			{
-				var users = await userManager.Users.ToListAsync();
+				var users = await userManager.Users
+					.Where(u => u.Status == UserStatus.Active)
+					.ToListAsync();
 				var classesToBook = context.Classes.ToList();
 				var classSessions = context.ClassSessions.ToList();
 				var bookings = new List<Booking>();

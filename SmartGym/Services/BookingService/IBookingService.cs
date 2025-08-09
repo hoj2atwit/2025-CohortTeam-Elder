@@ -28,10 +28,10 @@ public interface IBookingService
 	#endregion
 
 	#region Waitlist
-	Task<List<WaitlistDTO>> GetFullWaitList();
-	Task<List<WaitlistDTO>> GetWaitlistBySession(int id);
-	Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId);
-	Task<List<WaitlistDTO>> GetWaitlistByUser(int userId);
+	Task<List<WaitlistDTO>> GetFullWaitList(bool includeNestedClasses = false);
+	Task<List<WaitlistDTO>> GetWaitlistBySession(int id, bool includeNestedClasses = false);
+	Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId, bool includeNestedClasses = false);
+	Task<List<WaitlistDTO>> GetWaitlistByUser(int userId, bool includeNestedClasses = false);
 	Task<WaitlistDTO?> UpdateWaitListRecord(int id, WaitlistDTO waitlistDto);
 	Task<bool> DeleteFromWaitlist(int id);
 	#endregion

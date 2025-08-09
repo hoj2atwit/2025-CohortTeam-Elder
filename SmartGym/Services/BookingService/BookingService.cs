@@ -368,11 +368,12 @@ public class BookingService : IBookingService
 	/// Gets entire
 	/// </summary>
 	/// <returns></returns>
-	public async Task<List<WaitlistDTO>> GetFullWaitList()
+	public async Task<List<WaitlistDTO>> GetFullWaitList(bool includeNestedClasses = false)
 	{
 		try
 		{
-			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync();
+			var includeProps = includeNestedClasses ? "Member,Session,Session.Class" : "";
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(includeProperties: includeProps);
 			var waitlistDtoList = _mapper.Map<List<WaitlistDTO>>(waitlist);
 			return waitlistDtoList.ToList();
 		}
@@ -383,11 +384,12 @@ public class BookingService : IBookingService
 		}
 	}
 
-	public async Task<List<WaitlistDTO>> GetWaitlistBySession(int id)
+	public async Task<List<WaitlistDTO>> GetWaitlistBySession(int id, bool includeNestedClasses = false)
 	{
 		try
 		{
-			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.Session.Id == id);
+			var includeProps = includeNestedClasses ? "Member,Session,Session.Class" : "";
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.Session.Id == id, includeProperties: includeProps);
 			var waitlistDtoList = _mapper.Map<List<WaitlistDTO>>(waitlist);
 			return waitlistDtoList.ToList();
 		}
@@ -398,11 +400,12 @@ public class BookingService : IBookingService
 		}
 	}
 
-	public async Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId)
+	public async Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId, bool includeNestedClasses = false)
 	{
 		try
 		{
-			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.Session.ClassId == classId);
+			var includeProps = includeNestedClasses ? "Member,Session,Session.Class" : "";
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.Session.ClassId == classId, includeProperties: includeProps);
 			var waitlistDtoList = _mapper.Map<List<WaitlistDTO>>(waitlist);
 			return waitlistDtoList.ToList();
 		}
@@ -413,11 +416,12 @@ public class BookingService : IBookingService
 		}
 	}
 
-	public async Task<List<WaitlistDTO>> GetWaitlistByUser(int userId)
+	public async Task<List<WaitlistDTO>> GetWaitlistByUser(int userId, bool includeNestedClasses = false)
 	{
 		try
 		{
-			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.MemberId == userId);
+			var includeProps = includeNestedClasses ? "Member,Session,Session.Class" : "";
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.MemberId == userId, includeProperties: includeProps);
 			var waitlistDtoList = _mapper.Map<List<WaitlistDTO>>(waitlist);
 			return waitlistDtoList.ToList();
 		}
@@ -447,7 +451,11 @@ public class BookingService : IBookingService
 			return null;
 		}
 	}
-
+	/// <summary>
+	/// This method will remove a record from the waitlist and automatically move each person up the queue
+	/// </summary>
+	/// <param name="id"></param>
+	/// <returns></returns>
 	public async Task<bool> DeleteFromWaitlist(int id)
 	{
 		try
@@ -456,7 +464,23 @@ public class BookingService : IBookingService
 			if (waitlistRecord == null)
 				return false;
 
+			int sessionId = waitlistRecord.SessionId;
+			int deletedPosition = waitlistRecord.Position;
+
 			_unitOfWork.WaitlistRepository.Delete(waitlistRecord);
+
+			// Get all waitlist records that were behind
+			var affectedRecords = await _unitOfWork.WaitlistRepository.GetAsync(
+				w => w.SessionId == sessionId && w.Position > deletedPosition
+			);
+
+			// Decrement their positions
+			foreach (var record in affectedRecords)
+			{
+				record.Position -= 1;
+				_unitOfWork.WaitlistRepository.Update(record);
+			}
+
 			await _unitOfWork.SaveAsync();
 			return true;
 		}
