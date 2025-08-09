@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SmartGym.Constants;
 using SmartGym.Models;
 using SmartGym.Services;
 
@@ -66,6 +67,26 @@ public class OrdersController : ControllerBase
 			return NotFound();
 		}
 		return orderItem;
+	}
+	[HttpGet("getAllOrders")]
+	public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
+	{
+		var orderList = await _service.GetAllOrders();
+		if (orderList == null || orderList.Count == 0)
+		{
+			return NotFound();
+		}
+		return Ok(orderList);
+	}
+	[HttpGet("getOrderByStatus/{id:int}")]
+	public async Task<ActionResult<IEnumerable<Order>>> GetOrderByStatus(int id)
+	{
+		var orderList = await _service.GetAllOrdersByStatus((OrderStatus)id);
+		if (orderList == null || orderList.Count == 0)
+		{
+			return NotFound();
+		}
+		return Ok(orderList);
 	}
 	[HttpGet("{id:int}/time")]
 	public async Task<ActionResult<DateTime?>> GetOrderTime(int id)

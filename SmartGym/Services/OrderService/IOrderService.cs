@@ -1,3 +1,4 @@
+using SmartGym.Constants;
 using SmartGym.Models;
 
 namespace SmartGym.Services;
@@ -10,6 +11,6 @@ public interface IOrderService
 	Task<DateTime?> GetOrderTime(int id);
 	Task<OrderDTO?> UpdateOrder(int id, OrderPatchDTO OrderDto);
 	Task<bool> DeleteOrder(int id);
-	Task<List<OrderDTO>> GetAllOrdersByStatus();
+	Task<List<OrderDTO>> GetAllOrdersByStatus(OrderStatus status);
 	Task<List<OrderDTO>> GetAllOrders();
 }
