@@ -32,10 +32,6 @@ namespace SmartGym.Data
 			if (isDevelopment)
 			{
 				context.Database.EnsureDeleted();
-				context.Database.EnsureCreated();
-			}
-			else
-			{
 				context.Database.Migrate();
 			}
 
@@ -133,7 +129,7 @@ namespace SmartGym.Data
 					 .RuleFor(x => x.Schedule, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
 					 .RuleFor(x => x.Capacity, f => f.Random.Int(20, 50))
 					 .RuleFor(x => x.TrainerId, f => f.PickRandom(trainers).Id)
-					 .RuleFor(x => x.CategoryId, f => f.Random.Int(1, 5));
+					 .RuleFor(x => x.CategoryId, f => f.PickRandom<ClassCategory>());
 
 				var fakeClasses = faker.Generate(20); // Generate 20 random classes
 				context.Classes.AddRange(fakeClasses);

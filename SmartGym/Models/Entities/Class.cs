@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SmartGym.Constants.Enums;
 
 namespace SmartGym.Models;
 
@@ -19,5 +20,5 @@ public class Class
 	public int TrainerId { get; set; }
 	[Required]
 	public AppUser Trainer { get; set; }
-	public int? CategoryId { get; set; }
+	public ClassCategory? CategoryId { get; set; }
 }
