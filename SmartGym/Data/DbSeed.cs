@@ -226,6 +226,7 @@ namespace SmartGym.Data
 				var classesToBook = context.Classes.ToList();
 				var classSessions = context.ClassSessions.ToList();
 				var bookings = new List<Booking>();
+				var waitlist = new List<Waitlist>();
 				var random = new Random();
 
 				foreach (var gymClass in classesToBook)
@@ -245,34 +246,57 @@ namespace SmartGym.Data
 					{
 						// Assign a random session for this class that still has capacity
 						var availableSessions = sessionsForClass
-							.Where(s =>
+								.Where(s =>
 								bookings.Count(b => b.ClassSessionId == s.Id) < s.Capacity)
-							.ToList();
+								.ToList();
+
+						var unavailableSessions = sessionsForClass
+								.Where(s =>
+								bookings.Count(b => b.ClassSessionId == s.Id) == s.Capacity)
+								.ToList();
 
 						if (!availableSessions.Any())
-							break;
-
-						var session = availableSessions[random.Next(availableSessions.Count)];
-
-						var status = (BookingStatus)random.Next(0, Enum.GetValues(typeof(BookingStatus)).Length);
-						var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
-						var confirmedAt = (status == BookingStatus.Confirmed)
-							? createdAt.AddMinutes(random.Next(5, 120))
-							: DateTime.MinValue;
-
-						bookings.Add(new Booking
 						{
-							UserId = userId,
-							ClassSessionId = session.Id,
-							Status = status,
-							CreatedAt = createdAt,
-							ConfirmedAt = confirmedAt,
-							UpdatedAt = createdAt.AddMinutes(random.Next(10, 500))
-						});
+							// All sessions are full, add user to waitlist for a random session
+							var session = unavailableSessions[random.Next(unavailableSessions.Count)];
+							var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+
+							// Determine the next position
+							int nextPosition = waitlist.Count(w => w.SessionId == session.Id) + 1;
+
+							waitlist.Add(new Waitlist
+							{
+								MemberId = userId,
+								SessionId = session.Id,
+								JoinedDateTime = createdAt.AddMinutes(random.Next(5, 120)),
+								Position = nextPosition
+							});
+						}
+						else
+						{
+							var session = availableSessions[random.Next(availableSessions.Count)];
+
+							var status = (BookingStatus)random.Next(0, Enum.GetValues(typeof(BookingStatus)).Length);
+							var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+							var confirmedAt = (status == BookingStatus.Confirmed)
+								? createdAt.AddMinutes(random.Next(5, 120))
+								: DateTime.MinValue;
+
+							bookings.Add(new Booking
+							{
+								UserId = userId,
+								ClassSessionId = session.Id,
+								Status = status,
+								CreatedAt = createdAt,
+								ConfirmedAt = confirmedAt,
+								UpdatedAt = createdAt.AddMinutes(random.Next(10, 500))
+							});
+						}
 					}
 				}
 
 				context.Bookings.AddRange(bookings);
+				context.Waitlist.AddRange(waitlist);
 				await context.SaveChangesAsync();
 			}
 		}

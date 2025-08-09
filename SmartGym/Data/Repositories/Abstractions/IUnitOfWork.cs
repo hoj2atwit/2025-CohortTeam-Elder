@@ -11,5 +11,7 @@ public interface IUnitOfWork
 	public IRepository<MenuItem> MenuItemRepository { get; }
 	public IRepository<Images> ImagesRepository { get; }
 	public IRepository<Booking> BookingsRepository { get; }
+	public IRepository<Waitlist> WaitlistRepository { get; }
+	public IRepository<ClassSession> ClassSessionRepository { get; }
 	public Task SaveAsync();
 }

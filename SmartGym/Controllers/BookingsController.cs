@@ -41,7 +41,7 @@ public class BookingsController : ControllerBase
 	[HttpGet("session/{sessionId:int}")]
 	public async Task<ActionResult<List<BookingDTO>>> GetBySessionId(int sessionId)
 	{
-		var bookings = await _bookingService.GetBookingsByClassId(sessionId);
+		var bookings = await _bookingService.GetBookingsBySessionId(sessionId);
 		return Ok(bookings);
 	}
 

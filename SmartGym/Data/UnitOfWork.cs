@@ -12,6 +12,8 @@ public class UnitOfWork : IUnitOfWork
 	private IRepository<MenuItem>? _menuItemRepository;
 	private IRepository<Images>? _imagesRepository;
 	private IRepository<Booking>? _bookingsRepository;
+	private IRepository<Waitlist>? _waitlistRepository;
+	private IRepository<ClassSession>? _classSessionRepository;
 
 	public UnitOfWork(SmartGymContext context)
 	{
@@ -72,6 +74,23 @@ public class UnitOfWork : IUnitOfWork
 		{
 			_bookingsRepository ??= new Repository<Booking>(_context);
 			return _bookingsRepository;
+		}
+	}
+
+	public IRepository<Waitlist> WaitlistRepository
+	{
+		get
+		{
+			_waitlistRepository ??= new Repository<Waitlist>(_context);
+			return _waitlistRepository;
+		}
+	}
+	public IRepository<ClassSession> ClassSessionRepository
+	{
+		get
+		{
+			_classSessionRepository ??= new Repository<ClassSession>(_context);
+			return _classSessionRepository;
 		}
 	}
 	public async Task SaveAsync()

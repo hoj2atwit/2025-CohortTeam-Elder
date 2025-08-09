@@ -4,6 +4,8 @@ namespace SmartGym.Services;
 
 public interface IBookingService
 {
+	#region bookings
+
 	Task<BookingDTO> CreateBooking(BookingPostDTO newBookingData);
 	Task<BookingDTO?> UpdateBookingById(int id, BookingPatchDTO newBookingData);
 	Task<BookingDTO?> UpdateBookingStatus(int id, int newStatus);
@@ -17,4 +19,20 @@ public interface IBookingService
 	Task<int> CountBookingsForClass(int classId);
 	Task AutoCancelStaleBookings();
 	Task<BookingDTO> GetBooking(int id);
+	#endregion
+	#region Sessions
+	Task<ClassSessionDTO> GetClassSession(int sessionId);
+	Task<List<ClassSessionDTO>> GetAllClassSessions();
+	Task<ClassSessionDTO?> UpdateClassSession(int id, ClassSessionDTO sessionDto);
+	Task<bool> DeleteClassSession(int id);
+	#endregion
+
+	#region Waitlist
+	Task<List<WaitlistDTO>> GetFullWaitList();
+	Task<List<WaitlistDTO>> GetWaitlistBySession(int id);
+	Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId);
+	Task<List<WaitlistDTO>> GetWaitlistByUser(int userId);
+	Task<WaitlistDTO?> UpdateWaitListRecord(int id, WaitlistDTO waitlistDto);
+	Task<bool> DeleteFromWaitlist(int id);
+	#endregion
 }

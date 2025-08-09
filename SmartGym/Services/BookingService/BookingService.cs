@@ -17,6 +17,7 @@ public class BookingService : IBookingService
 		_mapper = mapper;
 	}
 
+	#region Bookings
 	public async Task<BookingDTO> GetBooking(int id)
 	{
 		try
@@ -77,7 +78,7 @@ public class BookingService : IBookingService
 	{
 		try
 		{
-			var classBooking = await _unitOfWork.BookingsRepository.GetAsync(classId);
+			var classBooking = await _unitOfWork.BookingsRepository.GetAsync(x => x.ClassSession.ClassId == classId);
 			var classBookingsList = _mapper.Map<List<BookingDTO>>(classBooking);
 			return classBookingsList.ToList();
 		}
@@ -256,7 +257,6 @@ public class BookingService : IBookingService
 			Console.WriteLine($"Error while deleting booking: {ex.Message}");
 			return false;
 		}
-
 	}
 	/// <summary>
 	/// Get pending bookings for classes starting within the next 10 minutes and mark them as NoShow
@@ -291,4 +291,180 @@ public class BookingService : IBookingService
 			Console.WriteLine($"Error in AutoCancelStaleBookings: {ex.Message}");
 		}
 	}
+	#endregion
+
+	#region Sessions
+	public async Task<ClassSessionDTO> GetClassSession(int sessionId)
+	{
+		try
+		{
+			var session = await _unitOfWork.ClassSessionRepository.GetAsync(sessionId);
+			var sessionDto = _mapper.Map<ClassSessionDTO>(session);
+			return sessionDto;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetClassSession: {ex.Message}");
+			return null;
+		}
+	}
+	public async Task<List<ClassSessionDTO>> GetAllClassSessions()
+	{
+		try
+		{
+			var sessions = await _unitOfWork.ClassSessionRepository.GetAsync();
+			var sessionDtos = _mapper.Map<List<ClassSessionDTO>>(sessions);
+			return sessionDtos.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllClassSessions: {ex.Message}");
+			return null;
+		}
+	}
+
+	public async Task<ClassSessionDTO?> UpdateClassSession(int id, ClassSessionDTO sessionDto)
+	{
+		try
+		{
+			var session = await _unitOfWork.ClassSessionRepository.GetAsync(id);
+			if (session == null)
+				return null;
+
+			_mapper.Map(sessionDto, session);
+			_unitOfWork.ClassSessionRepository.Update(session);
+			await _unitOfWork.SaveAsync();
+			return _mapper.Map<ClassSessionDTO>(session);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error while updating ClassSession: {ex.Message}");
+			return null;
+		}
+	}
+
+	public async Task<bool> DeleteClassSession(int id)
+	{
+		try
+		{
+			var session = await _unitOfWork.ClassSessionRepository.GetAsync(id);
+			if (session == null)
+				return false;
+
+			_unitOfWork.ClassSessionRepository.Delete(session);
+			await _unitOfWork.SaveAsync();
+			return true;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error while deleting ClassSession: {ex.Message}");
+			return false;
+		}
+	}
+	#endregion
+
+	#region Waitlists
+	/// <summary>
+	/// Gets entire
+	/// </summary>
+	/// <returns></returns>
+	public async Task<List<WaitlistDTO>> GetFullWaitList()
+	{
+		try
+		{
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync();
+			var waitlistDtoList = _mapper.Map<List<WaitlistDTO>>(waitlist);
+			return waitlistDtoList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetFullWaitList: {ex.Message}");
+			return null;
+		}
+	}
+
+	public async Task<List<WaitlistDTO>> GetWaitlistBySession(int id)
+	{
+		try
+		{
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.Session.Id == id);
+			var waitlistDtoList = _mapper.Map<List<WaitlistDTO>>(waitlist);
+			return waitlistDtoList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetWaitlistBySession: {ex.Message}");
+			return null;
+		}
+	}
+
+	public async Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId)
+	{
+		try
+		{
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.Session.ClassId == classId);
+			var waitlistDtoList = _mapper.Map<List<WaitlistDTO>>(waitlist);
+			return waitlistDtoList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetWaitlistByClassId: {ex.Message}");
+			return null;
+		}
+	}
+
+	public async Task<List<WaitlistDTO>> GetWaitlistByUser(int userId)
+	{
+		try
+		{
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.MemberId == userId);
+			var waitlistDtoList = _mapper.Map<List<WaitlistDTO>>(waitlist);
+			return waitlistDtoList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetWaitlistByUser: {ex.Message}");
+			return null;
+		}
+	}
+
+	public async Task<WaitlistDTO?> UpdateWaitListRecord(int id, WaitlistDTO waitlistDto)
+	{
+		try
+		{
+			var waitlistRecord = await _unitOfWork.WaitlistRepository.GetAsync(id);
+			if (waitlistRecord == null)
+				return null;
+
+			_mapper.Map(waitlistDto, waitlistRecord);
+			_unitOfWork.WaitlistRepository.Update(waitlistRecord);
+			await _unitOfWork.SaveAsync();
+			return _mapper.Map<WaitlistDTO>(waitlistRecord);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error while updating waitlist record: {ex.Message}");
+			return null;
+		}
+	}
+
+	public async Task<bool> DeleteFromWaitlist(int id)
+	{
+		try
+		{
+			var waitlistRecord = await _unitOfWork.WaitlistRepository.GetAsync(id);
+			if (waitlistRecord == null)
+				return false;
+
+			_unitOfWork.WaitlistRepository.Delete(waitlistRecord);
+			await _unitOfWork.SaveAsync();
+			return true;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error while deleting waitlist record: {ex.Message}");
+			return false;
+		}
+	}
+	#endregion
 }
