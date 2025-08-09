@@ -12,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
 		.AddInteractiveServerComponents();
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+builder.Services.AddAntiforgery();
+builder.Services.AddHttpClient();
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Database
@@ -25,15 +25,22 @@ builder.Services.AddDbContext<SmartGymContext>(options =>
 	options.UseSqlServer(connectionString);
 });
 //Identity
-builder.Services.AddIdentity<AppUser, IdentityRole<int>>(options =>
+builder.Services.AddIdentityCore<AppUser>(options =>
 		{
+			options.User.RequireUniqueEmail = true;
+			options.SignIn.RequireConfirmedAccount = false;
 			options.Password.RequireDigit = true;
 			options.Password.RequireUppercase = true;
 			options.Password.RequireNonAlphanumeric = false;
 			options.Password.RequiredLength = 8;
 		})
+		.AddRoles<IdentityRole<int>>()
 		.AddEntityFrameworkStores<SmartGymContext>()
+		.AddSignInManager()
 		.AddDefaultTokenProviders();
+builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+.AddIdentityCookies();
+builder.Services.AddAuthorization();
 //Automapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 //Data Repositories
@@ -60,7 +67,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.UseAntiforgery();
 
