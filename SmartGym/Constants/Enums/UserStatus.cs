@@ -9,5 +9,9 @@ public enum UserStatus
 	[Display(Name = "Active")]
 	Active,
 	[Display(Name = "Inactive")]
-	Inactive
+	Inactive,
+	[Display(Name = "Suspended")]
+	Suspended,
+	[Display(Name = "Banned")]
+	Banned
 }
