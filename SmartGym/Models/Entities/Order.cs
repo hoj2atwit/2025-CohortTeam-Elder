@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SmartGym.Constants;
 
 namespace SmartGym.Models;
 
@@ -15,6 +16,7 @@ public class Order
 	public DateTime CreatedAt { get; set; }
 	public DateTime UpdatedAt { get; set; }
 	public string OrderCart { get; set; }
+	public OrderStatus OrderStatus { get; set; }
 	public string Notes { get; set; } = string.Empty;
 	[Required]
 	public int UserId { get; set; }
