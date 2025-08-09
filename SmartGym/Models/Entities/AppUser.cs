@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 
 namespace SmartGym.Models;
 
-[Table("Users")]
 public class AppUser : IdentityUser<int>
 {
 	[Required]
