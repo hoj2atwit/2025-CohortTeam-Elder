@@ -1,5 +1,6 @@
 using AutoMapper;
 using Newtonsoft.Json;
+using SmartGym.Constants;
 using SmartGym.Data;
 using SmartGym.Models;
 
@@ -18,6 +19,35 @@ public class OrderService : IOrderService
 	public void GetOrderHistory(AppUser user)
 	{
 		throw new NotImplementedException();
+	}
+
+	public async Task<List<OrderDTO>> GetAllOrders()
+	{
+		try
+		{
+			var orders = await _unitOfWork.OrderRepository.GetAsync();
+			var orderList = _mapper.Map<List<OrderDTO>>(orders);
+			return orderList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllOrders: {ex.Message}");
+			return new List<OrderDTO>();
+		}
+	}
+	public async Task<List<OrderDTO>> GetAllOrdersByStatus(OrderStatus status)
+	{
+		try
+		{
+			var orders = await _unitOfWork.OrderRepository.GetAsync(x => x.OrderStatus == status);
+			var orderList = _mapper.Map<List<OrderDTO>>(orders);
+			return orderList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllOrdersByStatus: {ex.Message}");
+			return new List<OrderDTO>();
+		}
 	}
 	/// <summary>
 	/// Creates an order 

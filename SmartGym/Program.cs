@@ -84,7 +84,7 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
 	var services = scope.ServiceProvider;
-	await DbSeed.SeedDatabaseAsync(services, app.Environment.IsDevelopment());
+	// await DbSeed.SeedDatabaseAsync(services, app.Environment.IsDevelopment());
 }
 
 app.Run();
