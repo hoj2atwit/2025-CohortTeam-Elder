@@ -19,6 +19,35 @@ public class OrderService : IOrderService
 	{
 		throw new NotImplementedException();
 	}
+
+	public async Task<List<OrderDTO>> GetAllOrders()
+	{
+		try
+		{
+			var orders = await _unitOfWork.OrderRepository.GetAsync();
+			var orderList = _mapper.Map<List<OrderDTO>>(orders);
+			return orderList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllOrders: {ex.Message}");
+			return new List<OrderDTO>();
+		}
+	}
+	public async Task<List<OrderDTO>> GetAllOrdersByStatus()
+	{
+		try
+		{
+			var orders = await _unitOfWork.OrderRepository.GetAsync();
+			var orderList = _mapper.Map<List<OrderDTO>>(orders);
+			return orderList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllOrdersByStatus: {ex.Message}");
+			return new List<OrderDTO>();
+		}
+	}
 	/// <summary>
 	/// Creates an order 
 	/// </summary>
