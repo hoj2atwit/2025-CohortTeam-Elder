@@ -16,24 +16,39 @@ public class BookingService : IBookingService
     _unitOfWork = unitOfWork;
     _mapper = mapper;
   }
-  /// <summary>
-  /// Get all existing bookings
-  /// </summary>
-  /// <returns></returns>
-  public async Task<List<BookingDTO>> GetAllBookings()
-  {
-    try
-    {
-      var bookings = await _unitOfWork.BookingsRepository.GetAsync();
-      var bookingsList = _mapper.Map<List<BookingDTO>>(bookings);
-      return bookingsList.ToList();
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
-      return null;
-    }
-  }
+
+	public async Task<BookingDTO> GetBooking(int id)
+	{
+		try
+		{
+			var booking = await _unitOfWork.BookingsRepository.GetAsync(id);
+			var bookingDto = _mapper.Map<BookingDTO>(booking);
+			return bookingDto;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetBooking: {ex.Message}");
+			return null;
+		}
+	}
+	/// <summary>
+	/// Get all existing bookings
+	/// </summary>
+	/// <returns></returns>
+	public async Task<List<BookingDTO>> GetAllBookings()
+	{
+		try
+		{
+			var bookings = await _unitOfWork.BookingsRepository.GetAsync();
+			var bookingsList = _mapper.Map<List<BookingDTO>>(bookings);
+			return bookingsList.ToList();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAllBookings: {ex.Message}");
+			return null;
+		}
+	}
   /// <summary>
   /// Get bookings of an specific user
   /// </summary>
