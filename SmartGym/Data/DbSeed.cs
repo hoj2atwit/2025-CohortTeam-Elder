@@ -29,11 +29,6 @@ namespace SmartGym.Data
 			var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
 			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-			// if (isDevelopment)
-			// {
-			// 	context.Database.EnsureDeleted();
-				context.Database.Migrate();
-			// }
 
 			//Roles
 			// Use RoleId enum and EnumHelper to get role names
