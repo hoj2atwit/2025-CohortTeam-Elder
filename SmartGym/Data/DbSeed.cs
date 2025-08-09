@@ -32,7 +32,11 @@ namespace SmartGym.Data
 			await context.Database.MigrateAsync();
 
 			//Roles
-			string[] roleNames = { "Admin", "Trainer", "Member", "Staff" };
+			// Use RoleId enum and EnumHelper to get role names
+			var roleNames = Enum.GetValues(typeof(RoleId))
+				.Cast<RoleId>()
+				.Select(role => SmartGym.Helpers.EnumHelper.GetDisplayName(role))
+				.ToArray();
 			foreach (var role in roleNames)
 			{
 				if (!await roleManager.RoleExistsAsync(role))
@@ -40,7 +44,6 @@ namespace SmartGym.Data
 					await roleManager.CreateAsync(new IdentityRole<int> { Name = role });
 				}
 			}
-
 
 			// context.Database.Migrate(); // Catch up your database
 			//If images arent present on the local machine, create the image
@@ -62,7 +65,7 @@ namespace SmartGym.Data
 						FirstName = firstName,
 						LastName = lastName,
 						DateOfBirth = faker.Date.Between(new DateTime(1980, 1, 1), new DateTime(2005, 1, 1)),
-						Status = 1,
+						Status = UserStatus.Active,
 						CreatedDate = DateTime.UtcNow,
 						UpdatedDate = DateTime.UtcNow,
 						EmailConfirmed = true
@@ -88,7 +91,7 @@ namespace SmartGym.Data
 						FirstName = "System",
 						LastName = "Admin",
 						DateOfBirth = new DateTime(1990, 1, 1),
-						Status = 1,
+						Status = UserStatus.Active,
 						CreatedDate = DateTime.UtcNow,
 						UpdatedDate = DateTime.UtcNow,
 						EmailConfirmed = true
@@ -180,15 +183,47 @@ namespace SmartGym.Data
 				await context.SaveChangesAsync();
 			}
 
+			// Seed ClassSessions
+			if (!context.ClassSessions.Any())
+			{
+				var classList = context.Classes.ToList();
+				var classSessions = new List<ClassSession>();
+				var sessionFaker = new Faker();
+
+				foreach (var gymClass in classList)
+				{
+					// Each class gets 1-3 sessions
+					int sessionCount = sessionFaker.Random.Int(1, 3);
+					for (int i = 0; i < sessionCount; i++)
+					{
+						var startTime = sessionFaker.Date.Between(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(30));
+						var endTime = startTime.AddMinutes(sessionFaker.Random.Int(30, 120));
+						classSessions.Add(new ClassSession
+						{
+							ClassId = gymClass.Id,
+							SessionDateTime = startTime,
+							LocationId = sessionFaker.PickRandom(new[] { AccessPoint.Pool, AccessPoint.RockClimbing, AccessPoint.Class })
+						});
+					}
+				}
+				context.ClassSessions.AddRange(classSessions);
+				await context.SaveChangesAsync();
+			}
+
 			if (!context.Bookings.Any())
 			{
 				var users = await userManager.Users.ToListAsync();
 				var classesToBook = context.Classes.ToList();
+				var classSessions = context.ClassSessions.ToList();
 				var bookings = new List<Booking>();
 				var random = new Random();
 
 				foreach (var gymClass in classesToBook)
 				{
+					var sessionsForClass = classSessions.Where(cs => cs.ClassId == gymClass.Id).ToList();
+					if (!sessionsForClass.Any())
+						continue;
+
 					int numberOfBookings = random.Next(0, gymClass.Capacity);
 
 					var bookedUserIds = users.OrderBy(_ => Guid.NewGuid())
@@ -204,10 +239,14 @@ namespace SmartGym.Data
 							? createdAt.AddMinutes(random.Next(5, 120))
 							: DateTime.MinValue;
 
+						// Assign a random session for this class
+						var session = sessionsForClass[random.Next(sessionsForClass.Count)];
+
 						bookings.Add(new Booking
 						{
 							UserId = userId,
 							ClassId = gymClass.Id,
+							ClassSessionId = session.Id,
 							Status = status,
 							CreatedAt = createdAt,
 							ConfirmedAt = confirmedAt,
@@ -219,8 +258,6 @@ namespace SmartGym.Data
 				context.Bookings.AddRange(bookings);
 				await context.SaveChangesAsync();
 			}
-
-
 		}
 
 		private static void UpdateImageFolder(SmartGymContext context)
