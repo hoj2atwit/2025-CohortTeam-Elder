@@ -1,10 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using SmartGym.Constants.Enums;
 
 namespace SmartGym.Models;
 
-public class UserStatusHistory
+[Table("UserHistory")]
+public class AccountHistory
 {
 	[Required]
 	public int Id { get; set; }

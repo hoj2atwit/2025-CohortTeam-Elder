@@ -29,7 +29,6 @@ namespace SmartGym.Data
 			var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
 			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-
 			//Roles
 			// Use RoleId enum and EnumHelper to get role names
 			var roleNames = Enum.GetValues(typeof(RoleId))
@@ -50,6 +49,20 @@ namespace SmartGym.Data
 			//Users
 			if (!userManager.Users.Any())
 			{
+				 Dictionary<string, int> roleCounts = new()
+				{
+					{ "Staff Member", 0 },
+					{ "Trainer", 0 },
+					{ "Manager", 0 },
+					{ "Admin", 0 }
+				};
+				Dictionary<string, int> roleCaps = new()
+				{
+					{ "Staff Member", 100 },
+					{ "Trainer", 25 },
+					{ "Manager", 5 },
+					{ "Admin", 3 }
+				};
 				var faker = new Faker();
 				for (int i = 0; i < 500; i++)
 				{
@@ -73,11 +86,26 @@ namespace SmartGym.Data
 					var result = await userManager.CreateAsync(user, "Password123!");
 					if (result.Succeeded)
 					{
-						var assignedRole = faker.PickRandom(roleNames);
+
+						string assignedRole;
+						var fallbackRoles = new List<string> { "Base", "Plus", "Premium" };
+						var availableRoles = roleNames
+							 .Where(r => roleCaps.ContainsKey(r) && roleCounts[r] < roleCaps[r])
+							 .ToList();
+
+						if (availableRoles.Count == 0)
+						{
+							assignedRole = faker.PickRandom(fallbackRoles);
+						}
+						else
+						{
+							assignedRole = faker.PickRandom(availableRoles);
+							roleCounts[assignedRole]++;
+						}
 						await userManager.AddToRoleAsync(user, assignedRole);
 
 						// Add UserStatusHistory record
-						context.UserHistory.Add(new UserStatusHistory
+						context.UserHistory.Add(new AccountHistory
 						{
 							UserId = user.Id,
 							Status = UserStatus.New,
@@ -85,7 +113,7 @@ namespace SmartGym.Data
 						});
 						// emulating activity
 						var status = faker.Random.ListItem(new List<UserStatus>() { UserStatus.Hold, UserStatus.Active, UserStatus.Inactive, UserStatus.Suspended, UserStatus.Banned });
-						context.UserHistory.Add(new UserStatusHistory
+						context.UserHistory.Add(new AccountHistory
 						{
 							UserId = user.Id,
 							Status = status,

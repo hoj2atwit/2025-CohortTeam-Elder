@@ -21,7 +21,7 @@ public class SmartGymContext : IdentityDbContext<AppUser, IdentityRole<int>, int
 	public DbSet<Order>? Orders { get; set; }
 	public DbSet<MenuItem>? MenuItems { get; set; }
 	public DbSet<Images>? Images { get; set; }
-	public DbSet<UserStatusHistory>? UserHistory { get; set; }
+	public DbSet<AccountHistory>? UserHistory { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{

@@ -10,6 +10,7 @@ public class MappingProfile : Profile
 		//Users
 		CreateMap<AppUser, UserDto>().ReverseMap();
 		CreateMap<Checkin, CheckinDTO>().ReverseMap();
+		CreateMap<AccountHistory, AccountHistoryDTO>().ReverseMap();
 
 		//Classes
 		CreateMap<Class, ClassDTO>().ReverseMap();

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SmartGym.Constants.Enums;
+using SmartGym.Helpers;
 using SmartGym.Models;
 
 namespace SmartGym.Data;
@@ -27,7 +28,7 @@ public class UserRepo : Repository<AppUser>
 	/// </returns>
 	public async Task<List<UserDto>> GetAllAspUsersAsDto()
 	{
-		var usersWithRoles = await(
+		var usersWithRoles = await (
 				from user in _context.Users
 				join userRole in _context.UserRoles on user.Id equals userRole.UserId into usr
 				from userRole in usr.DefaultIfEmpty()
@@ -45,11 +46,34 @@ public class UserRepo : Repository<AppUser>
 					CreatedDate = user.CreatedDate,
 					UpdatedDate = user.UpdatedDate,
 					ImageRef = user.ImageRef,
-					RoleId = (RoleId)role.Id
+					RoleId = EnumHelper.GetRoleIdFromName(role.Name).Value
 				}
 		  ).ToListAsync();
 
 		return usersWithRoles;
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistByRoleId(RoleId roleId)
+	{
+		var normalizedName = EnumHelper.GetDisplayName(roleId).ToUpper();
+		var historyByRoles = await (
+				from history in _context.UserHistory
+				join user in _context.Users on history.UserId equals user.Id
+				join userRole in _context.UserRoles on user.Id equals userRole.UserId into usr
+				from userRole in usr.DefaultIfEmpty()
+				join role in _context.Roles on userRole.RoleId equals role.Id into r
+				from role in r.DefaultIfEmpty()
+				where role.NormalizedName == normalizedName
+				select new AccountHistoryDTO
+				{
+					Id = history.Id,
+					UserId = history.UserId,
+					Status = history.Status,
+					EventDate = history.EventDate
+				}
+			).ToListAsync();
+
+		return historyByRoles;
 	}
 
 	#endregion

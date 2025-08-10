@@ -13,5 +13,6 @@ public interface IUnitOfWork
 	public IRepository<Booking> BookingsRepository { get; }
 	public IRepository<Waitlist> WaitlistRepository { get; }
 	public IRepository<ClassSession> ClassSessionRepository { get; }
+	public IRepository<AccountHistory> UserHistoryRepository { get; }
 	public Task SaveAsync();
 }

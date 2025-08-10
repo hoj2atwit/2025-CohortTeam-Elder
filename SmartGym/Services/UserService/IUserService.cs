@@ -19,5 +19,10 @@ public interface IUserService
 	Task<List<CheckinDTO>> GetCheckinsByAccessPoint(AccessPoint accessPoint, bool includeUser = false);
 	Task<List<CheckinDTO>> GetCheckinsByTime(DateTime startTime, DateTime endTime, bool includeUser = false);
 	Task<List<CheckinDTO>> GetCheckinsByMethod(string method, bool includeUser = false);
+	Task<List<AccountHistoryDTO>> GetAccHistory(bool includeUser = false);
+	Task<List<AccountHistoryDTO>> GetAccHistoryByStatus(UserStatus userStatus, bool includeUser = false);
+	Task<List<AccountHistoryDTO>> GetAccHistoryByDates(DateTime startTime, DateTime endTime, bool includeUser = false);
+	Task<List<AccountHistoryDTO>> GetAccHistoryByUser(int id, bool includeUser = false);
+	Task<List<AccountHistoryDTO>> GetAccHistoryByRole(RoleId roleId);
 
 }

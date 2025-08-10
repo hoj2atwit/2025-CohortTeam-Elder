@@ -8,8 +8,8 @@ using SmartGym.Constants.Enums;
 
 namespace SmartGym.Helpers
 {
-    public static class EnumHelper
-    {
+	public static class EnumHelper
+	{
 		/// <summary>
 		/// helper method to grab display name from enum value
 		/// </summary>
@@ -20,6 +20,18 @@ namespace SmartGym.Helpers
 			var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
 			var display = member?.GetCustomAttribute<DisplayAttribute>();
 			return display != null ? display.Name : "Unknown";
+		}
+		public static RoleId? GetRoleIdFromName(string roleName)
+		{
+			foreach (var value in Enum.GetValues(typeof(RoleId)).Cast<RoleId>())
+			{
+				var displayName = GetDisplayName(value);
+				if (string.Equals(displayName, roleName, StringComparison.OrdinalIgnoreCase))
+				{
+					return value;
+				}
+			}
+			return null; // or throw, or return a default value if you prefer
 		}
 	}
 }
