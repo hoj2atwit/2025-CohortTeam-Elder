@@ -11,7 +11,6 @@ public class UserService : IUserService
 
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
-	private readonly UserManager<AppUser> _userManager;
 	public UserService(IUnitOfWork unitOfWork, IMapper mapper)
 	{
 		_unitOfWork = unitOfWork;
@@ -290,6 +289,88 @@ public class UserService : IUserService
 		{
 			Console.WriteLine($"Error while deleting user: {ex.Message}");
 			return false;
+		}
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistory(bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var historyEntities = await _unitOfWork.UserHistoryRepository.GetAsync(includeProperties: includeProps);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistory: {ex.Message}");
+			return new List<AccountHistoryDTO>();
+		}
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistoryByStatus(UserStatus userStatus, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var historyEntities = await _unitOfWork.UserHistoryRepository.GetAsync(
+				x => x.Status == userStatus, includeProperties: includeProps);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistoryByStatus: {ex.Message}");
+			return new List<AccountHistoryDTO>();
+		}
+	}
+	/// <summary>
+	/// Gets all account history filtered by role. includeUser is NOT an option with this
+	/// </summary>
+	/// <param name="roleId"></param>
+	/// <param name="includeUser"></param>
+	/// <returns></returns>
+	public async Task<List<AccountHistoryDTO>> GetAccHistoryByRole(RoleId roleId)
+	{
+		try
+		{
+			var historyEntities = await _unitOfWork.UserRepository.GetAccHistByRoleId(roleId);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistoryByStatus: {ex.Message}");
+			return new List<AccountHistoryDTO>();
+		}
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistoryByDates(DateTime startTime, DateTime endTime, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var historyEntities = await _unitOfWork.UserHistoryRepository.GetAsync(
+				x => x.EventDate >= startTime && x.EventDate <= endTime, includeProperties: includeProps);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistoryByDates: {ex.Message}");
+			return new List<AccountHistoryDTO>();
+		}
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistoryByUser(int id, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var historyEntities = await _unitOfWork.UserHistoryRepository.GetAsync(
+				x => x.UserId == id, includeProperties: includeProps);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistoryByUser: {ex.Message}");
+			return new List<AccountHistoryDTO>();
 		}
 	}
 }

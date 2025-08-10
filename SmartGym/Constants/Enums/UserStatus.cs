@@ -13,5 +13,7 @@ public enum UserStatus
 	[Display(Name = "Suspended")]
 	Suspended,
 	[Display(Name = "Banned")]
-	Banned
+	Banned,
+	[Display(Name = "New")]
+	New
 }

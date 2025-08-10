@@ -29,7 +29,6 @@ namespace SmartGym.Data
 			var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
 			var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-
 			//Roles
 			// Use RoleId enum and EnumHelper to get role names
 			var roleNames = Enum.GetValues(typeof(RoleId))
@@ -50,13 +49,27 @@ namespace SmartGym.Data
 			//Users
 			if (!userManager.Users.Any())
 			{
+				 Dictionary<string, int> roleCounts = new()
+				{
+					{ "Staff Member", 0 },
+					{ "Trainer", 0 },
+					{ "Manager", 0 },
+					{ "Admin", 0 }
+				};
+				Dictionary<string, int> roleCaps = new()
+				{
+					{ "Staff Member", 100 },
+					{ "Trainer", 25 },
+					{ "Manager", 5 },
+					{ "Admin", 3 }
+				};
 				var faker = new Faker();
-				for (int i = 0; i < 300; i++)
+				for (int i = 0; i < 500; i++)
 				{
 					var firstName = faker.Name.FirstName();
 					var lastName = faker.Name.LastName();
 					var email = faker.Internet.Email(firstName, lastName);
-
+					var date = faker.Date.Between(DateTime.UtcNow.AddMonths(-3), DateTime.UtcNow.AddDays(7));
 					var user = new AppUser
 					{
 						UserName = email,
@@ -64,19 +77,56 @@ namespace SmartGym.Data
 						FirstName = firstName,
 						LastName = lastName,
 						DateOfBirth = faker.Date.Between(new DateTime(1980, 1, 1), new DateTime(2005, 1, 1)),
-						Status = faker.PickRandom<UserStatus>(),
-						CreatedDate = DateTime.UtcNow,
-						UpdatedDate = DateTime.UtcNow,
+						Status = UserStatus.New,
+						CreatedDate = date,
+						UpdatedDate = date.AddDays(faker.Random.Int(1, 7)),
 						EmailConfirmed = true
 					};
 
 					var result = await userManager.CreateAsync(user, "Password123!");
 					if (result.Succeeded)
 					{
-						var assignedRole = faker.PickRandom(roleNames);
+
+						string assignedRole;
+						var fallbackRoles = new List<string> { "Base", "Plus", "Premium" };
+						var availableRoles = roleNames
+							 .Where(r => roleCaps.ContainsKey(r) && roleCounts[r] < roleCaps[r])
+							 .ToList();
+
+						if (availableRoles.Count == 0)
+						{
+							assignedRole = faker.PickRandom(fallbackRoles);
+						}
+						else
+						{
+							assignedRole = faker.PickRandom(availableRoles);
+							roleCounts[assignedRole]++;
+						}
 						await userManager.AddToRoleAsync(user, assignedRole);
+
+						// Add UserStatusHistory record
+						context.UserHistory.Add(new AccountHistory
+						{
+							UserId = user.Id,
+							Status = UserStatus.New,
+							EventDate = date
+						});
+						// emulating activity
+						var status = faker.Random.ListItem(new List<UserStatus>() { UserStatus.Hold, UserStatus.Active, UserStatus.Inactive, UserStatus.Suspended, UserStatus.Banned });
+						context.UserHistory.Add(new AccountHistory
+						{
+							UserId = user.Id,
+							Status = status,
+							EventDate = date.AddDays(faker.Random.Int(1, 7))
+						});
+
+						// Update user status to a new random status and save
+						user.Status = status;
+						user.UpdatedDate = date.AddDays(faker.Random.Int(4, 10));
+						await userManager.UpdateAsync(user);
 					}
 				}
+				await context.SaveChangesAsync();
 				var adminEmail = "admin@smartgym.com";
 				var adminPassword = "Admin123!";
 
