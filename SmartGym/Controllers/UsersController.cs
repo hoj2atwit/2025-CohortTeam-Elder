@@ -63,25 +63,27 @@ namespace SmartGym.Controllers
 			return Ok();
 		}
 		/// <summary>
-		/// gets all checkins for the given user id
+		/// Gets all checkins for the given user id.
 		/// </summary>
 		/// <param name="id"></param>
+		/// <param name="includeUser"></param>
 		/// <returns></returns>
 		[HttpGet("checkins/{id:int}")]
-		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetUserCheckins(int id)
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetUserCheckins(int id, [FromQuery] bool includeUser = false)
 		{
-			var checkinList = await _service.GetUserCheckins(id);
-
+			var checkinList = await _service.GetUserCheckins(id, includeUser);
 			return Ok(checkinList);
 		}
+
 		/// <summary>
-		/// gets entire history of checkins
+		/// Gets entire history of checkins.
 		/// </summary>
+		/// <param name="includeUser"></param>
 		/// <returns></returns>
 		[HttpGet("checkins")]
-		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetAllUserCheckins()
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetAllUserCheckins([FromQuery] bool includeUser = false)
 		{
-			var checkinList = await _service.GetAllUserCheckins();
+			var checkinList = await _service.GetAllUserCheckins(includeUser);
 			return Ok(checkinList);
 		}
 
@@ -89,12 +91,13 @@ namespace SmartGym.Controllers
 		/// Gets user checkins filtered by access point.
 		/// </summary>
 		/// <param name="accessPoint"></param>
+		/// <param name="includeUser"></param>
 		/// <returns></returns>
 		[HttpGet("checkins/by-access-point")]
-		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByAccessPoint([FromQuery] int accessPoint)
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByAccessPoint([FromQuery] int accessPoint, [FromQuery] bool includeUser = false)
 		{
 			var accessPointEnum = (AccessPoint)accessPoint;
-			var checkins = await _service.GetCheckinsByAccessPoint(accessPointEnum);
+			var checkins = await _service.GetCheckinsByAccessPoint(accessPointEnum, includeUser);
 			return Ok(checkins);
 		}
 
@@ -103,11 +106,12 @@ namespace SmartGym.Controllers
 		/// </summary>
 		/// <param name="startTime"></param>
 		/// <param name="endTime"></param>
+		/// <param name="includeUser"></param>
 		/// <returns></returns>
 		[HttpGet("checkins/by-time")]
-		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByTime([FromQuery] DateTime startTime, [FromQuery] DateTime endTime)
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByTime([FromQuery] DateTime startTime, [FromQuery] DateTime endTime, [FromQuery] bool includeUser = false)
 		{
-			var checkins = await _service.GetCheckinsByTime(startTime, endTime);
+			var checkins = await _service.GetCheckinsByTime(startTime, endTime, includeUser);
 			return Ok(checkins);
 		}
 
@@ -115,11 +119,12 @@ namespace SmartGym.Controllers
 		/// Gets user checkins filtered by checkin method.
 		/// </summary>
 		/// <param name="method"></param>
+		/// <param name="includeUser"></param>
 		/// <returns></returns>
 		[HttpGet("checkins/by-method")]
-		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByMethod([FromQuery] string method)
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByMethod([FromQuery] string method, [FromQuery] bool includeUser = false)
 		{
-			var checkins = await _service.GetCheckinsByMethod(method);
+			var checkins = await _service.GetCheckinsByMethod(method, includeUser);
 			return Ok(checkins);
 		}
 	}

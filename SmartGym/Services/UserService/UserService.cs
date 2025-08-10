@@ -81,12 +81,15 @@ public class UserService : IUserService
 	/// gets all checkins for the given user id
 	/// </summary>
 	/// <param name="id"></param>
+	/// <param name="includeUser"></param>
 	/// <returns></returns>
-	public async Task<List<CheckinDTO>> GetUserCheckins(int id)
+	public async Task<List<CheckinDTO>> GetUserCheckins(int id, bool includeUser = false)
 	{
 		try
 		{
-			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync(x => x.UserId == id);
+			var includeProps = includeUser ? "User" : "";
+			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync(
+				x => x.UserId == id, includeProperties: includeProps);
 			return _mapper.Map<List<CheckinDTO>>(checkinEntity).ToList();
 		}
 		catch (Exception ex)
@@ -95,15 +98,18 @@ public class UserService : IUserService
 			return null;
 		}
 	}
+
 	/// <summary>
 	/// returns all user checkin history
 	/// </summary>
+	/// <param name="includeUser"></param>
 	/// <returns></returns>
-	public async Task<List<CheckinDTO>> GetAllUserCheckins()
+	public async Task<List<CheckinDTO>> GetAllUserCheckins(bool includeUser = false)
 	{
 		try
 		{
-			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync();
+			var includeProps = includeUser ? "User" : "";
+			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync(includeProperties: includeProps);
 			return _mapper.Map<List<CheckinDTO>>(checkinEntity);
 		}
 		catch (Exception ex)
@@ -112,17 +118,20 @@ public class UserService : IUserService
 			return null;
 		}
 	}
+
 	/// <summary>
 	/// Gets user checkins filtered by access point.
 	/// </summary>
 	/// <param name="accessPoint"></param>
+	/// <param name="includeUser"></param>
 	/// <returns></returns>
-	public async Task<List<CheckinDTO>> GetCheckinsByAccessPoint(AccessPoint accessPoint)
+	public async Task<List<CheckinDTO>> GetCheckinsByAccessPoint(AccessPoint accessPoint, bool includeUser = false)
 	{
 		try
 		{
+			var includeProps = includeUser ? "User" : "";
 			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
-				x => x.AccessPoint == accessPoint);
+				x => x.AccessPoint == accessPoint, includeProperties: includeProps);
 			return _mapper.Map<List<CheckinDTO>>(checkins);
 		}
 		catch (Exception ex)
@@ -137,13 +146,15 @@ public class UserService : IUserService
 	/// </summary>
 	/// <param name="startTime"></param>
 	/// <param name="endTime"></param>
+	/// <param name="includeUser"></param>
 	/// <returns></returns>
-	public async Task<List<CheckinDTO>> GetCheckinsByTime(DateTime startTime, DateTime endTime)
+	public async Task<List<CheckinDTO>> GetCheckinsByTime(DateTime startTime, DateTime endTime, bool includeUser = false)
 	{
 		try
 		{
+			var includeProps = includeUser ? "User" : "";
 			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
-				x => x.CheckinTime >= startTime && x.CheckinTime <= endTime);
+				x => x.CheckinTime >= startTime && x.CheckinTime <= endTime, includeProperties: includeProps);
 			return _mapper.Map<List<CheckinDTO>>(checkins);
 		}
 		catch (Exception ex)
@@ -157,13 +168,15 @@ public class UserService : IUserService
 	/// Gets user checkins filtered by checkin method.
 	/// </summary>
 	/// <param name="method"></param>
+	/// <param name="includeUser"></param>
 	/// <returns></returns>
-	public async Task<List<CheckinDTO>> GetCheckinsByMethod(string method)
+	public async Task<List<CheckinDTO>> GetCheckinsByMethod(string method, bool includeUser = false)
 	{
 		try
 		{
+			var includeProps = includeUser ? "User" : "";
 			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
-				x => x.Method == method);
+				x => x.Method == method, includeProperties: includeProps);
 			return _mapper.Map<List<CheckinDTO>>(checkins);
 		}
 		catch (Exception ex)
