@@ -208,7 +208,7 @@ namespace SmartGym.Data
 			if (!context.Checkins.Any())
 			{
 				var faker = new Faker<Checkin>()
-					 .RuleFor(x => x.CheckinTime, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
+					 .RuleFor(x => x.CheckinTime, f => f.Date.Between(DateTime.UtcNow.AddMonths(-3), DateTime.UtcNow.AddDays(7)))
 					 .RuleFor(x => x.Method, f => f.Random.ListItem(new List<string>() { "qr", "desk" }))
 					 .RuleFor(x => x.UserId, f => f.Random.ListItem(userIds))
 					 .RuleFor(x => x.AccessPoint, f => f.PickRandom<AccessPoint>());
@@ -262,7 +262,7 @@ namespace SmartGym.Data
 							ClassId = gymClass.Id,
 							InstructorId = sessionFaker.PickRandom(trainers).Id,
 							SessionDateTime = sessionFaker.Date.Between(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(30)),
-							HeadCount = sessionFaker.Random.Int(0, gymClass.MaxCapacity),
+							HeadCount = sessionFaker.Random.Int(5, gymClass.MaxCapacity),
 							MaxCapacity = gymClass.MaxCapacity,
 							Description = sessionFaker.Lorem.Sentence(),
 							LocationId = sessionFaker.PickRandom(new[] { AccessPoint.Pool, AccessPoint.RockClimbing, AccessPoint.Class })
@@ -276,82 +276,56 @@ namespace SmartGym.Data
 			if (!context.Bookings.Any())
 			{
 				var users = await userManager.Users
-					.Where(u => u.Status == UserStatus.Active)
-					.ToListAsync();
-				var classesToBook = context.Classes.ToList();
+					 .Where(u => u.Status == UserStatus.Active)
+					 .ToListAsync();
 				var classSessions = context.ClassSessions.ToList();
 				var bookings = new List<Booking>();
 				var waitlist = new List<Waitlist>();
 				var random = new Random();
 
-				foreach (var gymClass in classesToBook)
+				foreach (var user in users)
 				{
-					var sessionsForClass = classSessions.Where(cs => cs.ClassId == gymClass.Id).ToList();
-					if (!sessionsForClass.Any())
-						continue;
+					// Pick a random session to sign-up for
+					var session = classSessions[random.Next(classSessions.Count)];
 
-					int numberOfBookings = random.Next(0, gymClass.MaxCapacity + 1);
-
-					var bookedUserIds = users.OrderBy(_ => Guid.NewGuid())
-											 .Take(numberOfBookings)
-											 .Select(u => u.Id)
-											 .ToList();
-
-					foreach (var userId in bookedUserIds)
+					if (session.HeadCount >= session.MaxCapacity)
 					{
-						// Assign a random session for this class that still has capacity
-						var availableSessions = sessionsForClass
-								.Where(s =>
-								bookings.Count(b => b.ClassSessionId == s.Id) < s.MaxCapacity)
-								.ToList();
-
-						var unavailableSessions = sessionsForClass
-								.Where(s =>
-								bookings.Count(b => b.ClassSessionId == s.Id) == s.MaxCapacity)
-								.ToList();
-
-						if (!availableSessions.Any())
+						// Session is full, add to waitlist
+						int nextPosition = waitlist.Count(w => w.SessionId == session.Id) + 1;
+						var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+						waitlist.Add(new Waitlist
 						{
-							// All sessions are full, add user to waitlist for a random session
-							var session = unavailableSessions[random.Next(unavailableSessions.Count)];
-							var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+							MemberId = user.Id,
+							SessionId = session.Id,
+							JoinedDateTime = createdAt.AddMinutes(random.Next(5, 120)),
+							Position = nextPosition
+						});
+					}
+					else
+					{
+						// Book the session
+						var status = (BookingStatus)random.Next(0, Enum.GetValues(typeof(BookingStatus)).Length);
+						var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+						var confirmedAt = (status == BookingStatus.Confirmed)
+							 ? createdAt.AddMinutes(random.Next(5, 120))
+							 : DateTime.MinValue;
 
-							// Determine the next position
-							int nextPosition = waitlist.Count(w => w.SessionId == session.Id) + 1;
-
-							waitlist.Add(new Waitlist
-							{
-								MemberId = userId,
-								SessionId = session.Id,
-								JoinedDateTime = createdAt.AddMinutes(random.Next(5, 120)),
-								Position = nextPosition
-							});
-						}
-						else
+						bookings.Add(new Booking
 						{
-							var session = availableSessions[random.Next(availableSessions.Count)];
-
-							var status = (BookingStatus)random.Next(0, Enum.GetValues(typeof(BookingStatus)).Length);
-							var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
-							var confirmedAt = (status == BookingStatus.Confirmed)
-								? createdAt.AddMinutes(random.Next(5, 120))
-								: DateTime.MinValue;
-
-							bookings.Add(new Booking
-							{
-								UserId = userId,
-								ClassSessionId = session.Id,
-								Status = status,
-								CreatedAt = createdAt,
-								ConfirmedAt = confirmedAt,
-								UpdatedAt = createdAt.AddMinutes(random.Next(10, 500))
-							});
-						}
+							UserId = user.Id,
+							ClassSessionId = session.Id,
+							Status = status,
+							CreatedAt = createdAt,
+							ConfirmedAt = confirmedAt,
+							UpdatedAt = createdAt.AddMinutes(random.Next(10, 500))
+						});
+						session.HeadCount++;
 					}
 				}
 
 				context.Bookings.AddRange(bookings);
 				context.Waitlist.AddRange(waitlist);
+				context.ClassSessions.UpdateRange(classSessions);
 				await context.SaveChangesAsync();
 			}
 		}

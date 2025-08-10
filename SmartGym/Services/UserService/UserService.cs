@@ -1,7 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using SmartGym.Constants;
 using SmartGym.Constants.Enums;
 using SmartGym.Data;
+using SmartGym.Helpers;
 using SmartGym.Models;
 
 namespace SmartGym.Services;
@@ -76,6 +78,31 @@ public class UserService : IUserService
 			return null;
 		}
 	}
+
+	public async Task<bool>CheckInUser(UserDto user, AccessPoint accessPoint, CheckinMethod checkinMethod)
+	{
+		try
+		{
+			var dto = new CheckinDTO()
+			{
+				UserId = user.Id,
+				AccessPoint = accessPoint,
+				Method = EnumHelper.GetDisplayName(checkinMethod),
+				User = user,
+				CheckinTime = DateTime.UtcNow
+			};
+			Checkin entity = _mapper.Map<Checkin>(dto);
+			await _unitOfWork.CheckinRepository.AddAsync(entity);
+			await _unitOfWork.SaveAsync();
+			return true;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error while checking in user: {ex.Message}");
+			return false;
+		}
+	}
+
 	/// <summary>
 	/// gets all checkins for the given user id
 	/// </summary>
@@ -169,13 +196,14 @@ public class UserService : IUserService
 	/// <param name="method"></param>
 	/// <param name="includeUser"></param>
 	/// <returns></returns>
-	public async Task<List<CheckinDTO>> GetCheckinsByMethod(string method, bool includeUser = false)
+	public async Task<List<CheckinDTO>> GetCheckinsByMethod(CheckinMethod method, bool includeUser = false)
 	{
 		try
 		{
 			var includeProps = includeUser ? "User" : "";
+			var methodString = EnumHelper.GetDisplayName(method);
 			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
-				x => x.Method == method, includeProperties: includeProps);
+				x => x.Method == methodString, includeProperties: includeProps);
 			return _mapper.Map<List<CheckinDTO>>(checkins);
 		}
 		catch (Exception ex)

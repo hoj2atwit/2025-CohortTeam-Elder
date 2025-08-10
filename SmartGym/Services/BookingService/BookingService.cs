@@ -242,22 +242,79 @@ public class BookingService : IBookingService
 	/// <returns></returns>
 	public async Task<bool> DeleteBooking(int id)
 	{
-		try
+		using (var transaction = await _unitOfWork.Context.Database.BeginTransactionAsync())
 		{
-			var booking = await _unitOfWork.BookingsRepository.GetAsync(id);
-			if (booking == null)
-				return false;
+			try
+			{
+				var booking = await _unitOfWork.BookingsRepository.GetAsync(id);
+				if (booking == null)
+					return false;
 
-			_unitOfWork.BookingsRepository.Delete(booking);
-			await _unitOfWork.SaveAsync();
-			return true;
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Error while deleting booking: {ex.Message}");
-			return false;
+				// Open up spot in class Session
+				if (booking.ClassSessionId != 0)
+				{
+					var session = await _unitOfWork.ClassSessionRepository.GetAsync(booking.ClassSessionId);
+					if (session != null && session.HeadCount > 0)
+					{
+						session.HeadCount -= 1;
+						if (session.HeadCount < 0)
+							session.HeadCount = 0; // Prevent out of bounds
+
+						_unitOfWork.ClassSessionRepository.Update(session);
+
+						// Check for waitlist for this session
+						var waitlist = (await _unitOfWork.WaitlistRepository.GetAsync(
+							x => x.SessionId == session.Id
+						)).ToList()
+						 .OrderBy(w => w.Position)
+						 .ToList();
+
+						var nextWaitlist = waitlist.FirstOrDefault();
+						if (nextWaitlist != null)
+						{
+							await QueueNextInLine(session, nextWaitlist);
+						}
+					}
+				}
+
+				_unitOfWork.BookingsRepository.Delete(booking);
+				await _unitOfWork.SaveAsync();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				await transaction.RollbackAsync();
+				Console.WriteLine($"Error while deleting booking: {ex.Message}");
+				return false;
+			}
 		}
 	}
+	/// <summary>
+	/// Only for bookings and waitlist handling
+	/// </summary>
+	/// <param name="session"></param>
+	/// <param name="nextWaitlist"></param>
+	/// <returns></returns>
+	private async Task QueueNextInLine(ClassSession session, Waitlist nextWaitlist)
+	{
+		// Create new booking for the next in line
+		var newBooking = new Booking
+		{
+			UserId = nextWaitlist.MemberId,
+			ClassSessionId = session.Id,
+			Status = BookingStatus.Pending,
+			CreatedAt = DateTime.UtcNow
+		};
+		await _unitOfWork.BookingsRepository.AddAsync(newBooking);
+
+		// Remove the waitlist record
+		await DeleteFromWaitlist(nextWaitlist.Id, true);
+
+		// Increment headcount back since a new booking is made
+		session.HeadCount += 1;
+		_unitOfWork.ClassSessionRepository.Update(session);
+	}
+
 	/// <summary>
 	/// Get pending bookings for classes starting within the next 10 minutes and mark them as NoShow
 	/// </summary>
@@ -478,7 +535,8 @@ public class BookingService : IBookingService
 	/// </summary>
 	/// <param name="id"></param>
 	/// <returns></returns>
-	public async Task<bool> DeleteFromWaitlist(int id)
+	/// ONLY SET isTransaction TO TRUE IF YOU DOING SOME DATABASE TOMFOOLERY
+	public async Task<bool> DeleteFromWaitlist(int id, bool isTransaction = false)
 	{
 		try
 		{
@@ -503,7 +561,10 @@ public class BookingService : IBookingService
 				_unitOfWork.WaitlistRepository.Update(record);
 			}
 
-			await _unitOfWork.SaveAsync();
+			if (isTransaction)
+			{
+				await _unitOfWork.SaveAsync();
+			}
 			return true;
 		}
 		catch (Exception ex)

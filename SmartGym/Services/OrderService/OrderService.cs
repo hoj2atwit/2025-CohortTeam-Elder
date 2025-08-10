@@ -60,6 +60,24 @@ public class OrderService : IOrderService
 		{
 			newOrderData.OrderCart = JsonConvert.SerializeObject(newOrderData.OrderCartList); // CartItemsDTO
 			Order newOrder = _mapper.Map<Order>(newOrderData);
+
+			// only get items from inventory that we need
+			var menuItemIds = newOrderData.OrderCartList.Select(x => x.MenuItemId).ToList();
+			var menuItems = await _unitOfWork.MenuItemRepository.GetAsync(x => menuItemIds.Contains(x.Id));
+			var menuItemsDict = menuItems.ToDictionary(x => x.Id);
+			// reduce stock levels based on how much someone ordered
+			foreach (var cartItem in newOrderData.OrderCartList)
+			{
+				if (menuItemsDict.TryGetValue(cartItem.MenuItemId, out var menuItem))
+				{
+					menuItem.StockLevel -= cartItem.Quantity;
+					if (menuItem.StockLevel < 0)
+						menuItem.StockLevel = 0; // Prevent negative stock
+
+					_unitOfWork.MenuItemRepository.Update(menuItem);
+				}
+			}
+
 			await _unitOfWork.OrderRepository.AddAsync(newOrder);
 			await _unitOfWork.SaveAsync();
 			return _mapper.Map<OrderDTO>(newOrder);

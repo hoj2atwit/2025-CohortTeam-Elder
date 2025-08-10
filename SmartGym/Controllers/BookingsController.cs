@@ -98,7 +98,7 @@ public class BookingsController : ControllerBase
   }
 
   [HttpDelete("{id:int}")]
-  public async Task<IActionResult> Delete(int id)
+  public async Task<IActionResult> DeleteBooking(int id)
   {
     var result = await _bookingService.DeleteBooking(id);
     if (!result)

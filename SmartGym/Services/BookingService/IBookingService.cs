@@ -35,6 +35,6 @@ public interface IBookingService
 	Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId, bool includeNestedClasses = false);
 	Task<List<WaitlistDTO>> GetWaitlistByUser(int userId, bool includeNestedClasses = false);
 	Task<WaitlistDTO?> UpdateWaitListRecord(int id, WaitlistDTO waitlistDto);
-	Task<bool> DeleteFromWaitlist(int id);
+	Task<bool> DeleteFromWaitlist(int id, bool isTransaction = false);
 	#endregion
 }
