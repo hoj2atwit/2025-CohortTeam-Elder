@@ -1,13 +1,14 @@
-﻿@page "/POS"
+﻿@page "/cafe/{uId:int}-{cId:int}"
 @using SmartGym.Components.UIClasses.Cafe
 @using SmartGym.Components.Display
+@using SmartGym.Models
 @using SmartGym.Services
 @inject IOrderService orderService
 @inject ICafeService cafeService
-<title>@username's Order</title>
-<h1>  </h1>
+@inject IUserService userService
+<title>@userName's Order</title>
 <div class="sticky top-0 z-10 bg-[#f3f4f6]">
-    <SearchNavBar title=@($"Username's Order") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })" />
+    <SearchNavBar title=@($"{userName}'s Order") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })" />
 </div>
 <div class="flex">
     <div class="border border-black p-4" style="max-width:65vw;">
@@ -57,32 +58,48 @@
     </div>
     <MenuCartLayout @ref="menuCart" OnClickCallBack=showCheckout/>
 </div>
-@if (showModal)
-{
-    <MenuCheckoutModal checkoutOnClickCallback=finishCheckout cancelOnClickCallback=cancelCheckout/>
-}
+<MenuCheckoutModal @ref="checkoutModal" checkoutOnClickCallback=finishCheckout cancelOnClickCallback=cancelCheckout/>
 
 @code {
+
+    [Parameter]
+    public int uId { get; set; }
+    [Parameter]
+    public int cId { get; set; }
+
     public string searchText = "";
-    public string username = "";
+    public string userName = "";
     private MenuCartLayout menuCart;
-    private bool showModal = false;
+    private MenuCheckoutModal checkoutModal;
 
 
     async Task InitializeMenu()
     {
+
         //TODO: Get User's Name
-        username = "Test";
-        PointOfSaleModel.instance = new PointOfSaleModel(orderService,  cafeService);
+        userName = "Test";
+        PointOfSaleModel.instance = new PointOfSaleModel(orderService, cafeService);
         await PointOfSaleModel.instance.refresh();
+
+        UserDto user = await userService.GetUserById(uId);
+        if (user != null)
+        {
+            userName = user.Name;
+            OrderDTO orderDTO = await orderService.GetOrderById(cId);
+            if (orderDTO != null)
+            {
+                PointOfSaleModel.instance.loadCart(new CartModel(orderDTO, PointOfSaleModel.instance.FullMenuDict));
+            }
+        }
+
         await updateMenu();
         //TODO: Load Cart from User
     }
 
     public async Task finishCheckout()
     {
-        await PointOfSaleModel.instance.checkout();
-        showModal = false;
+        await PointOfSaleModel.instance.checkout(uId, cId);
+        checkoutModal.hide();
         await menuCart.updateCart();
         StateHasChanged();
 
@@ -90,16 +107,13 @@
 
     public Task cancelCheckout()
     {
-        showModal = false;
-        StateHasChanged();
+        checkoutModal.hide();
         return Task.CompletedTask;
     }
 
-    public Task showCheckout()
+    public async Task showCheckout()
     {
-        showModal = true;
-        StateHasChanged();
-        return Task.CompletedTask;
+        checkoutModal.show();
     }
 
     protected override async Task OnInitializedAsync()

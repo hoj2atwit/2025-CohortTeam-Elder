@@ -1,4 +1,6 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using SmartGym.Constants.Enums;
 using SmartGym.Data;
 using SmartGym.Models;
 
@@ -38,9 +40,7 @@ public class UserService : IUserService
 	{
 		try
 		{
-			var users = await _unitOfWork.UserRepository.GetAsync();
-			var userList = _mapper.Map<List<UserDto>>(users);
-			return userList.ToList();
+			return await _unitOfWork.UserRepository.GetAllAspUsersAsDto();
 		}
 		catch (Exception ex)
 		{
@@ -80,12 +80,15 @@ public class UserService : IUserService
 	/// gets all checkins for the given user id
 	/// </summary>
 	/// <param name="id"></param>
+	/// <param name="includeUser"></param>
 	/// <returns></returns>
-	public async Task<List<CheckinDTO>> GetUserCheckins(int id)
+	public async Task<List<CheckinDTO>> GetUserCheckins(int id, bool includeUser = false)
 	{
 		try
 		{
-			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync(x => x.UserId == id);
+			var includeProps = includeUser ? "User" : "";
+			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync(
+				x => x.UserId == id, includeProperties: includeProps);
 			return _mapper.Map<List<CheckinDTO>>(checkinEntity).ToList();
 		}
 		catch (Exception ex)
@@ -94,21 +97,91 @@ public class UserService : IUserService
 			return null;
 		}
 	}
+
 	/// <summary>
 	/// returns all user checkin history
 	/// </summary>
+	/// <param name="includeUser"></param>
 	/// <returns></returns>
-	public async Task<List<CheckinDTO>> GetAllUserCheckins()
+	public async Task<List<CheckinDTO>> GetAllUserCheckins(bool includeUser = false)
 	{
 		try
 		{
-			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync();
+			var includeProps = includeUser ? "User" : "";
+			var checkinEntity = await _unitOfWork.CheckinRepository.GetAsync(includeProperties: includeProps);
 			return _mapper.Map<List<CheckinDTO>>(checkinEntity);
 		}
 		catch (Exception ex)
 		{
 			Console.WriteLine($"Error in GetAllUserCheckins: {ex.Message}");
 			return null;
+		}
+	}
+
+	/// <summary>
+	/// Gets user checkins filtered by access point.
+	/// </summary>
+	/// <param name="accessPoint"></param>
+	/// <param name="includeUser"></param>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetCheckinsByAccessPoint(AccessPoint accessPoint, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
+				x => x.AccessPoint == accessPoint, includeProperties: includeProps);
+			return _mapper.Map<List<CheckinDTO>>(checkins);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetCheckinsByAccessPoint: {ex.Message}");
+			return new List<CheckinDTO>();
+		}
+	}
+
+	/// <summary>
+	/// Gets user checkins filtered by time range.
+	/// </summary>
+	/// <param name="startTime"></param>
+	/// <param name="endTime"></param>
+	/// <param name="includeUser"></param>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetCheckinsByTime(DateTime startTime, DateTime endTime, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
+				x => x.CheckinTime >= startTime && x.CheckinTime <= endTime, includeProperties: includeProps);
+			return _mapper.Map<List<CheckinDTO>>(checkins);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetCheckinsByTime: {ex.Message}");
+			return new List<CheckinDTO>();
+		}
+	}
+
+	/// <summary>
+	/// Gets user checkins filtered by checkin method.
+	/// </summary>
+	/// <param name="method"></param>
+	/// <param name="includeUser"></param>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetCheckinsByMethod(string method, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
+				x => x.Method == method, includeProperties: includeProps);
+			return _mapper.Map<List<CheckinDTO>>(checkins);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetCheckinsByMethod: {ex.Message}");
+			return new List<CheckinDTO>();
 		}
 	}
 
@@ -216,6 +289,88 @@ public class UserService : IUserService
 		{
 			Console.WriteLine($"Error while deleting user: {ex.Message}");
 			return false;
+		}
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistory(bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var historyEntities = await _unitOfWork.UserHistoryRepository.GetAsync(includeProperties: includeProps);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistory: {ex.Message}");
+			return new List<AccountHistoryDTO>();
+		}
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistoryByStatus(UserStatus userStatus, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var historyEntities = await _unitOfWork.UserHistoryRepository.GetAsync(
+				x => x.Status == userStatus, includeProperties: includeProps);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistoryByStatus: {ex.Message}");
+			return new List<AccountHistoryDTO>();
+		}
+	}
+	/// <summary>
+	/// Gets all account history filtered by role. includeUser is NOT an option with this
+	/// </summary>
+	/// <param name="roleId"></param>
+	/// <param name="includeUser"></param>
+	/// <returns></returns>
+	public async Task<List<AccountHistoryDTO>> GetAccHistoryByRole(RoleId roleId)
+	{
+		try
+		{
+			var historyEntities = await _unitOfWork.UserRepository.GetAccHistByRoleId(roleId);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistoryByStatus: {ex.Message}");
+			return new List<AccountHistoryDTO>();
+		}
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistoryByDates(DateTime startTime, DateTime endTime, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var historyEntities = await _unitOfWork.UserHistoryRepository.GetAsync(
+				x => x.EventDate >= startTime && x.EventDate <= endTime, includeProperties: includeProps);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistoryByDates: {ex.Message}");
+			return new List<AccountHistoryDTO>();
+		}
+	}
+
+	public async Task<List<AccountHistoryDTO>> GetAccHistoryByUser(int id, bool includeUser = false)
+	{
+		try
+		{
+			var includeProps = includeUser ? "User" : "";
+			var historyEntities = await _unitOfWork.UserHistoryRepository.GetAsync(
+				x => x.UserId == id, includeProperties: includeProps);
+			return _mapper.Map<List<AccountHistoryDTO>>(historyEntities);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetAccHistoryByUser: {ex.Message}");
+			return new List<AccountHistoryDTO>();
 		}
 	}
 }

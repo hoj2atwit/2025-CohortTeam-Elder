@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Components.Authorization;
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -17,14 +19,17 @@
     <ImportMap />
     <link rel="icon" type="image/png" href="./lib/images/logo.svg" />
     <HeadOutlet />
-    
-     
+
+
 </head>
 
 <body>
-    <Routes @rendermode=RenderMode.InteractiveServer />
-	<script src="_framework/blazor.web.js"></script>
-	<script src="https://kit.fontawesome.com/8cd603a128.js" crossorigin="anonymous"></script>
+    <CascadingAuthenticationState>
+        <Routes @rendermode=RenderMode.InteractiveServer />
+    </CascadingAuthenticationState>
+    <script src="_framework/blazor.web.js"></script>
+  	<script src="https://kit.fontawesome.com/8cd603a128.js" crossorigin="anonymous"></script>
+
 </body>
 
 

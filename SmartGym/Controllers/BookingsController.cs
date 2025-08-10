@@ -38,35 +38,41 @@ public class BookingsController : ControllerBase
     var bookings = await _bookingService.GetBookingsByClassId(classId);
     return Ok(bookings);
   }
+	[HttpGet("session/{sessionId:int}")]
+	public async Task<ActionResult<List<BookingDTO>>> GetBySessionId(int sessionId)
+	{
+		var bookings = await _bookingService.GetBookingsBySessionId(sessionId);
+		return Ok(bookings);
+	}
 
-  [HttpGet("check")]
+	[HttpGet("check")]
   public async Task<ActionResult<bool>> IsUserAlreadyBooked(int userId, int classId)
   {
     var result = await _bookingService.IsUserAlreadyBooked(userId, classId);
     return Ok(result);
   }
 
-  [HttpGet("count/{classId:int}")]
-  public async Task<ActionResult<int>> CountBookingsForClass(int classId)
+  [HttpGet("count/{sessionId:int}")]
+  public async Task<ActionResult<int>> CountBookingsForSession(int sessionId)
   {
-    var count = await _bookingService.CountBookingsForClass(classId);
+    var count = await _bookingService.CountBookingsForSession(sessionId);
     return Ok(count);
   }
 
   [HttpPost]
   public async Task<IActionResult> BookClass([FromBody] BookingPostDTO bookingData)
   {
-    var classList = await _unitOfWork.ClassRepository.GetAsync(c => c.Id == bookingData.ClassId);
+    var classList = await _unitOfWork.ClassRepository.GetAsync(c => c.Id == bookingData.SessionId);
     var classItem = classList.FirstOrDefault();
     if (classItem == null)
       return NotFound("Class not found");
 
-    var alreadyBooked = await _bookingService.IsUserAlreadyBooked(bookingData.UserId, bookingData.ClassId);
+    var alreadyBooked = await _bookingService.IsUserAlreadyBooked(bookingData.UserId, bookingData.SessionId);
     if (alreadyBooked)
       return BadRequest("User is already booked for this class");
 
-    var currentBookings = await _bookingService.CountBookingsForClass(bookingData.ClassId);
-    if (currentBookings >= classItem.Capacity)
+    var currentBookings = await _bookingService.CountBookingsForSession(bookingData.SessionId);
+    if (currentBookings >= classItem.MaxCapacity)
       return BadRequest("Class is full");
 
     var newBooking = await _bookingService.CreateBooking(bookingData);

@@ -256,10 +256,10 @@ namespace SmartGym.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClassId")
+                    b.Property<int>("ClassSessionId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ConfirmedAt")
+                    b.Property<DateTime?>("ConfirmedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
@@ -276,7 +276,7 @@ namespace SmartGym.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassId");
+                    b.HasIndex("ClassSessionId");
 
                     b.HasIndex("UserId");
 
@@ -290,6 +290,9 @@ namespace SmartGym.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessPoint")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CheckinTime")
                         .HasColumnType("datetime2");
@@ -316,10 +319,17 @@ namespace SmartGym.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Capacity")
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageRef")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Level")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("MaxCapacity")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -338,6 +348,46 @@ namespace SmartGym.Migrations
                     b.HasIndex("TrainerId");
 
                     b.ToTable("Classes");
+                });
+
+            modelBuilder.Entity("SmartGym.Models.ClassSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HeadCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InstructorName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxCapacity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SessionDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassId");
+
+                    b.ToTable("ClassSessions");
                 });
 
             modelBuilder.Entity("SmartGym.Models.Images", b =>
@@ -431,6 +481,9 @@ namespace SmartGym.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("OrderTime")
                         .HasColumnType("datetime2");
 
@@ -448,6 +501,59 @@ namespace SmartGym.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("SmartGym.Models.UserStatusHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserHistory");
+                });
+
+            modelBuilder.Entity("SmartGym.Models.Waitlist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("JoinedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SessionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("Waitlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -503,9 +609,9 @@ namespace SmartGym.Migrations
 
             modelBuilder.Entity("SmartGym.Models.Booking", b =>
                 {
-                    b.HasOne("SmartGym.Models.Class", "Class")
+                    b.HasOne("SmartGym.Models.ClassSession", "ClassSession")
                         .WithMany()
-                        .HasForeignKey("ClassId")
+                        .HasForeignKey("ClassSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -515,7 +621,7 @@ namespace SmartGym.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Class");
+                    b.Navigation("ClassSession");
 
                     b.Navigation("User");
                 });
@@ -542,6 +648,17 @@ namespace SmartGym.Migrations
                     b.Navigation("Trainer");
                 });
 
+            modelBuilder.Entity("SmartGym.Models.ClassSession", b =>
+                {
+                    b.HasOne("SmartGym.Models.Class", "Class")
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+                });
+
             modelBuilder.Entity("SmartGym.Models.Order", b =>
                 {
                     b.HasOne("SmartGym.Models.AppUser", "User")
@@ -551,6 +668,36 @@ namespace SmartGym.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SmartGym.Models.UserStatusHistory", b =>
+                {
+                    b.HasOne("SmartGym.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SmartGym.Models.Waitlist", b =>
+                {
+                    b.HasOne("SmartGym.Models.AppUser", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SmartGym.Models.ClassSession", "Session")
+                        .WithMany()
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+
+                    b.Navigation("Session");
                 });
 
             modelBuilder.Entity("SmartGym.Models.AppUser", b =>

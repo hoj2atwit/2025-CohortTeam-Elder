@@ -1,0 +1,67 @@
+﻿@using SmartGym.Models
+@using SmartGym.Components.UIClasses.Cafe
+@inject NavigationManager navigationManager
+<div class="flex w-[200px] min-w-[180px] flex-col rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800" style="height:20vh">
+    <div class="flex">
+        <label class="text-2xl"> @currOrder.Id </label>
+        <InputSelect ValueExpression="@(() => currOrder.OrderStatus)" Value=@currOrder.OrderStatus ValueChanged="(Constants.OrderStatus s) => setStatusOrder(s)" class="flex-grow">
+            @foreach (Constants.OrderStatus enumVal in Constants.OrderStatus.GetValues(typeof(Constants.OrderStatus)))
+            {
+                <option value=@enumVal> @enumVal.ToString() </option>
+            }
+        </InputSelect>
+        <button @onclick="deleteOrder"> D </button>
+    </div>
+    
+
+    <div class="flex-grow overflow-y-auto border">
+        @foreach (CartItemsDTO item in currOrder.OrderCartList)
+        {
+            <div class="flex border">
+                <div class="flex-grow">@item.Name</div>
+                <div class="flex-grow-1">@($"x{item.Quantity}") </div>
+                <div class="flex-grow-0">@string.Format("{0:C}", item.Price)</div>
+            </div>
+        }
+    </div>
+    <p class="mb-3 text-sm text-gray-700 dark:text-gray-400">Total: @string.Format("{0:C}", currOrder.TotalPrice)</p>
+    <div class="flex w-full" style="bottom:0; position:relative;">
+        <button @onclick=viewOrder class="flex-grow-1 border">Edit</button>
+        @if (currOrder.OrderStatus == Constants.OrderStatus.Incomplete || currOrder.OrderStatus == Constants.OrderStatus.Pending)
+        {
+            <button @onclick=completeOrder class="flex-grow-1 border">Complete</button>
+        }
+    </div>
+</div>
+@code {
+    [Parameter]
+    public OrderDTO? currOrder { get; set; }
+    [Parameter]
+    public EventCallback<OrderDTO> ViewOrderCallBack { get; set; }
+    [Parameter]
+    public EventCallback<OrderDTO> EditStatusOrderCallBack { get; set; }
+    [Parameter]
+    public EventCallback<OrderDTO> DeleteOrderCallBack { get; set; }
+
+    public async Task viewOrder()
+    {
+        await ViewOrderCallBack.InvokeAsync(currOrder);
+    }
+
+    public async Task completeOrder()
+    {
+        currOrder.OrderStatus = Constants.OrderStatus.Completed;
+        await EditStatusOrderCallBack.InvokeAsync(currOrder);
+    }
+
+    public async Task setStatusOrder(Constants.OrderStatus status)
+    {
+        currOrder.OrderStatus = status;
+        await EditStatusOrderCallBack.InvokeAsync(currOrder);
+    }
+
+    public async Task deleteOrder()
+    {
+        await DeleteOrderCallBack.InvokeAsync(currOrder);
+    }
+}

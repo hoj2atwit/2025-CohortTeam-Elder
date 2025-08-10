@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using IronBarCode;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SmartGym.Models;
 using SmartGym.Services;
 namespace SmartGym.Components.UIClasses.Cafe
@@ -9,10 +10,12 @@ namespace SmartGym.Components.UIClasses.Cafe
 
         public CartModel? CurrentCart = new();
         public List<MenuItemModel> FullMenuList = new();
-        private Dictionary<string, MenuItemModel> FullMenuDict = new();
+        public Dictionary<string, MenuItemModel> FullMenuDict = new();
         public List<MenuItemModel>? FilteredMenu;
         private readonly IOrderService _orderService;
         private readonly ICafeService _cafeService;
+        public bool loaded = false;
+        public bool updateOrderTime = false;
 
         /// <summary>
         /// Constructor for POS that ensures that a static instance of POS exists. Also Resets the values of the instance.
@@ -36,7 +39,7 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// </summary>
         public async Task refresh() 
         {
-            CurrentCart = new CartModel();
+            loaded = false;
             await getAllItems();
         }
 
@@ -47,6 +50,7 @@ namespace SmartGym.Components.UIClasses.Cafe
         public void loadCart(CartModel cart) 
         { 
             CurrentCart = cart;
+            loaded = true;
         }
 
         /// <summary>
@@ -78,15 +82,24 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// <summary>
         /// Some Checkout function that does checkout things :^)
         /// </summary>
-        public async Task checkout()
+        public async Task checkout(int uId, int cId)
         {
             //TODO: Go To Payment window. If payment succeeds, Send order to DB.
             if (CurrentCart != null) 
             {
-                await _orderService.CreateOrder(CurrentCart.toDTO());
+                if (await _orderService.GetOrderById(cId) != null)
+                {
+                    await _orderService.UpdateOrder(cId, CurrentCart.toPatchDTO(updateOrderTime));
+                }
+                else 
+                {
+                    CurrentCart.cartId = cId;
+                    CurrentCart.userId = uId;
+                    await _orderService.CreateOrder(CurrentCart.toDTO(Constants.OrderStatus.Pending));
+                }
             }
+            CurrentCart = new CartModel();
             await refresh();
-            
         }
 
         //Gets all menuitems from db

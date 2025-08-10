@@ -1,3 +1,4 @@
+using SmartGym.Migrations;
 using SmartGym.Models;
 
 namespace SmartGym.Data;
@@ -6,12 +7,15 @@ public class UnitOfWork : IUnitOfWork
 {
 	private readonly SmartGymContext _context;
 	private IRepository<Class>? _classRepository;
-	private IRepository<AppUser>? _userRepository;
+	private UserRepo? _userRepository;
 	private IRepository<Order>? _orderRepository;
 	private IRepository<Checkin>? _checkinRepository;
 	private IRepository<MenuItem>? _menuItemRepository;
 	private IRepository<Images>? _imagesRepository;
 	private IRepository<Booking>? _bookingsRepository;
+	private IRepository<Waitlist>? _waitlistRepository;
+	private IRepository<ClassSession>? _classSessionRepository;
+	private IRepository<AccountHistory>? _userHistoryRepository;
 
 	public UnitOfWork(SmartGymContext context)
 	{
@@ -25,11 +29,11 @@ public class UnitOfWork : IUnitOfWork
 			return _classRepository;
 		}
 	}
-	public IRepository<AppUser> UserRepository
+	public UserRepo UserRepository
 	{
 		get
 		{
-			_userRepository ??= new Repository<AppUser>(_context);
+			_userRepository ??= new UserRepo(_context);
 			return _userRepository;
 		}
 	}
@@ -72,6 +76,31 @@ public class UnitOfWork : IUnitOfWork
 		{
 			_bookingsRepository ??= new Repository<Booking>(_context);
 			return _bookingsRepository;
+		}
+	}
+
+	public IRepository<Waitlist> WaitlistRepository
+	{
+		get
+		{
+			_waitlistRepository ??= new Repository<Waitlist>(_context);
+			return _waitlistRepository;
+		}
+	}
+	public IRepository<ClassSession> ClassSessionRepository
+	{
+		get
+		{
+			_classSessionRepository ??= new Repository<ClassSession>(_context);
+			return _classSessionRepository;
+		}
+	}
+	public IRepository<AccountHistory> UserHistoryRepository
+	{
+		get
+		{
+			_userHistoryRepository ??= new Repository<AccountHistory>(_context);
+			return _userHistoryRepository;
 		}
 	}
 	public async Task SaveAsync()
