@@ -21,6 +21,7 @@ public interface IBookingService
 	Task<BookingDTO> GetBooking(int id);
 	#endregion
 	#region Sessions
+
 	Task<ClassSessionDTO> GetClassSession(int sessionId);
 	Task<List<ClassSessionDTO>> GetAllClassSessions();
 	Task<ClassSessionDTO?> UpdateClassSession(int id, ClassSessionDTO sessionDto);
@@ -28,6 +29,7 @@ public interface IBookingService
 	#endregion
 
 	#region Waitlist
+	Task<WaitlistDTO> GetSingleWaitlistRecord(int id, bool includeNestedClasses = false);
 	Task<List<WaitlistDTO>> GetFullWaitList(bool includeNestedClasses = false);
 	Task<List<WaitlistDTO>> GetWaitlistBySession(int id, bool includeNestedClasses = false);
 	Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId, bool includeNestedClasses = false);

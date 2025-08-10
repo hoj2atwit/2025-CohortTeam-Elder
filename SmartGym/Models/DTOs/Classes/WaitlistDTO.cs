@@ -11,7 +11,7 @@ namespace SmartGym.Models
 		public int MemberId { get; set; }
 		public UserDto Member { get; set; }
 		public int SessionId { get; set; }
-		public ClassSession Session { get; set; }
+		public ClassSessionDTO Session { get; set; }
 		public DateTime JoinedDateTime { get; set; }
 		public int Position { get; set; }
 	}

@@ -17,7 +17,14 @@ public class WaitlistController : ControllerBase
 		_bookingService = bookingService;
 		_unitOfWork = unitOfWork;
 	}
-
+	[HttpGet("{id:int}")]
+	public async Task<ActionResult<WaitlistDTO>> GetById(int id, [FromQuery] bool includeNestedClasses = false)
+	{
+		var waitlistRecord = await _bookingService.GetSingleWaitlistRecord(id, includeNestedClasses);
+		if (waitlistRecord == null)
+			return NotFound();
+		return Ok(waitlistRecord);
+	}
 	[HttpGet]
 	public async Task<ActionResult<List<WaitlistDTO>>> GetAll([FromQuery] bool includeNestedClasses = false)
 	{

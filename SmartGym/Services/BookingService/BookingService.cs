@@ -364,6 +364,27 @@ public class BookingService : IBookingService
 	#endregion
 
 	#region Waitlists
+
+	/// <summary>
+	/// Gets entire
+	/// </summary>
+	/// <returns></returns>
+	public async Task<WaitlistDTO> GetSingleWaitlistRecord(int id, bool includeNestedClasses = false)
+	{
+		try
+		{
+			var includeProps = includeNestedClasses ? "Member,Session,Session.Class" : "";
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.Id == id, includeProperties: includeProps);
+			var waitlistDto = _mapper.Map<WaitlistDTO>(waitlist.FirstOrDefault());
+			return waitlistDto;
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetSingleWaitlistRecord: {ex.Message}");
+			return null;
+		}
+	}
+
 	/// <summary>
 	/// Gets entire
 	/// </summary>
