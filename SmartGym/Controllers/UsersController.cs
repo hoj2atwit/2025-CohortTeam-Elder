@@ -126,5 +126,61 @@ namespace SmartGym.Controllers
 			var checkins = await _service.GetCheckinsByMethod(method, includeUser);
 			return Ok(checkins);
 		}
+
+
+		/// <summary>
+		/// gets all account history entries
+		/// <param name="includeUser"></param>
+		/// </summary>
+		[HttpGet("account-history")]
+		public async Task<ActionResult<IEnumerable<AccountHistoryDTO>>> GetAccountHistory([FromQuery] bool includeUser = false)
+		{
+			var history = await _service.GetAccHistory(includeUser);
+			return Ok(history);
+		}
+
+		/// <summary>
+		/// ets account history entries filtered by user status
+		/// <param name="includeUser"></param>
+		/// </summary>
+		[HttpGet("account-history/status")]
+		public async Task<ActionResult<IEnumerable<AccountHistoryDTO>>> GetAccountHistoryByStatus([FromQuery] UserStatus userStatus, [FromQuery] bool includeUser = false)
+		{
+			var history = await _service.GetAccHistoryByStatus(userStatus, includeUser);
+			return Ok(history);
+		}
+
+		/// <summary>
+		/// gets account history entries filtered by date range
+		/// <param name="includeUser"></param>
+		/// </summary>
+		[HttpGet("account-history/dates")]
+		public async Task<ActionResult<IEnumerable<AccountHistoryDTO>>> GetAccountHistoryByDates([FromQuery] DateTime startTime, [FromQuery] DateTime endTime, [FromQuery] bool includeUser = false)
+		{
+			var history = await _service.GetAccHistoryByDates(startTime, endTime, includeUser);
+			return Ok(history);
+		}
+
+		/// <summary>
+		/// gets account history entries for a specific user
+		/// <param name="includeUser"></param>
+		/// </summary>
+		[HttpGet("usr-account-history/{id:int}")]
+		public async Task<ActionResult<IEnumerable<AccountHistoryDTO>>> GetAccountHistoryByUser(int id, [FromQuery] bool includeUser = false)
+		{
+			var history = await _service.GetAccHistoryByUser(id, includeUser);
+			return Ok(history);
+		}
+		/// <summary>
+		/// Gets account history entries filtered by user role.
+		/// </summary>
+		/// <param name="roleId"></param>
+		/// <returns></returns>
+		[HttpGet("account-history/role")]
+		public async Task<ActionResult<IEnumerable<AccountHistoryDTO>>> GetAccountHistoryByRole([FromQuery] RoleId roleId)
+		{
+			var history = await _service.GetAccHistoryByRole(roleId);
+			return Ok(history);
+		}
 	}
 }

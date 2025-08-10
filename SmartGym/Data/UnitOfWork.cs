@@ -15,7 +15,7 @@ public class UnitOfWork : IUnitOfWork
 	private IRepository<Booking>? _bookingsRepository;
 	private IRepository<Waitlist>? _waitlistRepository;
 	private IRepository<ClassSession>? _classSessionRepository;
-	private IRepository<UserStatusHistory>? _userHistoryRepository;
+	private IRepository<AccountHistory>? _userHistoryRepository;
 
 	public UnitOfWork(SmartGymContext context)
 	{
@@ -95,11 +95,11 @@ public class UnitOfWork : IUnitOfWork
 			return _classSessionRepository;
 		}
 	}
-	public IRepository<UserStatusHistory> UserHistoryRepository
+	public IRepository<AccountHistory> UserHistoryRepository
 	{
 		get
 		{
-			_userHistoryRepository ??= new Repository<UserStatusHistory>(_context);
+			_userHistoryRepository ??= new Repository<AccountHistory>(_context);
 			return _userHistoryRepository;
 		}
 	}
