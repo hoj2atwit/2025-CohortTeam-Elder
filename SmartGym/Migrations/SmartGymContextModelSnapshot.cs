@@ -503,6 +503,30 @@ namespace SmartGym.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("SmartGym.Models.UserStatusHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserHistory");
+                });
+
             modelBuilder.Entity("SmartGym.Models.Waitlist", b =>
                 {
                     b.Property<int>("Id")
@@ -636,6 +660,17 @@ namespace SmartGym.Migrations
                 });
 
             modelBuilder.Entity("SmartGym.Models.Order", b =>
+                {
+                    b.HasOne("SmartGym.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SmartGym.Models.UserStatusHistory", b =>
                 {
                     b.HasOne("SmartGym.Models.AppUser", "User")
                         .WithMany()
