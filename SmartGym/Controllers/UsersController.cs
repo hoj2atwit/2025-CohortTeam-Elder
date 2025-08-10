@@ -94,10 +94,9 @@ namespace SmartGym.Controllers
 		/// <param name="includeUser"></param>
 		/// <returns></returns>
 		[HttpGet("checkins/by-access-point")]
-		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByAccessPoint([FromQuery] int accessPoint, [FromQuery] bool includeUser = false)
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByAccessPoint([FromQuery] AccessPoint accessPoint, [FromQuery] bool includeUser = false)
 		{
-			var accessPointEnum = (AccessPoint)accessPoint;
-			var checkins = await _service.GetCheckinsByAccessPoint(accessPointEnum, includeUser);
+			var checkins = await _service.GetCheckinsByAccessPoint(accessPoint, includeUser);
 			return Ok(checkins);
 		}
 

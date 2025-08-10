@@ -18,30 +18,30 @@ public class OrdersController : ControllerBase
 		CreatedAt = DateTime.Now,
 		UpdatedAt = DateTime.Now,
 		OrderCartList = new List<CartItemsDTO>
-	 {
-		  new CartItemsDTO { MenuItemId = 1, Quantity = 5 },   // latte
-        new CartItemsDTO { MenuItemId = 2, Quantity = 4 },   // espresso
-        new CartItemsDTO { MenuItemId = 3, Quantity = 3 },   // americano
-        new CartItemsDTO { MenuItemId = 4, Quantity = 2 },   // cappuccino
-        new CartItemsDTO { MenuItemId = 5, Quantity = 6 },   // flat white
-        new CartItemsDTO { MenuItemId = 6, Quantity = 2 },   // macchiato
-        new CartItemsDTO { MenuItemId = 7, Quantity = 3 },   // mocha
-        new CartItemsDTO { MenuItemId = 8, Quantity = 4 },   // cold brew
-        new CartItemsDTO { MenuItemId = 9, Quantity = 2 },   // nitro cold brew
-        new CartItemsDTO { MenuItemId = 10, Quantity = 5 },  // drip coffee
-        new CartItemsDTO { MenuItemId = 11, Quantity = 3 },  // iced coffee
-        new CartItemsDTO { MenuItemId = 12, Quantity = 2 },  // dirty chai
-        new CartItemsDTO { MenuItemId = 13, Quantity = 4 },  // matcha latte
-        new CartItemsDTO { MenuItemId = 14, Quantity = 2 },  // iced matcha
-        new CartItemsDTO { MenuItemId = 15, Quantity = 3 },  // hot chocolate
-        new CartItemsDTO { MenuItemId = 16, Quantity = 2 },  // iced chocolate
-        new CartItemsDTO { MenuItemId = 17, Quantity = 3 },  // turmeric latte
-        new CartItemsDTO { MenuItemId = 18, Quantity = 2 },  // golden milk
-        new CartItemsDTO { MenuItemId = 19, Quantity = 4 },  // london fog
-        new CartItemsDTO { MenuItemId = 20, Quantity = 2 },  // earl grey tea
-        new CartItemsDTO { MenuItemId = 21, Quantity = 3 },  // green tea
-        new CartItemsDTO { MenuItemId = 22, Quantity = 2 },  // black tea
-    },
+		{
+			new CartItemsDTO { MenuItemId = 1, Name = "Latte", Quantity = 5, Price = 4.50m },
+			new CartItemsDTO { MenuItemId = 2, Name = "Espresso", Quantity = 4, Price = 3.00m },
+			new CartItemsDTO { MenuItemId = 3, Name = "Americano", Quantity = 3, Price = 3.50m },
+			new CartItemsDTO { MenuItemId = 4, Name = "Cappuccino", Quantity = 2, Price = 4.00m },
+			new CartItemsDTO { MenuItemId = 5, Name = "Flat White", Quantity = 6, Price = 4.25m },
+			new CartItemsDTO { MenuItemId = 6, Name = "Macchiato", Quantity = 2, Price = 3.75m },
+			new CartItemsDTO { MenuItemId = 7, Name = "Mocha", Quantity = 3, Price = 4.75m },
+			new CartItemsDTO { MenuItemId = 8, Name = "Cold Brew", Quantity = 4, Price = 4.00m },
+			new CartItemsDTO { MenuItemId = 9, Name = "Nitro Cold Brew", Quantity = 2, Price = 4.50m },
+			new CartItemsDTO { MenuItemId = 10, Name = "Drip Coffee", Quantity = 5, Price = 2.50m },
+			new CartItemsDTO { MenuItemId = 11, Name = "Iced Coffee", Quantity = 3, Price = 3.25m },
+			new CartItemsDTO { MenuItemId = 12, Name = "Dirty Chai", Quantity = 2, Price = 4.50m },
+			new CartItemsDTO { MenuItemId = 13, Name = "Matcha Latte", Quantity = 4, Price = 4.75m },
+			new CartItemsDTO { MenuItemId = 14, Name = "Iced Matcha", Quantity = 2, Price = 4.75m },
+			new CartItemsDTO { MenuItemId = 15, Name = "Hot Chocolate", Quantity = 3, Price = 3.50m },
+			new CartItemsDTO { MenuItemId = 16, Name = "Iced Chocolate", Quantity = 2, Price = 3.75m },
+			new CartItemsDTO { MenuItemId = 17, Name = "Turmeric Latte", Quantity = 3, Price = 4.25m },
+			new CartItemsDTO { MenuItemId = 18, Name = "Golden Milk", Quantity = 2, Price = 4.00m },
+			new CartItemsDTO { MenuItemId = 19, Name = "London Fog", Quantity = 4, Price = 4.25m },
+			new CartItemsDTO { MenuItemId = 20, Name = "Earl Grey Tea", Quantity = 2, Price = 2.75m },
+			new CartItemsDTO { MenuItemId = 21, Name = "Green Tea", Quantity = 3, Price = 2.75m },
+			new CartItemsDTO { MenuItemId = 22, Name = "Black Tea", Quantity = 2, Price = 2.75m },
+		},
 		OrderCart = null,
 		Notes = "Please package drinks separately and label each item.",
 		UserId = 5
@@ -78,10 +78,10 @@ public class OrdersController : ControllerBase
 		}
 		return Ok(orderList);
 	}
-	[HttpGet("getOrderByStatus/{id:int}")]
-	public async Task<ActionResult<IEnumerable<Order>>> GetOrderByStatus(int id)
+	[HttpGet("getOrderByStatus/{status}")]
+	public async Task<ActionResult<IEnumerable<Order>>> GetOrderByStatus(OrderStatus status)
 	{
-		var orderList = await _service.GetAllOrdersByStatus((OrderStatus)id);
+		var orderList = await _service.GetAllOrdersByStatus(status);
 		if (orderList == null || orderList.Count == 0)
 		{
 			return NotFound();
