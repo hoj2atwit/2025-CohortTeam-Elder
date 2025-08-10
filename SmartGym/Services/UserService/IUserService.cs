@@ -1,3 +1,4 @@
+using SmartGym.Constants.Enums;
 using SmartGym.Models;
 
 namespace SmartGym.Services;
@@ -7,13 +8,16 @@ public interface IUserService
 	Task<UserDto> CreateUser(UserDto newUserData);
 	Task<UserDto> GetUserById(int id);
 	Task<List<UserDto>> GetAllUsers();
-	Task<List<CheckinDTO>> GetUserCheckins(int id);
-	Task<List<CheckinDTO>> GetAllUserCheckins();
+	Task<List<CheckinDTO>> GetUserCheckins(int id, bool includeUser = false);
+	Task<List<CheckinDTO>> GetAllUserCheckins(bool includeUser = false);
 	void GetUserPaymentMethod(AppUser user);
 	void GetTrafficData(DateTime date);
 	void GetTrafficData(DateTime startDate, DateTime endDate);
 	Task<UserDto?> UpdateUser(int id, UserDto userDto);
 	Task<bool> DeleteUser(int id);
 	Task<(bool Success, string Message)> UploadUserImageBlob(int id, string imageRef, byte[] imageBytes, string guid);
+	Task<List<CheckinDTO>> GetCheckinsByAccessPoint(AccessPoint accessPoint, bool includeUser = false);
+	Task<List<CheckinDTO>> GetCheckinsByTime(DateTime startTime, DateTime endTime, bool includeUser = false);
+	Task<List<CheckinDTO>> GetCheckinsByMethod(string method, bool includeUser = false);
 
 }

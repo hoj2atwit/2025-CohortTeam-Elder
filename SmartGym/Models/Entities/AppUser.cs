@@ -2,10 +2,10 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using SmartGym.Constants.Enums;
 
 namespace SmartGym.Models;
 
-[Table("Users")]
 public class AppUser : IdentityUser<int>
 {
 	[Required]
@@ -20,7 +20,7 @@ public class AppUser : IdentityUser<int>
 	[Required]
 	public DateTime DateOfBirth { get; set; }
 	[Required]
-	public int Status { get; set; }
+	public UserStatus Status { get; set; }
 	public DateTime CreatedDate { get; set; }
 	public DateTime UpdatedDate { get; set; }
 	public ICollection<Checkin>? Checkins { get; set; }
