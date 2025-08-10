@@ -95,7 +95,7 @@ namespace SmartGym.Components.UIClasses.Cafe
                 {
                     CurrentCart.cartId = cId;
                     CurrentCart.userId = uId;
-                    await _orderService.CreateOrder(CurrentCart.toDTO());
+                    await _orderService.CreateOrder(CurrentCart.toDTO(Constants.OrderStatus.Pending));
                 }
             }
             CurrentCart = new CartModel();

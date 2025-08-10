@@ -19,7 +19,6 @@
             <option value=@enumVal> @enumVal.ToString() </option>
         }
     </InputSelect>
-    <div> @orderFilter </div>
 </div>
 <div class="overflow flex w-full max-w-full flex-wrap gap-4">
 
@@ -32,7 +31,7 @@
             @foreach (OrderDTO orderDTO in orders)
             {
                 @*Replace with orderCard Component*@
-                <OrderCard currOrder=@orderDTO CompleteOrderCallBack=updateOrder ViewOrderCallBack=editOrder/>
+                <OrderCard currOrder=@orderDTO EditStatusOrderCallBack=updateOrder ViewOrderCallBack=editOrder DeleteOrderCallBack=deleteOrder/>
             }
         }
 
@@ -73,6 +72,12 @@
         patch.TotalPrice = order.TotalPrice;
         patch.UpdatedAt = DateTime.Now;
         await orderService.UpdateOrder(order.Id, patch);
+        await refreshOrders();
+    }
+
+    public async Task deleteOrder(OrderDTO order)
+    {
+        await orderService.DeleteOrder(order.Id);
         await refreshOrders();
     }
 }

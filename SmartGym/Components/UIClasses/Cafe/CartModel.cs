@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using SmartGym.Constants;
 using SmartGym.Models;
 
 namespace SmartGym.Components.UIClasses.Cafe
@@ -86,7 +87,7 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// Converts current cart into DTO to create new DB entree
         /// </summary>
         /// <returns></returns>
-        public OrderDTO toDTO() 
+        public OrderDTO toDTO(OrderStatus status) 
         { 
             OrderDTO dto = new OrderDTO();
             if (cartId > 0) { dto.Id = cartId; }
@@ -96,7 +97,7 @@ namespace SmartGym.Components.UIClasses.Cafe
             dto.Notes = Notes;
             dto.OrderCartList = new List<CartItemsDTO>();
             dto.TotalPrice = Total;
-            dto.UserId = userId;
+            dto.UserId = userId < 1 ? 1:userId;
 
             foreach (CartItemModel cartItem in CartItems.Values) 
             {
@@ -118,6 +119,7 @@ namespace SmartGym.Components.UIClasses.Cafe
             dto.Notes = Notes;
             dto.OrderCartList = new List<CartItemsDTO>();
             dto.TotalPrice = Total;
+            dto.OrderStatus = OrderStatus.Pending;
 
             foreach (CartItemModel cartItem in CartItems.Values)
             {
@@ -193,6 +195,7 @@ namespace SmartGym.Components.UIClasses.Cafe
                 dto.MenuItemId = Item.ItemId;
                 dto.Name = Item.Name;
                 dto.Quantity = Amount;
+                dto.Price = CurrentPrice;
                 dto.ImageRef = Item.ImageLocation;
                 return dto;
             }

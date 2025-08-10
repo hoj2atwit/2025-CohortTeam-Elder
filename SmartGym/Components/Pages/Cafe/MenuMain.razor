@@ -58,10 +58,7 @@
     </div>
     <MenuCartLayout @ref="menuCart" OnClickCallBack=showCheckout/>
 </div>
-@if (showModal)
-{
-    <MenuCheckoutModal checkoutOnClickCallback=finishCheckout cancelOnClickCallback=cancelCheckout/>
-}
+<MenuCheckoutModal @ref="checkoutModal" checkoutOnClickCallback=finishCheckout cancelOnClickCallback=cancelCheckout/>
 
 @code {
 
@@ -73,8 +70,7 @@
     public string searchText = "";
     public string userName = "";
     private MenuCartLayout menuCart;
-    private bool showModal = false;
-    
+    private MenuCheckoutModal checkoutModal;
 
 
     async Task InitializeMenu()
@@ -95,7 +91,7 @@
                 PointOfSaleModel.instance.loadCart(new CartModel(orderDTO, PointOfSaleModel.instance.FullMenuDict));
             }
         }
-        
+
         await updateMenu();
         //TODO: Load Cart from User
     }
@@ -103,7 +99,7 @@
     public async Task finishCheckout()
     {
         await PointOfSaleModel.instance.checkout(uId, cId);
-        showModal = false;
+        checkoutModal.hide();
         await menuCart.updateCart();
         StateHasChanged();
 
@@ -111,16 +107,13 @@
 
     public Task cancelCheckout()
     {
-        showModal = false;
-        StateHasChanged();
+        checkoutModal.hide();
         return Task.CompletedTask;
     }
 
-    public Task showCheckout()
+    public async Task showCheckout()
     {
-        showModal = true;
-        StateHasChanged();
-        return Task.CompletedTask;
+        checkoutModal.show();
     }
 
     protected override async Task OnInitializedAsync()
