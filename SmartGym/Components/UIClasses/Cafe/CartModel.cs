@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using SmartGym.Constants;
 using SmartGym.Models;
 
 namespace SmartGym.Components.UIClasses.Cafe
@@ -10,6 +11,9 @@ namespace SmartGym.Components.UIClasses.Cafe
         public decimal Subtotal = 0;
         public decimal Tax = 0;
         public string TotalString = "";
+        public string Notes = "";
+        public int cartId = -1;
+        public int userId = 1;
         private static readonly decimal TAXRATE = 0.07m;
 
         /// <summary>
@@ -17,6 +21,22 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// </summary>
         public CartModel()
         {
+            updateTotal();
+        }
+
+        /// <summary>
+        /// Cart constructor. Applies correct formatting currency formatting.
+        /// </summary>
+        public CartModel(OrderDTO dto, Dictionary<string, MenuItemModel> allMenuItems)
+        {
+            Notes = string.IsNullOrEmpty(dto.Notes) ? "" : dto.Notes;
+            userId = dto.UserId;
+            cartId = dto.Id;
+            foreach (CartItemsDTO itemDTO in dto.OrderCartList) 
+            {
+                CartItems[itemDTO.MenuItemId] = new CartItemModel(allMenuItems[itemDTO.Name], itemDTO.Quantity);
+            }
+            
             updateTotal();
         }
 
@@ -63,18 +83,23 @@ namespace SmartGym.Components.UIClasses.Cafe
             TotalString = string.Format("{0:C}", Total);
         }
 
-        public OrderDTO toDTO() 
+        /// <summary>
+        /// Converts current cart into DTO to create new DB entree
+        /// </summary>
+        /// <returns></returns>
+        public OrderDTO toDTO(OrderStatus status) 
         { 
             OrderDTO dto = new OrderDTO();
+            if (cartId > 0) { dto.Id = cartId; }
             dto.CreatedAt = DateTime.Now;
-            dto.OrderTime = DateTime.Now;
-            dto.UpdatedAt = DateTime.Now;
-            dto.Notes = "None";
+            dto.OrderTime = dto.CreatedAt.AddMinutes(5);
+            dto.UpdatedAt = dto.CreatedAt;
+            dto.Notes = Notes;
             dto.OrderCartList = new List<CartItemsDTO>();
             dto.TotalPrice = Total;
-            dto.UserId = 1;
+            dto.UserId = userId < 1 ? 1:userId;
 
-            foreach (CartItemModel cartItem in CartItems.Values.ToList()) 
+            foreach (CartItemModel cartItem in CartItems.Values) 
             {
                 dto.OrderCartList.Add(cartItem.toCartItemsDTO());
             }
@@ -83,11 +108,33 @@ namespace SmartGym.Components.UIClasses.Cafe
         }
 
         /// <summary>
+        /// Converts current cart into a PatchDTO to update existing DB entree
+        /// </summary>
+        /// <returns></returns>
+        public OrderPatchDTO toPatchDTO(bool updateOrderTime)
+        {
+            OrderPatchDTO dto = new OrderPatchDTO();
+            dto.UpdatedAt = DateTime.Now;
+            if (updateOrderTime) { dto.OrderTime = DateTime.Now.AddMinutes(5); }
+            dto.Notes = Notes;
+            dto.OrderCartList = new List<CartItemsDTO>();
+            dto.TotalPrice = Total;
+            dto.OrderStatus = OrderStatus.Pending;
+
+            foreach (CartItemModel cartItem in CartItems.Values)
+            {
+                dto.OrderCartList.Add(cartItem.toCartItemsDTO());
+            }
+
+            return dto;
+        }
+
+        /// <summary>
         /// Class of an individual CartItem
         /// </summary>
         public class CartItemModel
         {
-            public MenuItemModel? Item;
+            public MenuItemModel Item;
             public int Amount = 0;
             public decimal CurrentPrice;
             public string? CurrentPriceString;
@@ -146,7 +193,9 @@ namespace SmartGym.Components.UIClasses.Cafe
             {
                 CartItemsDTO dto = new CartItemsDTO();
                 dto.MenuItemId = Item.ItemId;
+                dto.Name = Item.Name;
                 dto.Quantity = Amount;
+                dto.Price = CurrentPrice;
                 dto.ImageRef = Item.ImageLocation;
                 return dto;
             }
