@@ -78,10 +78,10 @@ public class OrdersController : ControllerBase
 		}
 		return Ok(orderList);
 	}
-	[HttpGet("getOrderByStatus/{id:int}")]
-	public async Task<ActionResult<IEnumerable<Order>>> GetOrderByStatus(int id)
+	[HttpGet("getOrderByStatus/{status}")]
+	public async Task<ActionResult<IEnumerable<Order>>> GetOrderByStatus(OrderStatus status)
 	{
-		var orderList = await _service.GetAllOrdersByStatus((OrderStatus)id);
+		var orderList = await _service.GetAllOrdersByStatus(status);
 		if (orderList == null || orderList.Count == 0)
 		{
 			return NotFound();
