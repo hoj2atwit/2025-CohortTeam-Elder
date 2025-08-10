@@ -66,7 +66,7 @@
 		font-size: 2.5em;
 	}
 	ul{
-		list-style-image: url("/lib/images/checkmark.png");
+		list-style-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNCAxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSIjMzhiZGY4Ij48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMy42ODUuMTUzYS43NTIuNzUyIDAgMCAxIC4xNDMgMS4wNTJsLTggMTAuNWEuNzUuNzUgMCAwIDEtMS4xMjcuMDc1bC00LjUtNC41YS43NS43NSAwIDAgMSAxLjA2LTEuMDZsMy44OTQgMy44OTMgNy40OC05LjgxN2EuNzUuNzUgMCAwIDEgMS4wNS0uMTQzWiIgLz48L3N2Zz4=');
 	}
 	.bg-img{
 		background: linear-gradient(129deg, hsla(257, 69%, 5%, 0.5), #170937);
@@ -77,19 +77,37 @@
 	}
 </style>
 
-<section id="outer">
+<section id="outer" aria-labelledby="smart">
 	<div id="home-top-video">
-		<video autoplay loop muted width="100%">
+		<video autoplay loop muted class="w-full">
 			<source src="./lib/videos/home.mp4" type="video/mp4" /> Your browser does not support the video tag. We suggest you upgrade your browser.
 		</video>
 		<div id="home-text">
-			<h1 class="p5">Smart Gym</h1>
+			<h1 class="p5" id="smart">Smart Gym</h1>
 			Home of the Gains
 		</div>
 	</div>
 	<div class="absolute  inset-x-0 bottom-0 z-1">
 		<button class="p-5 mx-5 bg-accent text-xl hover:bg-violet-600 focus:outline-2 btn-join">Join Today!</button>
 	</div>
+</section>
+<section class="text-center text-[#170937] bg-white p-5" aria-labelledby="why">
+	<h2 id="why" class="text-3xl mb-3">Why Choose Us?</h2>
+	<div class="grid grid-cols-3 gap-4 px-5">
+		<article class="border-1 border-[#3d2ddd] rounded-lg p-4">
+			<h3>Respect</h3>
+			We are nurturers: we seek only to encourage, entertain, and empower.
+		</article>
+		<article class="border-1 border-[#3d2ddd] rounded-lg p-4">
+			<h3>Community</h3>
+			Here we keep open minds
+		</article>
+		<article class="border-1 border-[#3d2ddd] rounded-lg p-4">
+			<h3>Fun</h3>
+			We know serious fitness is hard, but that doesn’t mean it can’t be fun
+		</article>
+	</div>
+	
 </section>
 <section class="hero text-white text-3xl flex">
 	<article class="p-6 m-5 bg-primary-500 flex-row">
