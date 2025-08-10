@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SmartGym.Migrations;
 using SmartGym.Models;
 
 namespace SmartGym.Data;
@@ -20,6 +21,7 @@ public class SmartGymContext : IdentityDbContext<AppUser, IdentityRole<int>, int
 	public DbSet<Order>? Orders { get; set; }
 	public DbSet<MenuItem>? MenuItems { get; set; }
 	public DbSet<Images>? Images { get; set; }
+	public DbSet<UserStatusHistory>? UserHistory { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{

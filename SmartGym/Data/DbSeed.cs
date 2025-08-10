@@ -51,12 +51,12 @@ namespace SmartGym.Data
 			if (!userManager.Users.Any())
 			{
 				var faker = new Faker();
-				for (int i = 0; i < 300; i++)
+				for (int i = 0; i < 500; i++)
 				{
 					var firstName = faker.Name.FirstName();
 					var lastName = faker.Name.LastName();
 					var email = faker.Internet.Email(firstName, lastName);
-
+					var date = faker.Date.Between(DateTime.UtcNow.AddMonths(-3), DateTime.UtcNow.AddDays(7));
 					var user = new AppUser
 					{
 						UserName = email,
@@ -64,9 +64,9 @@ namespace SmartGym.Data
 						FirstName = firstName,
 						LastName = lastName,
 						DateOfBirth = faker.Date.Between(new DateTime(1980, 1, 1), new DateTime(2005, 1, 1)),
-						Status = faker.PickRandom<UserStatus>(),
-						CreatedDate = DateTime.UtcNow,
-						UpdatedDate = DateTime.UtcNow,
+						Status = UserStatus.New,
+						CreatedDate = date,
+						UpdatedDate = date.AddDays(faker.Random.Int(1, 7)),
 						EmailConfirmed = true
 					};
 
@@ -75,8 +75,30 @@ namespace SmartGym.Data
 					{
 						var assignedRole = faker.PickRandom(roleNames);
 						await userManager.AddToRoleAsync(user, assignedRole);
+
+						// Add UserStatusHistory record
+						context.UserHistory.Add(new UserStatusHistory
+						{
+							UserId = user.Id,
+							Status = UserStatus.New,
+							EventDate = date
+						});
+						// emulating activity
+						var status = faker.Random.ListItem(new List<UserStatus>() { UserStatus.Hold, UserStatus.Active, UserStatus.Inactive, UserStatus.Suspended, UserStatus.Banned });
+						context.UserHistory.Add(new UserStatusHistory
+						{
+							UserId = user.Id,
+							Status = status,
+							EventDate = date.AddDays(faker.Random.Int(1, 7))
+						});
+
+						// Update user status to a new random status and save
+						user.Status = status;
+						user.UpdatedDate = date.AddDays(faker.Random.Int(4, 10));
+						await userManager.UpdateAsync(user);
 					}
 				}
+				await context.SaveChangesAsync();
 				var adminEmail = "admin@smartgym.com";
 				var adminPassword = "Admin123!";
 

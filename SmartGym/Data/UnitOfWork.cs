@@ -1,3 +1,4 @@
+using SmartGym.Migrations;
 using SmartGym.Models;
 
 namespace SmartGym.Data;
@@ -14,6 +15,7 @@ public class UnitOfWork : IUnitOfWork
 	private IRepository<Booking>? _bookingsRepository;
 	private IRepository<Waitlist>? _waitlistRepository;
 	private IRepository<ClassSession>? _classSessionRepository;
+	private IRepository<UserStatusHistory>? _userHistoryRepository;
 
 	public UnitOfWork(SmartGymContext context)
 	{
@@ -91,6 +93,14 @@ public class UnitOfWork : IUnitOfWork
 		{
 			_classSessionRepository ??= new Repository<ClassSession>(_context);
 			return _classSessionRepository;
+		}
+	}
+	public IRepository<UserStatusHistory> UserHistoryRepository
+	{
+		get
+		{
+			_userHistoryRepository ??= new Repository<UserStatusHistory>(_context);
+			return _userHistoryRepository;
 		}
 	}
 	public async Task SaveAsync()
