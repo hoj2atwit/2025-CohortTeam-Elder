@@ -74,12 +74,6 @@
 	protected override async Task OnInitializedAsync()
 	{
 		userList = await usersService.GetAllUsers();
-		foreach (var user in userList)
-		{
-			var identityUser = await UserManager.FindByIdAsync(user.Id.ToString());
-			var roles = await UserManager.GetRolesAsync(identityUser);
-			userRoles[user.Id] = roles.FirstOrDefault() ?? "No role";
-		}
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
