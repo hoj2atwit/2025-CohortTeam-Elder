@@ -26,11 +26,19 @@ public class MappingProfile : Profile
 			.AfterMap((src, dest) =>
 			{
 				dest.OrderCartList = string.IsNullOrEmpty(src.OrderCart)
-			? new List<CartItemsDTO>()
-			: JsonConvert.DeserializeObject<List<CartItemsDTO>>(src.OrderCart);
+					? new List<CartItemsDTO>()
+					: JsonConvert.DeserializeObject<List<CartItemsDTO>>(src.OrderCart);
 			})
 			.ReverseMap();
-		CreateMap<Order, OrderPatchDTO>().ReverseMap();
+
+		CreateMap<Order, OrderPatchDTO>()
+			.ReverseMap()
+			.AfterMap((src, dest) =>
+			{
+				dest.OrderCart = src.OrderCartList != null
+					? JsonConvert.SerializeObject(src.OrderCartList)
+					: null;
+			});
 		CreateMap<MenuItem, MenuItemsDTO>().ReverseMap();
 
 		CreateMap<Images, ImagesDTO>().ReverseMap();
