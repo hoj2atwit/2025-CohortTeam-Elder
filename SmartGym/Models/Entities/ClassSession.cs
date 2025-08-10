@@ -18,6 +18,7 @@ namespace SmartGym.Models
 		public Class Class { get; set; }
 		[Required]
 		public int InstructorId { get; set; }
+		public string? InstructorName { get; set; }
 		[Required]
 		public DateTime SessionDateTime { get; set; }
 		[Required]

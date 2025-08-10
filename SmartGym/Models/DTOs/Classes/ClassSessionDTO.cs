@@ -11,6 +11,7 @@ namespace SmartGym.Models
 		public int Id { get; set; }
 		public int ClassId { get; set; }
 		public int InstructorId { get; set; }
+		public string? InstructorName { get; set; }
 		public DateTime SessionDateTime { get; set; }
 		public int HeadCount { get; set; }
 		public int MaxCapacity { get; set; }

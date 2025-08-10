@@ -313,6 +313,7 @@ public class BookingService : IBookingService
 		try
 		{
 			var sessions = await _unitOfWork.ClassSessionRepository.GetAsync();
+
 			var sessionDtos = _mapper.Map<List<ClassSessionDTO>>(sessions);
 			return sessionDtos.ToList();
 		}
