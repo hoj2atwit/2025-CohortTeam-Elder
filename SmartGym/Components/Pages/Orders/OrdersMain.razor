@@ -1,0 +1,78 @@
+﻿@page "/view-orders"
+@using SmartGym.Components.Display
+@using SmartGym.Services
+@using SmartGym.Models
+@using SmartGym.Constants
+@using SmartGym.Constants.Enums
+@inject IOrderService orderService
+@inject NavigationManager navigationManager
+@attribute [StreamRendering]
+<title> Viewing Orders </title>
+<div class="sticky top-0 z-10 bg-[#f3f4f6]" style="width:100%;">
+    <SearchNavBar title=@("Viewing All Orders") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateView(); })" />
+</div>
+<div class="flex">
+    <label> Filter by Status: </label>
+    <InputSelect ValueExpression="@(() => orderFilter)" Value=@orderFilter ValueChanged="@((OrderStatus e) => { orderFilter = e; refreshOrders(); })">
+        @foreach (OrderStatus enumVal in OrderStatus.GetValues(typeof(OrderStatus)))
+        {
+            <option value=@enumVal> @enumVal.ToString() </option>
+        }
+    </InputSelect>
+    <div> @orderFilter </div>
+</div>
+<div class="overflow flex w-full max-w-full flex-wrap gap-4">
+
+    @if (orders == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            @foreach (OrderDTO orderDTO in orders)
+            {
+                @*Replace with orderCard Component*@
+                <OrderCard currOrder=@orderDTO CompleteOrderCallBack=updateOrder ViewOrderCallBack=editOrder/>
+            }
+        }
+
+</div>
+
+@code {
+    private string searchText = "";
+    private List<OrderDTO>? orders;
+    public OrderStatus orderFilter { get; set; } = OrderStatus.Pending;
+
+    private async Task refreshOrders()
+    {
+        orders = await orderService.GetAllOrdersByStatus(orderFilter);
+        updateView();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await refreshOrders();
+    }
+
+    public void updateView()
+    {
+        StateHasChanged();
+    }
+
+    public void editOrder(OrderDTO order)
+    {
+        navigationManager.NavigateTo($"/cafe/{order.UserId}-{order.Id}");
+    }
+
+    public async Task updateOrder(OrderDTO order)
+    {
+        OrderPatchDTO patch = new OrderPatchDTO();
+        patch.Notes = order.Notes;
+        patch.OrderCartList = order.OrderCartList;
+        patch.OrderStatus = order.OrderStatus;
+        patch.TotalPrice = order.TotalPrice;
+        patch.UpdatedAt = DateTime.Now;
+        await orderService.UpdateOrder(order.Id, patch);
+        await refreshOrders();
+    }
+}
