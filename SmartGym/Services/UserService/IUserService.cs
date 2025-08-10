@@ -1,3 +1,4 @@
+using SmartGym.Constants.Enums;
 using SmartGym.Models;
 
 namespace SmartGym.Services;
@@ -15,5 +16,8 @@ public interface IUserService
 	Task<UserDto?> UpdateUser(int id, UserDto userDto);
 	Task<bool> DeleteUser(int id);
 	Task<(bool Success, string Message)> UploadUserImageBlob(int id, string imageRef, byte[] imageBytes, string guid);
+	Task<List<CheckinDTO>> GetCheckinsByAccessPoint(AccessPoint accessPoint);
+	Task<List<CheckinDTO>> GetCheckinsByTime(DateTime startTime, DateTime endTime);
+	Task<List<CheckinDTO>> GetCheckinsByMethod(string method);
 
 }

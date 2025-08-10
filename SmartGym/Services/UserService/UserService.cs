@@ -1,4 +1,5 @@
 using AutoMapper;
+using SmartGym.Constants.Enums;
 using SmartGym.Data;
 using SmartGym.Models;
 
@@ -109,6 +110,66 @@ public class UserService : IUserService
 		{
 			Console.WriteLine($"Error in GetAllUserCheckins: {ex.Message}");
 			return null;
+		}
+	}
+	/// <summary>
+	/// Gets user checkins filtered by access point.
+	/// </summary>
+	/// <param name="accessPoint"></param>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetCheckinsByAccessPoint(AccessPoint accessPoint)
+	{
+		try
+		{
+			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
+				x => x.AccessPoint == accessPoint);
+			return _mapper.Map<List<CheckinDTO>>(checkins);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetCheckinsByAccessPoint: {ex.Message}");
+			return new List<CheckinDTO>();
+		}
+	}
+
+	/// <summary>
+	/// Gets user checkins filtered by time range.
+	/// </summary>
+	/// <param name="startTime"></param>
+	/// <param name="endTime"></param>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetCheckinsByTime(DateTime startTime, DateTime endTime)
+	{
+		try
+		{
+			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
+				x => x.CheckinTime >= startTime && x.CheckinTime <= endTime);
+			return _mapper.Map<List<CheckinDTO>>(checkins);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetCheckinsByTime: {ex.Message}");
+			return new List<CheckinDTO>();
+		}
+	}
+
+	/// <summary>
+	/// Gets user checkins filtered by checkin method.
+	/// </summary>
+	/// <param name="method"></param>
+	/// <returns></returns>
+	public async Task<List<CheckinDTO>> GetCheckinsByMethod(string method)
+	{
+		try
+		{
+			var checkins = await _unitOfWork.CheckinRepository.GetAsync(
+				x => x.Method == method);
+			return _mapper.Map<List<CheckinDTO>>(checkins);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in GetCheckinsByMethod: {ex.Message}");
+			return new List<CheckinDTO>();
 		}
 	}
 

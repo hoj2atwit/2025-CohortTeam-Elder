@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartGym.Constants.Enums;
 using SmartGym.Models;
 using SmartGym.Services;
 
@@ -82,6 +83,44 @@ namespace SmartGym.Controllers
 		{
 			var checkinList = await _service.GetAllUserCheckins();
 			return Ok(checkinList);
+		}
+
+		/// <summary>
+		/// Gets user checkins filtered by access point.
+		/// </summary>
+		/// <param name="accessPoint"></param>
+		/// <returns></returns>
+		[HttpGet("checkins/by-access-point")]
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByAccessPoint([FromQuery] int accessPoint)
+		{
+			var accessPointEnum = (AccessPoint)accessPoint;
+			var checkins = await _service.GetCheckinsByAccessPoint(accessPointEnum);
+			return Ok(checkins);
+		}
+
+		/// <summary>
+		/// Gets user checkins filtered by time range.
+		/// </summary>
+		/// <param name="startTime"></param>
+		/// <param name="endTime"></param>
+		/// <returns></returns>
+		[HttpGet("checkins/by-time")]
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByTime([FromQuery] DateTime startTime, [FromQuery] DateTime endTime)
+		{
+			var checkins = await _service.GetCheckinsByTime(startTime, endTime);
+			return Ok(checkins);
+		}
+
+		/// <summary>
+		/// Gets user checkins filtered by checkin method.
+		/// </summary>
+		/// <param name="method"></param>
+		/// <returns></returns>
+		[HttpGet("checkins/by-method")]
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByMethod([FromQuery] string method)
+		{
+			var checkins = await _service.GetCheckinsByMethod(method);
+			return Ok(checkins);
 		}
 	}
 }
