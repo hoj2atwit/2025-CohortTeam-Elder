@@ -5,7 +5,7 @@ namespace SmartGym.Data;
 public interface IUnitOfWork
 {
 	public IRepository<Class> ClassRepository { get; }
-	public IRepository<AppUser> UserRepository { get; }
+	public UserRepo UserRepository { get; }
 	public IRepository<Order> OrderRepository { get; }
 	public IRepository<Checkin> CheckinRepository { get; }
 	public IRepository<MenuItem> MenuItemRepository { get; }

@@ -6,7 +6,7 @@ public class UnitOfWork : IUnitOfWork
 {
 	private readonly SmartGymContext _context;
 	private IRepository<Class>? _classRepository;
-	private IRepository<AppUser>? _userRepository;
+	private UserRepo? _userRepository;
 	private IRepository<Order>? _orderRepository;
 	private IRepository<Checkin>? _checkinRepository;
 	private IRepository<MenuItem>? _menuItemRepository;
@@ -27,11 +27,11 @@ public class UnitOfWork : IUnitOfWork
 			return _classRepository;
 		}
 	}
-	public IRepository<AppUser> UserRepository
+	public UserRepo UserRepository
 	{
 		get
 		{
-			_userRepository ??= new Repository<AppUser>(_context);
+			_userRepository ??= new UserRepo(_context);
 			return _userRepository;
 		}
 	}

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using SmartGym.Constants.Enums;
 using SmartGym.Data;
 using SmartGym.Models;
@@ -10,6 +11,7 @@ public class UserService : IUserService
 
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
+	private readonly UserManager<AppUser> _userManager;
 	public UserService(IUnitOfWork unitOfWork, IMapper mapper)
 	{
 		_unitOfWork = unitOfWork;
@@ -39,9 +41,7 @@ public class UserService : IUserService
 	{
 		try
 		{
-			var users = await _unitOfWork.UserRepository.GetAsync();
-			var userList = _mapper.Map<List<UserDto>>(users);
-			return userList.ToList();
+			return await _unitOfWork.UserRepository.GetAllAspUsersAsDto();
 		}
 		catch (Exception ex)
 		{
