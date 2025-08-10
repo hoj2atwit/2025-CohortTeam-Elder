@@ -120,7 +120,7 @@
             appUser.LastName = LastName;
             appUser.Email = Email;
             appUser.DateOfBirth = DateOfBirth;
-            appUser.Status = int.Parse(Status);
+            appUser.Status = (UserStatus)int.Parse(Status);
             appUser.UpdatedDate = DateTime.Now;
 
             var currentRoles = await UserManager.GetRolesAsync(appUser);

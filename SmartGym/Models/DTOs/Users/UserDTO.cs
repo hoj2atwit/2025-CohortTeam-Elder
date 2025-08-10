@@ -11,7 +11,8 @@ public class UserDto
 	public string LastName { get; set; }
 	public string Email { get; set; }
 	public DateTime DateOfBirth { get; set; }
-	public int Status { get; set; }
+	public UserStatus Status { get; set; }
+	public RoleId RoleId { get; set; }
 	public DateTime CreatedDate { get; set; }
 	public DateTime UpdatedDate { get; set; }
 	// public ICollection<CheckinDTO> Checkins { get; set; } //undecided about this

@@ -15,5 +15,7 @@ public enum RoleId
 	[Display(Name = "Trainer")]
 	Trainer,
 	[Display(Name = "Manager")]
-	Manager
+	Manager,
+	[Display(Name = "Admin")]
+	Admin
 }

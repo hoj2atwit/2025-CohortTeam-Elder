@@ -1,4 +1,5 @@
 @page "/dashboard/trainers"
+@using SmartGym.Constants.Enums
 @using SmartGym.Models
 @using SmartGym.Services
 @using Microsoft.AspNetCore.Identity
@@ -124,10 +125,10 @@
             isLoading = true;
             // Get all users and filter trainers by RoleId
             var allUsers = await UserService.GetAllUsers();
-            trainers = new List<UserDto>();
+            trainers = allUsers.Where(x => x.RoleId == RoleId.Trainer).ToList();
 
             // Debug: Log all users and their roles
-            Console.WriteLine($"Total users loaded: {allUsers?.Count ?? 0}");
+            @* Console.WriteLine($"Total users loaded: {allUsers?.Count ?? 0}");
             if (allUsers != null)
             {
                 foreach (var userDto in allUsers)
@@ -142,7 +143,7 @@
                         }
                     }
                 }
-            }
+            } *@
 
             Console.WriteLine($"Trainers found: {trainers.Count}");
 

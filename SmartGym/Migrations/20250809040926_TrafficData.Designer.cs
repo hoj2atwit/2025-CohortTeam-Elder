@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartGym.Data;
 
@@ -11,9 +12,11 @@ using SmartGym.Data;
 namespace SmartGym.Migrations
 {
     [DbContext(typeof(SmartGymContext))]
-    partial class SmartGymContextModelSnapshot : ModelSnapshot
+    [Migration("20250809040926_TrafficData")]
+    partial class TrafficData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,10 +259,13 @@ namespace SmartGym.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ClassId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ClassSessionId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ConfirmedAt")
+                    b.Property<DateTime>("ConfirmedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
@@ -275,6 +281,8 @@ namespace SmartGym.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("ClassSessionId");
 
@@ -319,17 +327,10 @@ namespace SmartGym.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageRef")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Level")
+                    b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<int>("MaxCapacity")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -358,26 +359,16 @@ namespace SmartGym.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClassId")
+                    b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("HeadCount")
+                    b.Property<int>("ClassId")
                         .HasColumnType("int");
 
                     b.Property<int>("InstructorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("InstructorName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("LocationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxCapacity")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("SessionDateTime")
@@ -481,9 +472,6 @@ namespace SmartGym.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderStatus")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("OrderTime")
                         .HasColumnType("datetime2");
 
@@ -585,6 +573,12 @@ namespace SmartGym.Migrations
 
             modelBuilder.Entity("SmartGym.Models.Booking", b =>
                 {
+                    b.HasOne("SmartGym.Models.Class", "Class")
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SmartGym.Models.ClassSession", "ClassSession")
                         .WithMany()
                         .HasForeignKey("ClassSessionId")
@@ -596,6 +590,8 @@ namespace SmartGym.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Class");
 
                     b.Navigation("ClassSession");
 
