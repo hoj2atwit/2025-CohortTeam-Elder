@@ -15,10 +15,13 @@ public class Class
 	[Required]
 	public DateTime Schedule { get; set; }
 	[Required]
-	public int Capacity { get; set; }
+	public int MaxCapacity { get; set; }
 	[Required]
 	public int TrainerId { get; set; }
 	[Required]
 	public AppUser Trainer { get; set; }
-	public ClassCategory? CategoryId { get; set; }
+	public SkillLevel? Level { get; set; }
+	public string Description { get; set; } = string.Empty;
+	public string? ImageRef { get; set; }
+
 }

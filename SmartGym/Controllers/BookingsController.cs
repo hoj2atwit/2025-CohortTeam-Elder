@@ -72,7 +72,7 @@ public class BookingsController : ControllerBase
       return BadRequest("User is already booked for this class");
 
     var currentBookings = await _bookingService.CountBookingsForSession(bookingData.SessionId);
-    if (currentBookings >= classItem.Capacity)
+    if (currentBookings >= classItem.MaxCapacity)
       return BadRequest("Class is full");
 
     var newBooking = await _bookingService.CreateBooking(bookingData);

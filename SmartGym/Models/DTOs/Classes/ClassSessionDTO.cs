@@ -6,13 +6,15 @@ using SmartGym.Constants.Enums;
 
 namespace SmartGym.Models
 {
-    public class ClassSessionDTO
-    {
+	public class ClassSessionDTO
+	{
 		public int Id { get; set; }
 		public int ClassId { get; set; }
 		public int InstructorId { get; set; }
 		public DateTime SessionDateTime { get; set; }
-		public int Capacity { get; set; }
+		public int HeadCount { get; set; }
+		public int MaxCapacity { get; set; }
 		public AccessPoint LocationId { get; set; }
+		public string Description { get; set; } = string.Empty;
 	}
 }

@@ -122,9 +122,10 @@ namespace SmartGym.Data
 				var faker = new Faker<Class>()
 					 .RuleFor(x => x.Name, f => f.Random.ListItem(classes))
 					 .RuleFor(x => x.Schedule, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
-					 .RuleFor(x => x.Capacity, f => f.Random.Int(20, 50))
+					 .RuleFor(x => x.MaxCapacity, f => f.Random.Int(20, 50))
 					 .RuleFor(x => x.TrainerId, f => f.PickRandom(trainers).Id)
-					 .RuleFor(x => x.CategoryId, f => f.PickRandom<ClassCategory>());
+					 .RuleFor(x => x.Description, f => f.Lorem.Sentence())
+					 .RuleFor(x => x.Level, f => f.PickRandom<SkillLevel>());
 
 				var fakeClasses = faker.Generate(20); // Generate 20 random classes
 				context.Classes.AddRange(fakeClasses);
@@ -211,7 +212,9 @@ namespace SmartGym.Data
 							ClassId = gymClass.Id,
 							InstructorId = sessionFaker.PickRandom(trainers).Id,
 							SessionDateTime = sessionFaker.Date.Between(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(30)),
-							Capacity = sessionFaker.Random.Int(0, gymClass.Capacity),
+							HeadCount = sessionFaker.Random.Int(0, gymClass.MaxCapacity),
+							MaxCapacity = gymClass.MaxCapacity,
+							Description = sessionFaker.Lorem.Sentence(),
 							LocationId = sessionFaker.PickRandom(new[] { AccessPoint.Pool, AccessPoint.RockClimbing, AccessPoint.Class })
 						});
 					}
@@ -237,7 +240,7 @@ namespace SmartGym.Data
 					if (!sessionsForClass.Any())
 						continue;
 
-					int numberOfBookings = random.Next(0, gymClass.Capacity + 1);
+					int numberOfBookings = random.Next(0, gymClass.MaxCapacity + 1);
 
 					var bookedUserIds = users.OrderBy(_ => Guid.NewGuid())
 											 .Take(numberOfBookings)
@@ -249,12 +252,12 @@ namespace SmartGym.Data
 						// Assign a random session for this class that still has capacity
 						var availableSessions = sessionsForClass
 								.Where(s =>
-								bookings.Count(b => b.ClassSessionId == s.Id) < s.Capacity)
+								bookings.Count(b => b.ClassSessionId == s.Id) < s.MaxCapacity)
 								.ToList();
 
 						var unavailableSessions = sessionsForClass
 								.Where(s =>
-								bookings.Count(b => b.ClassSessionId == s.Id) == s.Capacity)
+								bookings.Count(b => b.ClassSessionId == s.Id) == s.MaxCapacity)
 								.ToList();
 
 						if (!availableSessions.Any())

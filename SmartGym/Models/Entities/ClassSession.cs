@@ -21,9 +21,12 @@ namespace SmartGym.Models
 		[Required]
 		public DateTime SessionDateTime { get; set; }
 		[Required]
-		public int Capacity { get; set; }
+		public int HeadCount { get; set; }
+		public int MaxCapacity { get; set; }
 		[Required]
 		public AccessPoint LocationId { get; set; }
+		public string Description { get; set; } = string.Empty;
+
 
 	}
 }

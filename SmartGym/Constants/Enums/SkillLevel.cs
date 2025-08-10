@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SmartGym.Constants.Enums
 {
-	public enum ClassCategory
+	public enum SkillLevel
 	{
 		[Display(Name = "Beginner")]
 		Beginner,

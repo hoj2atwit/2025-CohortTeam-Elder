@@ -4,9 +4,13 @@ namespace SmartGym.Models;
 
 public class ClassPostDTO
 {
-  public string Name { get; set; } = string.Empty;
-  public DateTime Schedule { get; set; }
-  public int Capacity { get; set; }
-  public int TrainerId { get; set; }
-  public ClassCategory? CategoryId { get; set; }
+	public string Name { get; set; } = string.Empty;
+	public DateTime Schedule { get; set; }
+	public int MaxCapacity { get; set; }
+	public int TrainerId { get; set; }
+	public SkillLevel? CategoryId { get; set; }
+	public string Description { get; set; } = string.Empty;
+	public string? ImageRef { get; set; }
+
+
 }
