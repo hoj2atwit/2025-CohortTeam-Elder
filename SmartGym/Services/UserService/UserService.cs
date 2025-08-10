@@ -11,7 +11,6 @@ public class UserService : IUserService
 
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
-	private readonly UserManager<AppUser> _userManager;
 	public UserService(IUnitOfWork unitOfWork, IMapper mapper)
 	{
 		_unitOfWork = unitOfWork;
@@ -292,4 +291,6 @@ public class UserService : IUserService
 			return false;
 		}
 	}
+
+	
 }
