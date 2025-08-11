@@ -31,7 +31,7 @@ namespace SmartGym.Helpers
 					return value;
 				}
 			}
-			return null; // or throw, or return a default value if you prefer
+			return RoleId.Unknown;
 		}
 	}
 }
