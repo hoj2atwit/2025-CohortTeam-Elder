@@ -1,0 +1,30 @@
+﻿@* NotificationSession *@
+@if (isVisible)
+{
+    <div class="overflow-y-auto border" style="max-height:20vh; border-bottom-left-radius:5px; border-bottom-right-radius: 5px;">
+        
+    </div>
+}
+
+@code {
+    //[Parameter] public List<NotificationDTO> notifList { get; set; }
+    private bool isVisible = false;
+
+    public async Task Hide()
+    {
+        isVisible = false; 
+        await Update();
+    }
+
+    public async Task Show()
+    {
+        //Update NotificationsList
+        isVisible = true;
+        await Update();
+    }
+
+    public async Task Update()
+    {
+        StateHasChanged();   
+    }
+}
