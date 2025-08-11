@@ -6,6 +6,8 @@ public class BookingDTO
 {
 	public int Id { get; set; }
 	public int UserId { get; set; }
+	public UserDto User { get; set; }
+
 	public BookingStatus Status { get; set; }
 	public DateTime CreatedAt { get; set; }
 	public DateTime ConfirmedAt { get; set; }

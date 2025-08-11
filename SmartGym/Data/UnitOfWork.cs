@@ -6,6 +6,8 @@ namespace SmartGym.Data;
 public class UnitOfWork : IUnitOfWork
 {
 	private readonly SmartGymContext _context;
+	public SmartGymContext Context => _context;
+
 	private IRepository<Class>? _classRepository;
 	private UserRepo? _userRepository;
 	private IRepository<Order>? _orderRepository;

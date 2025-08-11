@@ -10,7 +10,7 @@ public interface IBookingService
 	Task<BookingDTO?> UpdateBookingById(int id, BookingPatchDTO newBookingData);
 	Task<BookingDTO?> UpdateBookingStatus(int id, int newStatus);
 	Task<bool> DeleteBooking(int id);
-	Task<List<BookingDTO>> GetAllBookings();
+	Task<List<BookingDTO>> GetAllBookings(bool includeNestedClasses = false);
 	Task<List<BookingDTO>> GetBookingByUserId(int userId);
 	Task<bool> IsUserAlreadyBooked(int userId, int sessionId);
 	Task<List<BookingDTO>> GetBookingsByClassId(int classId);
@@ -35,6 +35,6 @@ public interface IBookingService
 	Task<List<WaitlistDTO>> GetWaitlistByClassId(int classId, bool includeNestedClasses = false);
 	Task<List<WaitlistDTO>> GetWaitlistByUser(int userId, bool includeNestedClasses = false);
 	Task<WaitlistDTO?> UpdateWaitListRecord(int id, WaitlistDTO waitlistDto);
-	Task<bool> DeleteFromWaitlist(int id);
+	Task<bool> DeleteFromWaitlist(int id, bool isTransaction = false);
 	#endregion
 }

@@ -23,7 +23,7 @@ namespace SmartGym.Helpers
 		}
 		public static RoleId? GetRoleIdFromName(string roleName)
 		{
-			foreach (var value in Enum.GetValues(typeof(RoleId)).Cast<RoleId>())
+			foreach (var value in Enum.GetValues<RoleId>())
 			{
 				var displayName = GetDisplayName(value);
 				if (string.Equals(displayName, roleName, StringComparison.OrdinalIgnoreCase))
@@ -31,7 +31,7 @@ namespace SmartGym.Helpers
 					return value;
 				}
 			}
-			return null; // or throw, or return a default value if you prefer
+			return RoleId.Unknown;
 		}
 	}
 }

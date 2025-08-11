@@ -1,3 +1,8 @@
+@using SmartGym.Models
+@using SmartGym.Services
+@inject IClassService ClassService
+@inject IUserService UserService
+
 <div class="ml-6 h-full overflow-y-auto ">
     <h1 class="text-2xl font-bold">Dashboard</h1>
     <div class="flex gap-6 mt-4 ">
@@ -44,18 +49,33 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="py-2 px-4 border-b">Yoga</td>
-                    <td class="py-2 px-4 border-b">Priya</td>
-                    <td class="py-2 px-4 border-b">5 PM</td>
-                    <td class="py-2 px-4 border-b">3</td>
-                </tr>
-                <tr>
-                    <td class="py-2 px-4 border-b">HIIT</td>
-                    <td class="py-2 px-4 border-b">Alex</td>
-                    <td class="py-2 px-4 border-b">6 PM</td>
-                    <td class="py-2 px-4 border-b">5</td>
-                </tr>
+                @if (upcomingClasses != null && upcomingClasses.Any())
+                {
+                    @foreach (var classItem in upcomingClasses)
+                    {
+                        <tr>
+                            <td class="py-2 px-4 border-b">@classItem.Name</td>
+                            <td class="py-2 px-4 border-b">@GetTrainerName(classItem.TrainerId)</td>
+                            <td class="py-2 px-4 border-b">@classItem.Schedule.ToString("MMM dd, h:mm tt")</td>
+                            <td class="py-2 px-4 border-b">@classItem.MaxCapacity</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="py-4 px-4 text-center text-gray-500">
+                            @if (allClasses.Any())
+                            {
+                                <text>No upcoming classes scheduled</text>
+                            }
+                            else
+                            {
+                                <text>Loading classes...</text>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -116,3 +136,38 @@
         </div>
     </div>
     </div>
+
+@code {
+    private List<ClassDTO> allClasses = new();
+    private List<ClassDTO> upcomingClasses = new();
+    private List<UserDto> allUsers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Load all classes and users
+            allClasses = await ClassService.GetAllClasses();
+            allUsers = await UserService.GetAllUsers();
+            
+            // Filter for upcoming classes (next 5)
+            var currentTime = DateTime.Now;
+            upcomingClasses = allClasses
+                .Where(c => c.Schedule > currentTime)
+                .OrderBy(c => c.Schedule)
+                .Take(5)
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading dashboard data: {ex.Message}");
+            upcomingClasses = new List<ClassDTO>();
+        }
+    }
+
+    private string GetTrainerName(int trainerId)
+    {
+        var trainer = allUsers.FirstOrDefault(u => u.Id == trainerId);
+        return trainer?.Name ?? "Unknown Trainer";
+    }
+}
