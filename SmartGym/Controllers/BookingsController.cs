@@ -19,9 +19,9 @@ public class BookingsController : ControllerBase
   }
 
   [HttpGet]
-  public async Task<ActionResult<List<BookingDTO>>> GetAll()
+  public async Task<ActionResult<List<BookingDTO>>> GetAll([FromQuery] bool includeNestedClasses = false)
   {
-    var bookings = await _bookingService.GetAllBookings();
+    var bookings = await _bookingService.GetAllBookings(includeNestedClasses);
     return Ok(bookings);
   }
 

@@ -10,7 +10,7 @@ public interface IBookingService
 	Task<BookingDTO?> UpdateBookingById(int id, BookingPatchDTO newBookingData);
 	Task<BookingDTO?> UpdateBookingStatus(int id, int newStatus);
 	Task<bool> DeleteBooking(int id);
-	Task<List<BookingDTO>> GetAllBookings();
+	Task<List<BookingDTO>> GetAllBookings(bool includeNestedClasses = false);
 	Task<List<BookingDTO>> GetBookingByUserId(int userId);
 	Task<bool> IsUserAlreadyBooked(int userId, int sessionId);
 	Task<List<BookingDTO>> GetBookingsByClassId(int classId);

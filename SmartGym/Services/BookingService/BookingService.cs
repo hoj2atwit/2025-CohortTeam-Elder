@@ -32,15 +32,17 @@ public class BookingService : IBookingService
 			return null;
 		}
 	}
+
 	/// <summary>
 	/// Get all existing bookings
 	/// </summary>
 	/// <returns></returns>
-	public async Task<List<BookingDTO>> GetAllBookings()
+	public async Task<List<BookingDTO>> GetAllBookings(bool includeNestedClasses = false)
 	{
 		try
 		{
-			var bookings = await _unitOfWork.BookingsRepository.GetAsync();
+			var includeProps = includeNestedClasses ? "User" : "";
+			var bookings = await _unitOfWork.BookingsRepository.GetAsync(includeProperties: includeProps);
 			var bookingsList = _mapper.Map<List<BookingDTO>>(bookings);
 			return bookingsList.ToList();
 		}
