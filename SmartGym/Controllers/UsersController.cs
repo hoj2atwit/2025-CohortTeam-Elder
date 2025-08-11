@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartGym.Constants;
 using SmartGym.Constants.Enums;
 using SmartGym.Models;
 using SmartGym.Services;
@@ -15,6 +16,15 @@ namespace SmartGym.Controllers
 		public UsersController(IUserService service)
 		{
 			_service = service;
+		}
+
+		[HttpPost("checkin")]
+		public async Task<IActionResult> CheckInUser([FromBody] UserDto user, [FromQuery] AccessPoint accessPoint, [FromQuery] CheckinMethod checkinMethod)
+		{
+			var result = await _service.CheckInUser(user, accessPoint, checkinMethod);
+			if (result)
+				return Ok();
+			return StatusCode(500, "Failed to check in user.");
 		}
 
 		[HttpGet]
@@ -121,7 +131,7 @@ namespace SmartGym.Controllers
 		/// <param name="includeUser"></param>
 		/// <returns></returns>
 		[HttpGet("checkins/by-method")]
-		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByMethod([FromQuery] string method, [FromQuery] bool includeUser = false)
+		public async Task<ActionResult<IEnumerable<CheckinDTO>>> GetCheckinsByMethod([FromQuery] CheckinMethod method, [FromQuery] bool includeUser = false)
 		{
 			var checkins = await _service.GetCheckinsByMethod(method, includeUser);
 			return Ok(checkins);

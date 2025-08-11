@@ -4,6 +4,7 @@ namespace SmartGym.Data;
 
 public interface IUnitOfWork
 {
+	public SmartGymContext Context { get; }
 	public IRepository<Class> ClassRepository { get; }
 	public UserRepo UserRepository { get; }
 	public IRepository<Order> OrderRepository { get; }

@@ -208,7 +208,7 @@ namespace SmartGym.Data
 			if (!context.Checkins.Any())
 			{
 				var faker = new Faker<Checkin>()
-					 .RuleFor(x => x.CheckinTime, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
+					 .RuleFor(x => x.CheckinTime, f => f.Date.Between(DateTime.UtcNow.AddMonths(-3), DateTime.UtcNow.AddDays(7)))
 					 .RuleFor(x => x.Method, f => f.Random.ListItem(new List<string>() { "qr", "desk" }))
 					 .RuleFor(x => x.UserId, f => f.Random.ListItem(userIds))
 					 .RuleFor(x => x.AccessPoint, f => f.PickRandom<AccessPoint>());
@@ -220,7 +220,7 @@ namespace SmartGym.Data
 
 			List<string> menuItems = new()
 			{
-				"latte","espresso","americano","cappuccino","flat white","macchiato","mocha","cold brew","nitro cold brew","drip coffee","iced coffee","chai latte","dirty chai","matcha latte","iced matcha","hot chocolate","iced chocolate","turmeric latte","golden milk","london fog","earl grey tea","green tea","black tea","herbal tea","iced tea","lemonade","iced lemonade","sparkling water","still water","protein shake vanilla","protein shake chocolate","protein shake strawberry","protein shake mocha","protein shake peanut butter","protein shake cookies and cream","smoothie berry","smoothie mango","smoothie green","smoothie tropical","smoothie avocado","smoothie peanut butter banana","smoothie protein powder","smoothie collagen","oatmeal plain","oatmeal with berries","oatmeal with nuts","oatmeal with seeds","oatmeal with protein powder","greek yogurt plain","greek yogurt with honey","greek yogurt with granola","greek yogurt with fruit","parfait with yogurt","parfait with granola","parfait with berries","acai bowl","pitaya bowl","smoothie bowl","chia seed pudding","overnight oats","avocado toast","avocado toast with egg","avocado toast with tomato","avocado toast with feta","avocado toast with chili flakes","egg white omelette","scrambled eggs","hard-boiled eggs","turkey bacon","chicken sausage","protein pancakes","protein waffles","spinach and feta wrap","turkey and cheese wrap","chicken caesar wrap","vegetarian wrap","hummus and veggie wrap","tuna salad sandwich","chicken salad sandwich","turkey and avocado sandwich","grilled cheese","BLT sandwich","veggie burger","beef burger","chicken burger","salmon filet","grilled chicken breast","sweet potato fries","quinoa salad","lentil soup","tomato soup","chicken noodle soup","side salad","fruit cup","apple slices","banana","orange","protein bar","protein cookie","energy bites","trail mix","almonds","walnuts","cashews","jerky","rice cakes","rice cakes with peanut butter","rice cakes with avocado","dark chocolate squares","sugar-free gummies","kombucha","coconut water","electrolyte drink","pre-workout drink","post-workout drink","collagen water","almond milk","soy milk","oat milk","coconut milk","protein powder scoop","collagen scoop","BCAA powder","creatine powder","pre-workout scoop","espresso shot","extra shot of syrup","extra shot of flavor","extra shot of espresso","extra shot of protein","extra shot of collagen","extra shot of BCAA","extra shot of creatine","extra shot of whipped cream","extra shot of toppings","extra shot of nuts","extra shot of seeds","extra shot of fruit","extra shot of granola","extra shot of honey","extra shot of maple syrup","extra shot of agave","extra shot of stevia","extra shot of monk fruit","extra shot of sugar","extra shot of salt","extra shot of pepper"
+				"latte","espresso","americano","cappuccino","flat white","macchiato","mocha","cold brew","nitro cold brew","drip coffee","iced coffee","chai latte","dirty chai","matcha latte","iced matcha","hot chocolate","iced chocolate","turmeric latte","golden milk","london fog","earl grey tea","green tea","black tea","herbal tea","iced tea","lemonade","iced lemonade","sparkling water","still water","protein shake vanilla","protein shake chocolate","protein shake strawberry","protein shake mocha","protein shake peanut butter","protein shake cookies and cream","smoothie berry","smoothie mango","smoothie green","smoothie tropical","smoothie avocado","smoothie peanut butter banana","smoothie protein powder","smoothie collagen","oatmeal plain","oatmeal with berries","oatmeal with nuts","oatmeal with seeds","oatmeal with protein powder","greek yogurt plain","greek yogurt with honey","greek yogurt with granola","greek yogurt with fruit","parfait with yogurt","parfait with granola","parfait with berries","acai bowl","pitaya bowl","smoothie bowl","chia seed pudding","overnight oats","avocado toast","avocado toast with egg","avocado toast with tomato","avocado toast with feta","avocado toast with chili flakes","egg white omelette","scrambled eggs","hard-boiled eggs","turkey bacon","chicken sausage","protein pancakes","protein waffles","spinach and feta wrap","turkey and cheese wrap","chicken caesar wrap","vegetarian wrap","hummus and veggie wrap","tuna salad sandwich","chicken salad sandwich","turkey and avocado sandwich","grilled cheese","BLT sandwich","veggie burger","beef burger","chicken burger","salmon filet","grilled chicken breast","sweet potato fries","quinoa salad","lentil soup","tomato soup","chicken noodle soup","side salad","fruit cup","apple slices","banana","orange","protein bar","protein cookie","energy bites","trail mix","almonds","walnuts","cashews","jerky","rice cakes","rice cakes with peanut butter","rice cakes with avocado","dark chocolate squares","sugar-free gummies","kombucha","coconut water","electrolyte drink","pre-workout drink","post-workout drink","collagen water","almond milk","soy milk","oat milk","coconut milk","protein powder scoop","collagen scoop","BCAA powder","creatine powder","pre-workout scoop","espresso shot","extra shot of syrup","extra shot of flavor","extra shot of espresso","extra shot of protein","extra shot of collagen","extra shot of BCAA","extra shot of creatine","extra shot of whipped cream","extra shot of toppings","extra shot of nuts","extra shot of seeds","extra shot of fruit","extra shot of granola","extra shot of honey","extra shot of maple syrup","extra shot of agave","extra shot of stevia","extra shot of monk fruit","extra shot of sugar","extra shot of salt","extra shot of pepper","dumbbell", "barbell", "kettlebell", "treadmill", "elliptical", "rowing machine", "stationary bike", "leg press", "bench press", "squat rack", "pull-up bar", "lat pulldown machine", "cable machine", "medicine ball", "slam ball", "resistance bands", "foam roller", "jump rope", "ab roller", "punching bag"
 			};
 			var uniqueMenuItems = menuItems.Distinct().ToList();
 
@@ -262,7 +262,7 @@ namespace SmartGym.Data
 							ClassId = gymClass.Id,
 							InstructorId = sessionFaker.PickRandom(trainers).Id,
 							SessionDateTime = sessionFaker.Date.Between(DateTime.Now.AddDays(-30), DateTime.Now.AddDays(30)),
-							HeadCount = sessionFaker.Random.Int(0, gymClass.MaxCapacity),
+							HeadCount = sessionFaker.Random.Int(5, gymClass.MaxCapacity),
 							MaxCapacity = gymClass.MaxCapacity,
 							Description = sessionFaker.Lorem.Sentence(),
 							LocationId = sessionFaker.PickRandom(new[] { AccessPoint.Pool, AccessPoint.RockClimbing, AccessPoint.Class })
@@ -276,82 +276,56 @@ namespace SmartGym.Data
 			if (!context.Bookings.Any())
 			{
 				var users = await userManager.Users
-					.Where(u => u.Status == UserStatus.Active)
-					.ToListAsync();
-				var classesToBook = context.Classes.ToList();
+					 .Where(u => u.Status == UserStatus.Active)
+					 .ToListAsync();
 				var classSessions = context.ClassSessions.ToList();
 				var bookings = new List<Booking>();
 				var waitlist = new List<Waitlist>();
 				var random = new Random();
 
-				foreach (var gymClass in classesToBook)
+				foreach (var user in users)
 				{
-					var sessionsForClass = classSessions.Where(cs => cs.ClassId == gymClass.Id).ToList();
-					if (!sessionsForClass.Any())
-						continue;
+					// Pick a random session to sign-up for
+					var session = classSessions[random.Next(classSessions.Count)];
 
-					int numberOfBookings = random.Next(0, gymClass.MaxCapacity + 1);
-
-					var bookedUserIds = users.OrderBy(_ => Guid.NewGuid())
-											 .Take(numberOfBookings)
-											 .Select(u => u.Id)
-											 .ToList();
-
-					foreach (var userId in bookedUserIds)
+					if (session.HeadCount >= session.MaxCapacity)
 					{
-						// Assign a random session for this class that still has capacity
-						var availableSessions = sessionsForClass
-								.Where(s =>
-								bookings.Count(b => b.ClassSessionId == s.Id) < s.MaxCapacity)
-								.ToList();
-
-						var unavailableSessions = sessionsForClass
-								.Where(s =>
-								bookings.Count(b => b.ClassSessionId == s.Id) == s.MaxCapacity)
-								.ToList();
-
-						if (!availableSessions.Any())
+						// Session is full, add to waitlist
+						int nextPosition = waitlist.Count(w => w.SessionId == session.Id) + 1;
+						var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+						waitlist.Add(new Waitlist
 						{
-							// All sessions are full, add user to waitlist for a random session
-							var session = unavailableSessions[random.Next(unavailableSessions.Count)];
-							var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+							MemberId = user.Id,
+							SessionId = session.Id,
+							JoinedDateTime = createdAt.AddMinutes(random.Next(5, 120)),
+							Position = nextPosition
+						});
+					}
+					else
+					{
+						// Book the session
+						var status = (BookingStatus)random.Next(0, Enum.GetValues(typeof(BookingStatus)).Length);
+						var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
+						var confirmedAt = (status == BookingStatus.Confirmed)
+							 ? createdAt.AddMinutes(random.Next(5, 120))
+							 : DateTime.MinValue;
 
-							// Determine the next position
-							int nextPosition = waitlist.Count(w => w.SessionId == session.Id) + 1;
-
-							waitlist.Add(new Waitlist
-							{
-								MemberId = userId,
-								SessionId = session.Id,
-								JoinedDateTime = createdAt.AddMinutes(random.Next(5, 120)),
-								Position = nextPosition
-							});
-						}
-						else
+						bookings.Add(new Booking
 						{
-							var session = availableSessions[random.Next(availableSessions.Count)];
-
-							var status = (BookingStatus)random.Next(0, Enum.GetValues(typeof(BookingStatus)).Length);
-							var createdAt = DateTime.Now.AddDays(-random.Next(1, 30));
-							var confirmedAt = (status == BookingStatus.Confirmed)
-								? createdAt.AddMinutes(random.Next(5, 120))
-								: DateTime.MinValue;
-
-							bookings.Add(new Booking
-							{
-								UserId = userId,
-								ClassSessionId = session.Id,
-								Status = status,
-								CreatedAt = createdAt,
-								ConfirmedAt = confirmedAt,
-								UpdatedAt = createdAt.AddMinutes(random.Next(10, 500))
-							});
-						}
+							UserId = user.Id,
+							ClassSessionId = session.Id,
+							Status = status,
+							CreatedAt = createdAt,
+							ConfirmedAt = confirmedAt,
+							UpdatedAt = createdAt.AddMinutes(random.Next(10, 500))
+						});
+						session.HeadCount++;
 					}
 				}
 
 				context.Bookings.AddRange(bookings);
 				context.Waitlist.AddRange(waitlist);
+				context.ClassSessions.UpdateRange(classSessions);
 				await context.SaveChangesAsync();
 			}
 		}
@@ -425,6 +399,28 @@ namespace SmartGym.Data
 			// Misc
 			if (n.Contains("honey") || n.Contains("maple syrup") || n.Contains("agave") || n.Contains("stevia") || n.Contains("monk fruit") || n.Contains("sugar")) tags.Add("sweetener");
 			if (n.Contains("pepper") || n.Contains("salt")) tags.Add("seasoning");
+
+			// Gym Equipment
+			if (n.Contains("dumbbell")) tags.Add("equipment");
+			if (n.Contains("barbell")) tags.Add("equipment");
+			if (n.Contains("kettlebell")) tags.Add("equipment");
+			if (n.Contains("treadmill")) tags.Add("cardio equipment");
+			if (n.Contains("elliptical")) tags.Add("cardio equipment");
+			if (n.Contains("rowing machine")) tags.Add("cardio equipment");
+			if (n.Contains("stationary bike")) tags.Add("cardio equipment");
+			if (n.Contains("leg press")) tags.Add("strength equipment");
+			if (n.Contains("bench press")) tags.Add("strength equipment");
+			if (n.Contains("squat rack")) tags.Add("strength equipment");
+			if (n.Contains("pull-up bar")) tags.Add("strength equipment");
+			if (n.Contains("lat pulldown machine")) tags.Add("strength equipment");
+			if (n.Contains("cable machine")) tags.Add("strength equipment");
+			if (n.Contains("medicine ball")) tags.Add("equipment");
+			if (n.Contains("slam ball")) tags.Add("equipment");
+			if (n.Contains("resistance bands")) tags.Add("equipment");
+			if (n.Contains("foam roller")) tags.Add("recovery equipment");
+			if (n.Contains("jump rope")) tags.Add("equipment");
+			if (n.Contains("ab roller")) tags.Add("equipment");
+			if (n.Contains("punching bag")) tags.Add("equipment");
 
 			return tags.Distinct().ToList();
 		}
