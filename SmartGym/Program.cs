@@ -6,6 +6,7 @@ using SmartGym.Data;
 using Microsoft.EntityFrameworkCore;
 using SmartGym.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,15 @@ builder.Services.AddIdentityCore<AppUser>(options =>
 		.AddDefaultTokenProviders();
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
 .AddIdentityCookies();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+options.FallbackPolicy = new AuthorizationPolicyBuilder()
+				.RequireAuthenticatedUser()
+				.Build());
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	options.LoginPath = "/";
+	options.AccessDeniedPath = "/forbidden";
+});
 //Automapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 //Data Repositories
@@ -70,11 +79,11 @@ app.UseAuthorization();
 
 app.UseAntiforgery();
 
-app.MapStaticAssets();
+app.MapStaticAssets().AllowAnonymous();
 app.MapRazorComponents<App>()
 		.AddInteractiveServerRenderMode();
 
-app.MapControllers();
+app.MapControllers().RequireAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
