@@ -5,76 +5,6 @@
 	main {
 		margin: 0;
 	}
-	.home-bar {
-		background:transparent;
-	}
-
-	.logo {
-		filter: invert(50%) sepia(39%) saturate(2%) hue-rotate(214deg) brightness(118%) contrast(134%) ;
-		max-height: 10vh;
-	}
-
-	h1{
-	  font-size:10em;
-	 font-family: "Funnel Display", sans-serif;
-	}
-
-	h2{
-		font-family: "Funnel Display", sans-serif;
-		font-weight: bold;
-		font-size: 2.5em;
-	}
-
-	#outer {
-		text-align: center;
-		position: relative;
-		overflow: hidden;
-		min-height: 100vh;
-	}
-
-	#home-top-video:before {
-		content: "";
-		position: absolute;
-		top: 0;
-		right: 0;
-		left: 0;
-		bottom: 0;
-		background: linear-gradient(to right,hsla(257, 69%, 5%, 0.5), #170937);
-	}
-
-	#home-top-video {
-		left: 0%;
-		top: 0%;
-		height: 100vh;
-		width: 100%;
-		overflow: hidden;
-		position: absolute;
-	}
-
-	#home-text {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		-webkit-transform: translate(-50%, -50%);
-		transform: translate(-50%, -50%);
-		color: #fff;
-		z-index: 1;
-	}
-	.btn-join{
-		height: 15vh;
-		width: 40vh;
-		font-size: 2.5em;
-	}
-	ul{
-		list-style-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNCAxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSIjMzhiZGY4Ij48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMy42ODUuMTUzYS43NTIuNzUyIDAgMCAxIC4xNDMgMS4wNTJsLTggMTAuNWEuNzUuNzUgMCAwIDEtMS4xMjcuMDc1bC00LjUtNC41YS43NS43NSAwIDAgMSAxLjA2LTEuMDZsMy44OTQgMy44OTMgNy40OC05LjgxN2EuNzUuNzUgMCAwIDEgMS4wNS0uMTQzWiIgLz48L3N2Zz4=');
-	}
-	.bg-img{
-		background: linear-gradient(129deg, hsla(257, 69%, 5%, 0.5), #170937);
-		background-size: 50% 50%;
-		background-repeat: no-repeat;
-		background-position: bottom;
-		background-attachment: scroll;
-	}
 </style>
 
 <section id="outer" aria-labelledby="smart">
@@ -84,49 +14,157 @@
 		</video>
 		<div id="home-text">
 			<h1 class="p5" id="smart">Smart Gym</h1>
-			Home of the Gains
+			<span class="text-xl">Home of the Greatest Gains. More than one million members and growing</span>
 		</div>
 	</div>
 	<div class="absolute  inset-x-0 bottom-0 z-1">
-		<button class="p-5 mx-5 bg-accent text-xl hover:bg-violet-600 focus:outline-2 btn-join">Join Today!</button>
+		<button class="p-5 mx-5 bg-accent text-xl  hover:cursor-pointer hover:bg-violet-600 focus:outline-2 btn-join">Join us today for Free!</button>
 	</div>
 </section>
-<section class="text-center text-[#170937] bg-white p-5" aria-labelledby="why">
-	<h2 id="why" class="text-3xl mb-3">Why Choose Us?</h2>
-	<div class="grid grid-cols-3 gap-4 px-5">
-		<article class="border-1 border-[#3d2ddd] rounded-lg p-4">
-			<h3>Respect</h3>
-			We are nurturers: we seek only to encourage, entertain, and empower.
-		</article>
-		<article class="border-1 border-[#3d2ddd] rounded-lg p-4">
-			<h3>Community</h3>
-			Here we keep open minds
-		</article>
-		<article class="border-1 border-[#3d2ddd] rounded-lg p-4">
-			<h3>Fun</h3>
-			We know serious fitness is hard, but that doesn’t mean it can’t be fun
-		</article>
+<div class="bg-text ">
+	<section class="text-center text-primary p-5 contained text-4xl w-50 my-5" aria-labelledby="why">
+		<h2 id="why" class="text-3xl mb-3">Why Choose Us?</h2>
+		<div class="grid grid-cols-3 gap-4 px-5">
+			<article class="p-4">
+				<h3 class="text-background"><i class="fa-solid fa-hand-holding-heart"></i><br />Respect</h3>
+				<span class="text-lg">We are nurturers: we seek only to encourage, entertain, and empower.</span>
+			</article>
+			<article class="p-4">
+				<h3 class="text-background"><i class="fa-solid fa-hands-asl-interpreting"></i><br />Community</h3>
+				<span class="text-lg">Here we keep open minds</span>
+			</article>
+			<article class="p-4">
+				<h3 class="text-background"><i class="fa-solid fa-icons"></i><br />Fun</h3>
+				<span class="text-lg">We know serious fitness is hard, but that doesn’t mean it can’t be fun.</span>
+			</article>
+		</div>
+
+	</section>
+</div>
+
+<section class="hero text-white text-2xl flex">
+	<div class="bento contained py-5">
+		<div class="bento-wrapper">
+			<article class="bg-primary-500 first-grid">
+				<h2 class="mb-3">Strength, Endurance, Transformation</h2>
+				Join over 500+ members to achieve your fitness goals with expert guidance and state-of-the-art facilities.
+			</article>
+			<article class="bg-primary-900 second-grid">
+				<h2 class="mb-3">Our Perks</h2>
+				Enjoy many perks of being part of our family.
+				<ul class="list-image-[url(/lib/images/checkmark.png)]">
+					<li>24/7 Access</li>
+					<li>Modern equipment</li>
+					<li>Amenities</li>
+					<li>Giant pool</li>
+					<li>Great cafe</li>
+					<li>Friendly staff</li>
+					<li>And much more...</li>
+				</ul>
+			</article>
+			<article class="bg-secondary third-grid">
+				<h2 class="mb-3">Nutrition</h2>
+				Power up your workouts with our premium supplements.
+			</article>
+		</div>
+	</div>
+</section>
+<section aria-label="pricing" class="bg-background text-white text-2xl">
+	<div class="contained my-5">
+		<h2 class="text-center my-3">Membership Tiers</h2>
+		<div class="pricing-cards">
+			<article class="pricing-card">
+				<div>
+					<h3 class="text-4xl font-bold"> Basic</h3>
+					<div class="pricing-card-text">
+						<ul class="">
+							<li>24/7 Access</li>
+							<li>Modern equipment</li>
+							<li>Amenities</li>
+							<li>Giant pool</li>
+							<li>Great cafe</li>
+							<li>Friendly staff</li>
+							<li>And much more...</li>
+						</ul>
+					</div>
+				</div>
+			</article>
+
+			<article class="pricing-card">
+				<div>
+					<h3 class="text-4xl font-bold">Premium</h3>
+					<div class="pricing-card-text">
+						<ul class="">
+							<li>24/7 Access</li>
+							<li>Modern equipment</li>
+							<li>Amenities</li>
+							<li>Giant pool</li>
+							<li>Great cafe</li>
+							<li>Friendly staff</li>
+							<li>And much more...</li>
+						</ul>
+					</div>
+				</div>
+			</article>
+
+			<article class="pricing-card">
+				<div>
+					<h3 class="text-4xl font-bold">Premium+</h3>
+					<div class="pricing-card-text">
+						<ul class="">
+							<li>24/7 Access</li>
+							<li>Modern equipment</li>
+							<li>Amenities</li>
+							<li>Giant pool</li>
+							<li>Great cafe</li>
+							<li>Friendly staff</li>
+							<li>And much more...</li>
+						</ul>
+					</div>
+				</div>
+			</article>
+		</div>
 	</div>
 	
 </section>
-<section class="hero text-white text-3xl flex">
-	<article class="p-6 m-5 bg-primary-500 flex-row">
-		<h2 class="mb-3">Strength, Endurance, Transformation</h2>
-		Join over 500+ members to achieve your fitness goals with expert guidance and state-of-the-art facilities.
-		<img src="/lib//images/home/ath1.png" class="bg-img"/>
-	</article>
-	<article class="p-6 m-5 bg-primary-900">
-		<h2 class="mb-3">Become a Member Today!</h2>
-		Enjoy many perks of being part of our family.
-		<ul class="list-image-[url(/lib/images/checkmark.png)]">
-			<li>24/7 Access</li>
-			<li>Modern equipment</li>
-			<li>Friendly staff</li>
-		</ul>
-	</article>
-	<article class="p-6 m-5 bg-secondary">
-		<h2 class="mb-3">Summer sale!</h2>
-		Become a member for only $0.99
-	</article>
-	
+<section aria-label="testimonials" class="bg-primary text-white text-2xl">
+	<div class="contained my-5">
+
+		<h2 class="text-center my-3">Testimonials</h2>
+		<div class="section-cards">
+			<article class="section-card">
+				Life Changing
+				<div class="inline-block">
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+				</div>
+				
+				
+			</article>
+			<article class="section-card">
+				The best of the best
+				<div class="inline-block">
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+				</div>
+			</article>
+			<article class="section-card">
+				It's only a model...
+				<div class="inline-block">
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+					<i class="fa-solid fa-star text-accent mr-1"></i>
+				</div>
+			</article>
+		</div>
+		
+	</div>
 </section>
