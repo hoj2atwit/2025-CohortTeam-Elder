@@ -97,12 +97,12 @@ public class OrdersController : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<ActionResult<OrderDTO>> CreateOrder(OrderDTO newOrderData)
+	public async Task<ActionResult<OrderDTO>> CreateOrder([FromBody] OrderDTO newOrderData, [FromQuery] bool useSample = false)
 	{
-		if (newOrderData.Id == null || newOrderData.Id == 0)
+		if (useSample)
 		{
 			newOrderData = sample;
-		}
+		} 
 		var created = await _service.CreateOrder(newOrderData);
 		return CreatedAtAction(nameof(GetOrderById), new { id = created.Id }, created);
 	}
