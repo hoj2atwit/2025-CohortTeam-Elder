@@ -171,7 +171,7 @@ namespace SmartGym.Data
 
 				var faker = new Faker<Class>()
 					 .RuleFor(x => x.Name, f => f.Random.ListItem(classes))
-					 .RuleFor(x => x.Schedule, f => f.Date.Between(default(DateTime), DateTime.Now.AddYears(9)))
+					 .RuleFor(x => x.Schedule, f => f.Date.Between(DateTime.Now.AddHours(1), DateTime.Now.AddMonths(3)))
 					 .RuleFor(x => x.MaxCapacity, f => f.Random.Int(20, 50))
 					 .RuleFor(x => x.TrainerId, f => f.PickRandom(trainers).Id)
 					 .RuleFor(x => x.Description, f => f.Lorem.Sentence())
@@ -180,6 +180,72 @@ namespace SmartGym.Data
 				var fakeClasses = faker.Generate(20); // Generate 20 random classes
 				context.Classes.AddRange(fakeClasses);
 				await context.SaveChangesAsync();
+			}
+
+			// Add some specific upcoming classes for testing
+			var currentTime = DateTime.Now;
+			var upcomingClassesCount = context.Classes.Count(c => c.Schedule > currentTime);
+			Console.WriteLine($"Current upcoming classes count: {upcomingClassesCount}");
+			
+			// Always add upcoming classes if we have fewer than 5
+			if (upcomingClassesCount < 5)
+			{
+				var allTrainers = await userManager.Users.ToListAsync();
+				if (allTrainers.Any())
+				{
+					var testClasses = new List<Class>
+					{
+						new Class 
+						{ 
+							Name = "Morning Yoga", 
+							Schedule = DateTime.Now.AddHours(2), 
+							MaxCapacity = 25, 
+							TrainerId = allTrainers.First().Id, 
+							Description = "Relaxing morning yoga session",
+							Level = SkillLevel.Beginner
+						},
+						new Class 
+						{ 
+							Name = "HIIT Training", 
+							Schedule = DateTime.Now.AddDays(1), 
+							MaxCapacity = 30, 
+							TrainerId = allTrainers.First().Id, 
+							Description = "High intensity interval training",
+							Level = SkillLevel.Intermediate
+						},
+						new Class 
+						{ 
+							Name = "Pilates Core", 
+							Schedule = DateTime.Now.AddDays(2), 
+							MaxCapacity = 20, 
+							TrainerId = allTrainers.First().Id, 
+							Description = "Core strengthening pilates",
+							Level = SkillLevel.Beginner
+						},
+						new Class 
+						{ 
+							Name = "Strength Training", 
+							Schedule = DateTime.Now.AddDays(3), 
+							MaxCapacity = 35, 
+							TrainerId = allTrainers.First().Id, 
+							Description = "Full body strength workout",
+							Level = SkillLevel.Advanced
+						},
+						new Class 
+						{ 
+							Name = "Cardio Blast", 
+							Schedule = DateTime.Now.AddDays(4), 
+							MaxCapacity = 40, 
+							TrainerId = allTrainers.First().Id, 
+							Description = "High energy cardio session",
+							Level = SkillLevel.Intermediate
+						}
+					};
+					
+					Console.WriteLine($"Adding {testClasses.Count} upcoming test classes");
+					context.Classes.AddRange(testClasses);
+					await context.SaveChangesAsync();
+				}
 			}
 
 			//Orders
