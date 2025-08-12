@@ -33,6 +33,7 @@ namespace SmartGym.Data
 			// Use RoleId enum and EnumHelper to get role names
 			var roleNames = Enum.GetValues(typeof(RoleId))
 				.Cast<RoleId>()
+				.Where(role => role != RoleId.Unknown)
 				.Select(role => SmartGym.Helpers.EnumHelper.GetDisplayName(role))
 				.ToArray();
 			foreach (var role in roleNames)
