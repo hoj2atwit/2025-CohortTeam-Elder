@@ -1,87 +1,102 @@
-﻿@attribute [Authorize(Roles = "Admin")]
+@attribute [Authorize(Roles = "Admin")]
 @page "/members"
+@using Microsoft.AspNetCore.Authorization
 @using SmartGym.Constants.Enums
 @using SmartGym.Helpers
 @using SmartGym.Models
 @using SmartGym.Services
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 @inject SmartGym.Services.IUserService service
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager navManager
 @inject UserManager<AppUser> UserManager
 @attribute [StreamRendering]
+@attribute [Authorize]
 
 <PageTitle>View Members</PageTitle>
 
 <style>
-    table,
-    th,
-    td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
+	table,
+	th,
+	td {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
 </style>
 
 <div>
-    <h1 style="font-size:40px"><b>List of Members</b></h1>
-    <div>
-        <a href="/addnewmember">Add New Member</a>
-    </div>
-    @if (userList == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <table style="width:100%">
-            <thead>
-                <tr>
-                    <th>FName</th>
-                    <th>LName</th>
-                    <th>Email</th>
-                    <th>Birthday</th>
-                    <th>Membership Plan</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Display each member -->
-                @foreach (UserDto userDto in userList)
-                {
-                    <tr>
-                        <td>@userDto.FirstName</td>
-                        <td>@userDto.LastName</td>
-                        <td>@userDto.Email</td>
-                        <td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
-                        <td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
-                        <td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
-                        <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
-                        <td><button onclick=@(() => UpdateUser(@userDto))>Update Member</button></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+	<h1 style="font-size:40px"><b>List of Members</b></h1>
+	@if (userList == null)
+	{
+		<p><em>Loading...</em></p>
+	}
+	else if (user == null || user.Identity == null || !user.Identity.IsAuthenticated)
+	{
+		<p><em>Please Log In</em></p>
+	}
+	else
+	{
+		<div>
+			<a href="/addnewmember">Add New Member</a>
+		</div>
+		<table style="width:100%">
+			<thead>
+				<tr>
+					<th>FName</th>
+					<th>LName</th>
+					<th>Email</th>
+					<th>Birthday</th>
+					<th>Membership Plan</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Display each member -->
+				@foreach (UserDto userDto in userList)
+				{
+					<tr>
+						<td>@userDto.FirstName</td>
+						<td>@userDto.LastName</td>
+						<td>@userDto.Email</td>
+						<td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
+						<td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
+						<td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
+						<td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
+						<td><button onclick=@(() => UpdateUser(@userDto))>Update Member</button></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
 </div>
 
 @code {
-    private List<UserDto> userList = new();
+	private List<UserDto> userList = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Populate userList
-        userList = await service.GetAllUsers();
-    }
+	private ClaimsPrincipal user;
 
-    private Task DeleteUser(UserDto u)
-    {
-        navManager.NavigateTo($"/deletemember/{u.Id}");
-        return Task.CompletedTask;
-    }
 
-    private Task UpdateUser(UserDto u)
-    {
-        navManager.NavigateTo($"/updatemember/{u.Id}");
-        return Task.CompletedTask;
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		// Populate userList
+		userList = await service.GetAllUsers();
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		user = authState.User;
+		// Example: get username
+		var username = user.IsInRole("Admin");
+	}
+
+	private Task DeleteUser(UserDto u)
+	{
+		navManager.NavigateTo($"/deletemember/{u.Id}");
+		return Task.CompletedTask;
+	}
+
+	private Task UpdateUser(UserDto u)
+	{
+		navManager.NavigateTo($"/updatemember/{u.Id}");
+		return Task.CompletedTask;
+	}
 }
