@@ -30,9 +30,9 @@
 <body>
 
     <CascadingAuthenticationState>
-        <Router AppAssembly="@typeof(Program).Assembly">
-            <Found Context="routeData">
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+        <Router AppAssembly="@typeof(Program).Assembly" >
+            <Found Context="routeData" >
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
                     <NotAuthorized>
                         <Forbidden />
                     </NotAuthorized>
