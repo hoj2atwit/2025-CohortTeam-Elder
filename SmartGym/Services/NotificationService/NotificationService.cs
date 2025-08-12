@@ -3,13 +3,14 @@ using AutoMapper;
 using SmartGym.Data;
 using SmartGym.Helpers;
 using SmartGym.Models;
-namespace SmartGym.Services.NotificationService;
+namespace SmartGym.Services;
 
-public class NotificationService
+public class NotificationService : INotificationService
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
 	private readonly IClassService _classService;
+	private readonly IBookingService _bookingService;
 
 	public NotificationService(IUnitOfWork unitOfWork, IMapper mapper)
 	{
@@ -48,10 +49,10 @@ public class NotificationService
 		await _unitOfWork.SaveAsync();
 	}
 
-	public async Task SendWaitlistNotification(int userId, int classSessionId)
+	public async Task SendWaitlistNotification(int userId, int classSessionId, bool isNew = false)
 	{
-
 		var classSession = await _classService.GetClassById(classSessionId);
+		var waitlist = await _bookingService.GetSingleWaitlistRecord(classSessionId);
 		if (classSession == null)
 		{
 			throw new Exception($"Class session with ID {classSessionId} not found.");
@@ -64,13 +65,14 @@ public class NotificationService
 							 $"Schedule: {classSession.Schedule:dddd, MMMM d, yyyy h:mm tt}\n" +
 							 $"Trainer ID: {classSession.TrainerId}\n" +
 							 $"Level: {levelDisplay}\n" +
-							 $"Description: {classSession.Description}";
-
+							 $"Description: {classSession.Description}\n" +
+							 $"Position: {waitlist.Position}";
+		var update = isNew ? "added to the waitlist" : "moved up the waitlist";
 		var notification = new Notification
 		{
 			UserId = userId,
 			Title = "Waitlist Notification",
-			Contents = $"You have been added to the waitlist for class session {classSessionId}:\n\n{messageBody}",
+			Contents = $"You have been {update} for class session {classSessionId}:\n\n{messageBody}",
 			WasOpened = false,
 			TimeStamp = DateTime.UtcNow,
 			ClassSessionId = classSessionId
