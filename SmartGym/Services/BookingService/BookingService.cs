@@ -191,7 +191,9 @@ public class BookingService : IBookingService
 			}
 			else
 			{
-				throw new Exception("Class is fully booked");
+				// If session is full, add user to waitlist
+				await AddUserToWaitlist(newBookingData.UserId, newBookingData.SessionId);
+				return null;
 			}
 		}
 		catch (Exception ex)
