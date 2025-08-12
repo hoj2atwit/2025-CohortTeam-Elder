@@ -1,0 +1,100 @@
+﻿@using SmartGym.Models
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@using SmartGym.Services
+@using System.Security.Claims;
+@attribute [StreamRendering]
+@inject INotificationService notifService
+
+
+<button class="relative" @onclick=ToggleShow>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+    </svg>
+    @if (unread > 0)
+    {
+        <!-- Notification dot -->
+        <span class="absolute right-0 top-0 block h-2 w-2 rounded-full bg-red-500"> @unread </span>
+    }
+    @if (isVisible)
+    {
+        <div id="dropdownMenu"
+             class="z-[1000] absolute right-0 mt-2 block max-h-[500px] w-[410px] min-w-full overflow-auto rounded-lg bg-white py-4 shadow-lg">
+            <div class="mb-4 flex items-center justify-between px-4">
+                @*<p class="cursor-pointer text-xs font-medium text-blue-600">Clear all</p>*@
+            <div @onclick=OpenAll><p class="cursor-pointer text-blue-600" style="font-size:0.75rem; line-height:1rem; font-weight: 500; ">Mark as read</p></div>
+            </div>
+
+            <ul class="divide-y divide-gray-300">
+
+                @foreach (NotificationsDTO notificationsDTO in notifList)
+                {
+                    <NotificationModalContent notifDTO="@notificationsDTO" OnReadCallBack="Open" OnUnreadCallBack="incrementUnread" />
+                }
+
+            </ul>
+            @*<p class="mb-4 mt-6 inline-block cursor-pointer px-4 text-xs font-medium text-blue-600">View all Notifications</p>*@
+        </div>
+    }
+</button>
+
+
+
+@code {
+    private List<NotificationsDTO> notifList { get; set; } = new();
+    private bool isVisible { get; set; } = false;
+    private int unread { get; set; } = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Update();
+    }
+
+    public async Task incrementUnread()
+    {
+        unread++;
+        StateHasChanged();
+    }
+
+    public async Task ToggleShow()
+    {
+        isVisible = !isVisible;
+        await Update();
+    }
+
+    public async Task Open(NotificationsDTO notifDTO)
+    {
+        await notifService.MarkAsOpenedAsync(notifDTO.Id);
+        await Update();
+    }
+
+    public async Task OpenAll()
+    {
+        foreach (NotificationsDTO tempDTO in notifList)
+        {
+            await notifService.MarkAsOpenedAsync(tempDTO.Id);
+        }
+        await Update();
+    }
+
+    public async Task Update()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        int id;
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            try
+            {
+                id = int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                notifList = (List<NotificationsDTO>)await notifService.GetUserNotifications(id);
+            }
+            catch (Exception e)
+            {
+                notifList = new();
+            }
+
+        }
+        StateHasChanged();   
+    }
+}
