@@ -184,7 +184,6 @@ public class BookingService : IBookingService
 				sessionEntity.HeadCount += 1;
 				_unitOfWork.ClassSessionRepository.Update(sessionEntity);
 
-
 				await _unitOfWork.SaveAsync();
 
 				await _notificationService.SendBookingConfirm(newBooking.UserId, newBooking.ClassSessionId);
@@ -327,6 +326,7 @@ public class BookingService : IBookingService
 			CreatedAt = DateTime.UtcNow
 		};
 		await _unitOfWork.BookingsRepository.AddAsync(newBooking);
+		await _notificationService.SendBookingConfirm(newBooking.UserId, newBooking.ClassSessionId);
 
 		// Remove the waitlist record
 		await DeleteFromWaitlist(nextWaitlist.Id, true);
@@ -513,7 +513,7 @@ public class BookingService : IBookingService
 			await _unitOfWork.WaitlistRepository.AddAsync(newWaitlist);
 			await _unitOfWork.SaveAsync();
 
-			await _notificationService.SendWaitlistNotification(newWaitlist.MemberId, newWaitlist.SessionId);
+			await _notificationService.SendWaitlistNotification(newWaitlist.MemberId, newWaitlist.SessionId, true);
 			return _mapper.Map<WaitlistDTO>(newWaitlist);
 		}
 		catch (Exception ex)
@@ -582,6 +582,7 @@ public class BookingService : IBookingService
 			_mapper.Map(waitlistDto, waitlistRecord);
 			_unitOfWork.WaitlistRepository.Update(waitlistRecord);
 			await _unitOfWork.SaveAsync();
+			await _notificationService.SendWaitlistNotification(waitlistRecord.MemberId, waitlistRecord.SessionId);
 			return _mapper.Map<WaitlistDTO>(waitlistRecord);
 		}
 		catch (Exception ex)
