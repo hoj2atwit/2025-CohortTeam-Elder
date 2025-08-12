@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using SmartGym.Constants;
 using SmartGym.Models;
 using SmartGym.Services;
@@ -70,7 +69,6 @@ public class OrdersController : ControllerBase
 		}
 		return orderItem;
 	}
-	[Authorize(Roles = "Admin, Staff")]
 	[HttpGet("getAllOrders")]
 	public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
 	{
