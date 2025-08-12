@@ -3,6 +3,7 @@
 @using SmartGym.Models
 @using SmartGym.Services
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager Navigation
 @inject IUserService UserService
 @inject UserManager<AppUser> UserManager
@@ -21,10 +22,15 @@
             <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <input type="text" @bind="searchQuery" @onkeyup="FilterTrainers" placeholder="Search trainers..."
                     class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f34f5d] focus:border-transparent w-full sm:w-64" />
-                <button
-                    class="bg-[#f34f5d] hover:bg-[#f34f5d-600] text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
-                    Add Trainer
-                </button>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <button
+                            class="bg-[#f34f5d] hover:bg-[#f34f5d-600] text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
+                            @onclick='() => Navigation.NavigateTo("/addnewmember")'>
+                            Add Trainer
+                        </button>
+                    </Authorized>
+                </AuthorizeView>
             </div>
         </div>
 

@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization;
+﻿@using Microsoft.AspNetCore.Components.Authorization
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,11 +20,29 @@
 
 </head>
 
-<body>
+@* <body>
     <CascadingAuthenticationState>
         <Routes @rendermode=RenderMode.InteractiveServer />
     </CascadingAuthenticationState>
     <script src="_framework/blazor.web.js"></script>
+</body> *@
+
+<body>
+
+    <CascadingAuthenticationState>
+        <Router AppAssembly="@typeof(Program).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <Forbidden />
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+            </Found>
+            <NotFound>
+                <p>Sorry, nothing here.</p>
+            </NotFound>
+        </Router>
+    </CascadingAuthenticationState>
 </body>
 
 </html>

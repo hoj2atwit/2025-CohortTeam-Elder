@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using SmartGym.Data;
 using SmartGym.Models;
 using SmartGym.Services;
@@ -17,7 +18,7 @@ public class BookingsController : ControllerBase
     _bookingService = bookingService;
     _unitOfWork = unitOfWork;
   }
-
+  [Authorize(Roles = "Admin, Staff")]
   [HttpGet]
   public async Task<ActionResult<List<BookingDTO>>> GetAll([FromQuery] bool includeNestedClasses = false)
   {
@@ -38,14 +39,14 @@ public class BookingsController : ControllerBase
     var bookings = await _bookingService.GetBookingsByClassId(classId);
     return Ok(bookings);
   }
-	[HttpGet("session/{sessionId:int}")]
-	public async Task<ActionResult<List<BookingDTO>>> GetBySessionId(int sessionId)
-	{
-		var bookings = await _bookingService.GetBookingsBySessionId(sessionId);
-		return Ok(bookings);
-	}
+  [HttpGet("session/{sessionId:int}")]
+  public async Task<ActionResult<List<BookingDTO>>> GetBySessionId(int sessionId)
+  {
+    var bookings = await _bookingService.GetBookingsBySessionId(sessionId);
+    return Ok(bookings);
+  }
 
-	[HttpGet("check")]
+  [HttpGet("check")]
   public async Task<ActionResult<bool>> IsUserAlreadyBooked(int userId, int classId)
   {
     var result = await _bookingService.IsUserAlreadyBooked(userId, classId);
@@ -105,7 +106,7 @@ public class BookingsController : ControllerBase
       return NotFound();
     return NoContent();
   }
-
+  [Authorize(Roles = "Admin, Staff")]
   [HttpPost("autocancel")]
   public async Task<IActionResult> AutoCancel()
   {

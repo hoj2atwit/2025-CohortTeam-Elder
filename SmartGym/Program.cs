@@ -83,7 +83,7 @@ app.MapStaticAssets().AllowAnonymous();
 app.MapRazorComponents<App>()
 		.AddInteractiveServerRenderMode();
 
-app.MapControllers().RequireAuthorization();
+app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {

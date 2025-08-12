@@ -1,9 +1,11 @@
-﻿@page "/updatemember/{id:int}"
+﻿@attribute [Authorize(Roles = "Admin, Staff")]
+@page "/updatemember/{id:int}"
 @using SmartGym.Constants.Enums
 @using SmartGym.Models
 @using SmartGym.Services
 @using System.Net.Mail
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
 @inject UserManager<AppUser> UserManager
