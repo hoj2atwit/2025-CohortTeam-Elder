@@ -1,12 +1,10 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SmartGym.Constants;
 using SmartGym.Constants.Enums;
 using SmartGym.Data;
 using SmartGym.Helpers;
 using SmartGym.Models;
-using System.Security.Claims;
 
 namespace SmartGym.Services;
 
