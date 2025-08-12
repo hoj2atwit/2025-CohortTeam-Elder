@@ -18,6 +18,7 @@ public class UnitOfWork : IUnitOfWork
 	private IRepository<Waitlist>? _waitlistRepository;
 	private IRepository<ClassSession>? _classSessionRepository;
 	private IRepository<AccountHistory>? _userHistoryRepository;
+	private IRepository<Notification>? _notificationRepository;
 
 	public UnitOfWork(SmartGymContext context)
 	{
@@ -103,6 +104,14 @@ public class UnitOfWork : IUnitOfWork
 		{
 			_userHistoryRepository ??= new Repository<AccountHistory>(_context);
 			return _userHistoryRepository;
+		}
+	}
+	public IRepository<Notification> NotificationRepository
+	{
+		get
+		{
+			_notificationRepository ??= new Repository<Notification>(_context);
+			return _notificationRepository;
 		}
 	}
 	public async Task SaveAsync()
