@@ -92,6 +92,7 @@
     --default-mono-font-family: var(--font-mono);
     --font-funnel: "Funnel Display", sans-serif;
     --color-primary: #5e22d3;
+    --color-primary-100: #9e7ae5;
     --color-primary-500: #4b1ba9;
     --color-primary-900: #2f116a;
     --color-secondary: #3d2ddd;
@@ -592,6 +593,9 @@
   .cursor-pointer {
     cursor: pointer;
   }
+  .list-none {
+    list-style-type: none;
+  }
   .list-image-\[url\(\/lib\/images\/checkmark\.png\)\] {
     list-style-image: url(/lib/images/checkmark.png);
   }
@@ -787,9 +791,6 @@
   .bg-blue-500 {
     background-color: var(--color-blue-500);
   }
-  .bg-gray-50 {
-    background-color: var(--color-gray-50);
-  }
   .bg-gray-100 {
     background-color: var(--color-gray-100);
   }
@@ -804,6 +805,9 @@
   }
   .bg-primary {
     background-color: var(--color-primary);
+  }
+  .bg-primary-100 {
+    background-color: var(--color-primary-100);
   }
   .bg-primary-500 {
     background-color: var(--color-primary-500);
@@ -1461,29 +1465,14 @@
       line-height: var(--tw-leading, var(--text-3xl--line-height));
     }
   }
-  .dark\:border-gray-600 {
-    @media (prefers-color-scheme: dark) {
-      border-color: var(--color-gray-600);
-    }
-  }
   .dark\:border-gray-700 {
     @media (prefers-color-scheme: dark) {
       border-color: var(--color-gray-700);
     }
   }
-  .dark\:bg-gray-700 {
-    @media (prefers-color-scheme: dark) {
-      background-color: var(--color-gray-700);
-    }
-  }
   .dark\:bg-gray-800 {
     @media (prefers-color-scheme: dark) {
       background-color: var(--color-gray-800);
-    }
-  }
-  .dark\:text-gray-200 {
-    @media (prefers-color-scheme: dark) {
-      color: var(--color-gray-200);
     }
   }
   .dark\:text-gray-400 {
@@ -1661,6 +1650,9 @@ h2 {
   font-weight: bold;
   font-size: 2.5em;
 }
+td {
+  padding: 0 5em;
+}
 section {
   min-height: 50vh;
 }
@@ -1701,7 +1693,7 @@ section {
   width: 40vh;
   font-size: 2.5em;
 }
-ul {
+.bento ul {
   list-style-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxNCAxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSIjMzhiZGY4Ij48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMy42ODUuMTUzYS43NTIuNzUyIDAgMCAxIC4xNDMgMS4wNTJsLTggMTAuNWEuNzUuNzUgMCAwIDEtMS4xMjcuMDc1bC00LjUtNC41YS43NS43NSAwIDAgMSAxLjA2LTEuMDZsMy44OTQgMy44OTMgNy40OC05LjgxN2EuNzUuNzUgMCAwIDEgMS4wNS0uMTQzWiIgLz48L3N2Zz4=');
 }
 ul li {
@@ -1824,6 +1816,36 @@ ul li {
   width: 80px;
   border-radius: 100px;
   border: 2px solid var(--color-text);
+}
+.scroll-watcher {
+  height: 10px;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  background: var(--color-primary);
+  scale: 0 1;
+  transform-origin: left;
+  animation: scroll-watcher linear;
+  animation-timeline: scroll();
+}
+.pricing-card, .section-card, .why {
+  scale: 0.7;
+  opacity: 0;
+  animation: pop-in ease-in-out forwards;
+  animation-timeline: view();
+  animation-range: entry;
+}
+@keyframes scroll-watcher {
+  to {
+    scale: 1 1;
+  }
+}
+@keyframes pop-in {
+  to {
+    scale: 1;
+    opacity: 1;
+  }
 }
 @property --tw-rotate-x {
   syntax: "*";

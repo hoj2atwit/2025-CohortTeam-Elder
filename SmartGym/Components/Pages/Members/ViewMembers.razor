@@ -22,8 +22,8 @@
 </style> 
 
 <h1 class="text-5xl mb-4">View Members</h1>
-<div class="bg-background bg-primary-900">
-    <h1 style="font-size:40px"><b>List of Members</b></h1>
+<hr />
+<div class="">
     @if (userList == null)
     {
         <p><em>Loading...</em></p>
@@ -35,17 +35,13 @@
                 <i class="fa-solid fa-user-plus"></i>
                 <span>Add New Member</span>
             </a>
-            <a href="/updatemember" class="text-right bg-accent hover:bg-blue-700 text-white font-bold py-5 px-4 rounded">
-                <i class="fa-solid fa-pen-to-square"></i>
-              Update Member
-              </a>
         </div>
         <table class="w-full table-auto border-collapse text-sm">
-            <caption class="caption-top">List of Members</caption>
-            <thead class="border border-gray-200 bg-gray-50 text-left  dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200">
+            <caption class="caption-top text-lg">Current list of all members</caption>
+            <thead class="text-left text-xl bg-background">
                 <tr>
-                    <th  class="p-4 py-3">FName</th>
-                    <th  class="p-4 py-3">LName</th>
+                    <th  class="p-4 py-3">First Name</th>
+                    <th  class="p-4 py-3">Last Name</th>
                     <th  class="p-4 py-3">Email</th>
                     <th  class="p-4 py-3">Birthday</th>
                     <th  class="p-4 py-3">Membership Plan</th>
@@ -54,18 +50,32 @@
                 </tr>
             </thead>
            
-            <tbody class="bg-white dark:bg-gray-800">
+            <tbody class="">
                 @foreach (UserDto userDto in userList)
                 {
-                    <tr>
+                    @if(userIndex % 2 != 0)
+                    {
+                        evenRow = "text-black bg-white";
+                    }
+                    else
+                    {
+                        evenRow = "text-black bg-primary-100";
+                    }
+                    <tr class="@evenRow">
                         <td>@userDto.FirstName</td>
                         <td>@userDto.LastName</td>
                         <td>@userDto.Email</td>
                         <td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
 								<td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
 								<td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
-                        <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
-                        <td><button onclick=@(() => UpdateUser(@userDto))>Update Member</button></td>
+                        <td class="inline-flex">
+                          <button onclick=@(() => DeleteUser(@userDto)) class="bg-red-300 p-3 text-black"> 
+                            <i class="fa-solid fa-user-minus mr-3"></i> Delete Member
+                          </button>
+                          <button onclick=@(() => UpdateUser(@userDto)) class="bg-accent p-3 text-black">
+                            <i class="fa-solid fa-pen-to-square mr-3"></i> Update Member
+                          </button>
+                        </td>
                     </tr>
                     userIndex++;
                 }
@@ -79,6 +89,8 @@
 
 @code {
     private int userIndex = 0;
+    private int isEven = 0;
+    private string evenRow = "text-white bg-primary";
     private List<UserDto> userList = new();
 
     protected override async Task OnInitializedAsync()
