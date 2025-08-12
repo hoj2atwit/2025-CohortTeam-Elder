@@ -1,0 +1,107 @@
+﻿@page "/deletebooking/{uId:int}-{cId:int}-{bId:int}"
+@using SmartGym.Models
+@using SmartGym.Constants.Enums
+@using SmartGym.Services
+@using Microsoft.AspNetCore.Identity
+@inject SmartGym.Services.IBookingService service
+@inject NavigationManager navManager
+@inject UserManager<AppUser> UserManager
+
+<PageTitle>Delete Booking</PageTitle>
+
+<div>
+    <div>
+        @if (booking == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <div>
+                <h4 style="color:red; font-size:40px"><b>Delete Booking</b></h4>
+            </div>
+            <div>
+                <p>User ID: @booking.UserId</p>
+            </div>
+            <hr />
+            <div>
+                <p>Class ID: @booking.ClassSessionId</p>
+            </div>
+            <hr />
+            <div>
+                <p>Status: @booking.Status</p>
+            </div>
+            <hr />
+            <div>
+                <p>Created at: @booking.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")</p>
+            </div>
+            <hr />
+            <div>
+                <p>Confirmed at: @booking.ConfirmedAt.ToString("MM/dd/yyyy hh:mm tt")</p>
+            </div>
+            <hr />
+            <div>
+                <p>Updated at: @booking.UpdatedAt.ToString("MM/dd/yyyy hh:mm tt")</p>
+            </div>
+            <hr />
+            <div>
+                <p>Are you sure you want to delete this booking?</p>
+                <button @onclick=DelBooking type="submit" class="">[Delete]</button>
+                <a href="/viewbookings">Cancel</a>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int uId { get; set; }
+    [Parameter]
+    public int cId { get; set; }
+    [Parameter]
+    public int bId { get; set; }
+    private BookingDTO booking { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        booking = await FindBooking();
+        StateHasChanged();
+    }
+
+    private async Task<BookingDTO> FindBooking()
+    {
+        List<BookingDTO> bookingList;
+        bookingList = await service.GetBookingByUserId(uId);
+
+        foreach(BookingDTO bookingDTO in bookingList)
+        {
+            if (bookingDTO.Id == bId)
+            {
+                return bookingDTO;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Deletes a booking
+    /// </summary>
+    /// <returns></returns>
+    private async Task DelBooking()
+    {
+        await service.DeleteBooking(bId);
+        navManager.NavigateTo("/viewbookings");
+    }
+
+    // private async Task DelBookingByUserId()
+    // {
+    //     await service.DeleteBooking(id);
+    // }
+
+    // private async Task DelBookingByClassId()
+    // {
+    //     await service.DeleteBooking(id);
+    // }
+}
