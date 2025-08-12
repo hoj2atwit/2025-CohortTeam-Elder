@@ -90,7 +90,7 @@ public class NotificationService : INotificationService
 								 $"Level: {levelDisplay}\n" +
 								 $"Description: {classSession.Description}\n" +
 								 $"Position: {waitlist.Position}";
-			var update = isNew ? "added to the waitlist" : "moved up the waitlist";
+			var update = isNew ? "added to the waitlist" : "updated in the waitlist";
 			var notification = new Notification
 			{
 				UserId = userId,
