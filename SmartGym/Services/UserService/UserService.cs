@@ -36,7 +36,7 @@ public class UserService : IUserService
 			else
 			{
 				var roleName = EnumHelper.GetDisplayName(newUserData.RoleId);
-				await _userManager.AddToRoleAsync(newUser, roleName);
+				await _userManager.AddToRoleAsync(newUser, roleName); // doesnt need SaveAsync
 			}
 			return _mapper.Map<UserDto>(newUser);
 		}
