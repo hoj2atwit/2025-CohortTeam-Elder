@@ -46,6 +46,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "SmartGymAuth";
     options.LoginPath = "/";
+    options.AccessDeniedPath = "/forbidden";
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.SlidingExpiration = true;
 });
