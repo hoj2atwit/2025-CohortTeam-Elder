@@ -77,14 +77,16 @@ if (!app.Environment.IsDevelopment())
 	app.UseHsts();
 }
 
-app.UseStatusCodePages(async context =>
-{
-    if (context.HttpContext.Response.StatusCode == 401)
-    {
-        context.HttpContext.Response.ContentType = "application/json";
-        await context.HttpContext.Response.WriteAsync("{\"error\":\"Unauthorized\"}");
-    }
-});
+//app.UseStatusCodePages(async context =>
+//{
+//    if (context.HttpContext.Response.StatusCode == 401)
+//    {
+//        context.HttpContext.Response.ContentType = "application/json";
+//        await context.HttpContext.Response.WriteAsync("{\"error\":\"Unauthorized\"}");
+//    }
+//});
+app.UseStatusCodePagesWithRedirects("/forbidden");
+
 
 app.UseStaticFiles();
 
