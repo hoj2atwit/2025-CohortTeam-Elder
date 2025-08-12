@@ -26,7 +26,7 @@ namespace SmartGym.Controllers
 				return Ok();
 			return StatusCode(500, "Failed to check in user.");
 		}
-		[Authorize(Roles = "Admin, Staff")]
+
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<AppUser>>> GetAllUsers()
 		{
