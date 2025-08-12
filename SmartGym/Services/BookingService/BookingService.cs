@@ -249,13 +249,13 @@ public class BookingService : IBookingService
 			try
 			{
 				var booking = await _unitOfWork.BookingsRepository.GetAsync(id);
-				var session = await _unitOfWork.ClassSessionRepository.GetAsync(booking.ClassSessionId);
 				if (booking == null)
 					return false;
 
 				// Open up spot in class Session
 				if (booking.ClassSessionId != 0)
 				{
+					var session = await _unitOfWork.ClassSessionRepository.GetAsync(booking.ClassSessionId);
 					if (session != null && session.HeadCount > 0)
 					{
 						session.HeadCount -= 1;
@@ -274,29 +274,13 @@ public class BookingService : IBookingService
 						var nextWaitlist = waitlist.FirstOrDefault();
 						if (nextWaitlist != null)
 						{
-							// Create new booking for the next in line
-							var newBooking = new Booking
-							{
-								UserId = nextWaitlist.MemberId,
-								ClassSessionId = session.Id,
-								Status = BookingStatus.Pending,
-								CreatedAt = DateTime.UtcNow
-							};
-							await _unitOfWork.BookingsRepository.AddAsync(newBooking);
-
-							// Remove the waitlist record
-							await DeleteFromWaitlist(nextWaitlist.Id, true);
-
-							// Increment headcount back since a new booking is made
-							session.HeadCount += 1;
-							_unitOfWork.ClassSessionRepository.Update(session);
+							await QueueNextInLine(session, nextWaitlist);
 						}
 					}
 				}
 
 				_unitOfWork.BookingsRepository.Delete(booking);
 				await _unitOfWork.SaveAsync();
-				await transaction.CommitAsync();
 				return true;
 			}
 			catch (Exception ex)

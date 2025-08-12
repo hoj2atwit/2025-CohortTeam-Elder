@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using SmartGym.Constants;
 using SmartGym.Constants.Enums;
 using SmartGym.Models;
@@ -17,6 +16,15 @@ namespace SmartGym.Controllers
 		public UsersController(IUserService service)
 		{
 			_service = service;
+		}
+
+		[HttpPost("checkin")]
+		public async Task<IActionResult> CheckInUser([FromBody] UserDto user, [FromQuery] AccessPoint accessPoint, [FromQuery] CheckinMethod checkinMethod)
+		{
+			var result = await _service.CheckInUser(user, accessPoint, checkinMethod);
+			if (result)
+				return Ok();
+			return StatusCode(500, "Failed to check in user.");
 		}
 
 		[HttpPost("checkin")]
