@@ -117,10 +117,12 @@ namespace SmartGym.Components.UIClasses.Cafe
 
         public static List<MenuItemModel> DTOListToMenuItemModelList(List<MenuItemsDTO> menuItemsDTO) {
             List<MenuItemModel> menuItems = new List<MenuItemModel>();
-
-            foreach (MenuItemsDTO itemDTO in menuItemsDTO)
+            if (menuItemsDTO != null) 
             {
-                menuItems.Add(new MenuItemModel(itemDTO));
+                foreach (MenuItemsDTO itemDTO in menuItemsDTO)
+                {
+                    menuItems.Add(new MenuItemModel(itemDTO));
+                }
             }
 
             return menuItems;

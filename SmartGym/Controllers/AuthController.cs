@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using SmartGym.Data;
 using SmartGym.Models;
 using SmartGym.Services;
@@ -16,6 +17,7 @@ public class AuthController : ControllerBase
 
   [HttpPost("login")]
   [IgnoreAntiforgeryToken]
+  [AllowAnonymous]
   public async Task<IActionResult> Login([FromForm] LoginDTO req)
   {
     var result = await _signIn.PasswordSignInAsync(req.Email, req.Password, req.RememberMe, lockoutOnFailure: true);

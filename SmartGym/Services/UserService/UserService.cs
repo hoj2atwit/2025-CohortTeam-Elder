@@ -1,10 +1,12 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SmartGym.Constants;
 using SmartGym.Constants.Enums;
 using SmartGym.Data;
 using SmartGym.Helpers;
 using SmartGym.Models;
+using System.Security.Claims;
 
 namespace SmartGym.Services;
 
@@ -14,15 +16,29 @@ public class UserService : IUserService
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
 	private readonly UserManager<AppUser> _userManager;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-	public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor)
 	{
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
 		_userManager = userManager;
-	}
+        _httpContextAccessor = httpContextAccessor;
+    }
 
-	public async Task<UserDto> CreateUser(UserDto newUserData)
+    public async Task<AppUser?> GetCurrentUserAsync()
+    {
+        var userIdString = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (int.TryParse(userIdString, out int userId))
+        {
+            return await _unitOfWork.UserRepository.GetAsync(userId);
+        }
+
+        return null;
+    }
+
+    public async Task<UserDto> CreateUser(UserDto newUserData)
 	{
 		try
 		{

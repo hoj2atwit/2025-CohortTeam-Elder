@@ -6,6 +6,7 @@
 @inject IOrderService orderService
 @inject ICafeService cafeService
 @inject IUserService userService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <title>@userName's Order</title>
 <div class="sticky top-0 z-10 bg-[#f3f4f6]">
     <SearchNavBar title=@($"{userName}'s Order") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })" />
@@ -35,7 +36,7 @@
 
                 </div>
         </section>
-        @if (PointOfSaleModel.instance.FilteredMenu == null)
+        @if (PointOfSaleModel.instance.FilteredMenu == null || PointOfSaleModel.instance.FullMenuDict == null)
         {
             <p><em>Loading...</em></p>
         }
@@ -76,19 +77,32 @@
     async Task InitializeMenu()
     {
 
+        
+
+        
+
         //TODO: Get User's Name
         userName = "Test";
         PointOfSaleModel.instance = new PointOfSaleModel(orderService, cafeService);
         await PointOfSaleModel.instance.refresh();
 
-        UserDto user = await userService.GetUserById(uId);
-        if (user != null)
+        UserDto userDto = await userService.GetUserById(uId);
+        if (userDto != null)
         {
-            userName = user.Name;
+            userName = userDto.Name;
             OrderDTO orderDTO = await orderService.GetOrderById(cId);
             if (orderDTO != null)
             {
                 PointOfSaleModel.instance.loadCart(new CartModel(orderDTO, PointOfSaleModel.instance.FullMenuDict));
+            }
+        }
+        else
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.Identity != null && user.Identity.IsAuthenticated)
+            {
+                userName = user.Identity.Name;
             }
         }
 

@@ -1,4 +1,6 @@
-@page "/"
+﻿@attribute [AllowAnonymous]
+@page "/login"
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager Nav
 @inject NavigationManager Navigation
 
@@ -11,6 +13,7 @@
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form action="/auth/login" method="POST" class="space-y-6">
+            <AntiforgeryToken />
             <input type="hidden" name="ReturnUrl" value="/dashboard" />
             <div>
                 <label for="email" class="text-sm/6 block font-medium text-gray-900">Email address</label>
@@ -44,7 +47,7 @@
         </form>
         @if (Nav.Uri.Contains("error="))
         {
-            <p class="text-red-600 text-center mt-3">Invalid email or password.</p>
+            <p class="mt-3 text-center text-red-600">Invalid email or password.</p>
         }
     </div>
 </div>

@@ -1,9 +1,11 @@
-﻿@page "/members"
+﻿@attribute [Authorize(Roles = "Admin")]
+@page "/members"
 @using SmartGym.Constants.Enums
 @using SmartGym.Helpers
 @using SmartGym.Models
 @using SmartGym.Services
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
 @inject UserManager<AppUser> UserManager
@@ -51,8 +53,8 @@
                         <td>@userDto.LastName</td>
                         <td>@userDto.Email</td>
                         <td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
-								<td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
-								<td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
+                        <td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
+                        <td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
                         <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
                         <td><button onclick=@(() => UpdateUser(@userDto))>Update Member</button></td>
                     </tr>

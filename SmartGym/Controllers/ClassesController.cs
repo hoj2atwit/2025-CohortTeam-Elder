@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using SmartGym.Data;
@@ -35,7 +36,7 @@ public class ClassesController : ControllerBase
 
         return classItem;
     }
-
+    [Authorize(Roles = "Admin, Staff")]
     [HttpPost]
     public async Task<ActionResult<ClassPostDTO>> CreateClass(ClassPostDTO newClassData)
     {
@@ -44,7 +45,7 @@ public class ClassesController : ControllerBase
 
         return CreatedAtAction(nameof(GetClassById), new { id = created.Id }, created);
     }
-
+    [Authorize(Roles = "Admin, Staff")]
     [HttpPatch("{id:int}")]
     public async Task<IActionResult> UpdateClassById(int id, ClassPatchDTO classToPatch)
     {
@@ -56,7 +57,7 @@ public class ClassesController : ControllerBase
         }
         return Ok(patched);
     }
-
+    [Authorize(Roles = "Admin, Staff")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClass(int id)
     {
