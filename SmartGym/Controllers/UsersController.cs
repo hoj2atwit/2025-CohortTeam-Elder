@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using SmartGym.Constants;
 using SmartGym.Constants.Enums;
 using SmartGym.Models;
@@ -27,14 +26,14 @@ namespace SmartGym.Controllers
 				return Ok();
 			return StatusCode(500, "Failed to check in user.");
 		}
-		[Authorize(Roles = "Admin, Staff")]
+
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<AppUser>>> GetAllUsers()
 		{
 			var userList = await _service.GetAllUsers();
 			return Ok(userList);
 		}
-		[Authorize(Roles = "Admin, Staff")]
+
 		[HttpGet("{id:int}")]
 		public async Task<ActionResult<UserDto>> GetUserById(int id)
 		{
@@ -44,14 +43,14 @@ namespace SmartGym.Controllers
 
 			return user;
 		}
-		[Authorize(Roles = "Admin")]
+
 		[HttpPost]
 		public async Task<ActionResult<AppUser>> CreateUser(UserDto newUserData)
 		{
 			var newUser = await _service.CreateUser(newUserData);
 			return CreatedAtAction(nameof(CreateUser), new { id = newUser.Id }, newUser);
 		}
-		[Authorize(Roles = "Admin, Staff")]
+
 		[HttpPatch("{id:int}")]
 		public async Task<IActionResult> UpdateUser(int id, UserDto userDto)
 		{
@@ -64,7 +63,7 @@ namespace SmartGym.Controllers
 			else
 				return StatusCode(500);
 		}
-		[Authorize(Roles = "Admin")]
+
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteUser(int id)
 		{

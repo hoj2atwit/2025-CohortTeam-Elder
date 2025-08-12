@@ -1,10 +1,8 @@
-﻿@attribute [Authorize(Roles = "Admin")]
-@page "/addnewmember"
+﻿@page "/addnewmember"
 @using SmartGym.Constants.Enums
 @using SmartGym.Models
 @using SmartGym.Services
 @using System.Net.Mail
-@using Microsoft.AspNetCore.Authorization
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
 
