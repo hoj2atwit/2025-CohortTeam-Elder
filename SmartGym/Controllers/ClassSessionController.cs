@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using SmartGym.Data;
 using SmartGym.Models;
 using SmartGym.Services;
@@ -49,7 +48,7 @@ public class ClassSessionController : ControllerBase
 			return StatusCode(500, "Error retrieving class sessions.");
 		}
 	}
-	[Authorize(Roles = "Admin, Staff")]
+
 	[HttpPatch("sessions/{id:int}")]
 	public async Task<ActionResult<ClassSessionDTO>> UpdateClassSession(int id, [FromBody] ClassSessionDTO sessionDto)
 	{
@@ -67,7 +66,7 @@ public class ClassSessionController : ControllerBase
 			return StatusCode(500, "Error updating class session.");
 		}
 	}
-	[Authorize(Roles = "Admin, Staff")]
+
 	[HttpDelete("sessions/{id:int}")]
 	public async Task<IActionResult> DeleteClassSession(int id)
 	{

@@ -1,10 +1,8 @@
-﻿@attribute [Authorize(Roles = "Admin")]
-@page "/deletemember/{id:int}"
+﻿@page "/deletemember/{id:int}"
 @using SmartGym.Models
 @using SmartGym.Constants.Enums
 @using SmartGym.Services
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Authorization
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
 @inject UserManager<AppUser> UserManager

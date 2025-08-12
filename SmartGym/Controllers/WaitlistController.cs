@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using SmartGym.Data;
 using SmartGym.Models;
 using SmartGym.Services;
@@ -26,7 +25,6 @@ public class WaitlistController : ControllerBase
 			return NotFound();
 		return Ok(waitlistRecord);
 	}
-	[Authorize(Roles = "Admin, Staff")]
 	[HttpGet]
 	public async Task<ActionResult<List<WaitlistDTO>>> GetAll([FromQuery] bool includeNestedClasses = false)
 	{

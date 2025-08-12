@@ -43,5 +43,6 @@ public class MappingProfile : Profile
 		CreateMap<MenuItem, MenuItemsDTO>().ReverseMap();
 
 		CreateMap<Images, ImagesDTO>().ReverseMap();
+		CreateMap<Notification, NotificationsDTO>().ReverseMap();
 	}
 }

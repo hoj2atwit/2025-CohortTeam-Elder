@@ -13,10 +13,13 @@ public class UserService : IUserService
 
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
-	public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+	private readonly UserManager<AppUser> _userManager;
+
+	public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
 	{
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
+		_userManager = userManager;
 	}
 
 	public async Task<UserDto> CreateUser(UserDto newUserData)
@@ -26,6 +29,15 @@ public class UserService : IUserService
 			AppUser newUser = _mapper.Map<AppUser>(newUserData);
 			await _unitOfWork.UserRepository.AddAsync(newUser);
 			await _unitOfWork.SaveAsync();
+			if (newUserData.RoleId != null)
+			{
+				throw new Exception("The required property \"RoleId\" is null.");
+			}
+			else
+			{
+				var roleName = EnumHelper.GetDisplayName(newUserData.RoleId);
+				await _userManager.AddToRoleAsync(newUser, roleName); // doesnt need SaveAsync
+			}
 			return _mapper.Map<UserDto>(newUser);
 		}
 		catch (Exception ex)
@@ -79,7 +91,7 @@ public class UserService : IUserService
 		}
 	}
 
-	public async Task<bool>CheckInUser(UserDto user, AccessPoint accessPoint, CheckinMethod checkinMethod)
+	public async Task<bool> CheckInUser(UserDto user, AccessPoint accessPoint, CheckinMethod checkinMethod)
 	{
 		try
 		{

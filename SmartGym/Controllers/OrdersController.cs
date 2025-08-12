@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using SmartGym.Constants;
 using SmartGym.Models;
 using SmartGym.Services;
@@ -70,7 +69,6 @@ public class OrdersController : ControllerBase
 		}
 		return orderItem;
 	}
-	[Authorize(Roles = "Admin, Staff")]
 	[HttpGet("getAllOrders")]
 	public async Task<ActionResult<IEnumerable<Order>>> GetAllOrders()
 	{
@@ -104,7 +102,7 @@ public class OrdersController : ControllerBase
 		if (useSample)
 		{
 			newOrderData = sample;
-		}
+		} 
 		var created = await _service.CreateOrder(newOrderData);
 		return CreatedAtAction(nameof(GetOrderById), new { id = created.Id }, created);
 	}
