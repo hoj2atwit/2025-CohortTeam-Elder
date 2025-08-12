@@ -11,7 +11,7 @@
         <div class="flex flex-col items-center justify-center">
             @if (userName != null)
             {
-                <h2 class="text-sm !text-white">Welcome back, @userName</h2>
+                <h2 class="text-sm !text-white">Welcome back, @firstName @lastName</h2>
             }
             else
             {
@@ -95,7 +95,7 @@
             id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             firstName = user.FindFirst("FirstName")?.Value;
             lastName = user.FindFirst("LastName")?.Value;
-            userInitial = userName?.FirstOrDefault().ToString().ToUpper();
+            userInitial = firstName?.FirstOrDefault().ToString().ToUpper();
         }
     }
 }
