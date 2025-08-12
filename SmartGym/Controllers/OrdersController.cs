@@ -104,7 +104,7 @@ public class OrdersController : ControllerBase
 		if (useSample)
 		{
 			newOrderData = sample;
-		}
+		} 
 		var created = await _service.CreateOrder(newOrderData);
 		return CreatedAtAction(nameof(GetOrderById), new { id = created.Id }, created);
 	}
