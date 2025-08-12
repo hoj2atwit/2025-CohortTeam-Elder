@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using SmartGym.Models;
 using SmartGym.Services;
 
@@ -32,6 +33,7 @@ public class CafeController : ControllerBase
 		}
 		return menuItem;
 	}
+	[Authorize(Roles = "Admin, Staff")]
 	[HttpPatch("menu/{id:int}")]
 	public async Task<ActionResult<MenuItemsDTO>> UpdateMenuItem(int id, [FromBody] MenuItemsDTO menuItemDto)
 	{
@@ -42,7 +44,7 @@ public class CafeController : ControllerBase
 		}
 		return Ok(menuItem);
 	}
-
+	[Authorize(Roles = "Admin, Staff")]
 	[HttpDelete("menu/{id:int}")]
 	public async Task<IActionResult> DeleteMenuItem(int id)
 	{
