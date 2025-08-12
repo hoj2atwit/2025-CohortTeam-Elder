@@ -21,7 +21,7 @@ namespace SmartGym.Controllers
 			if (message == null)
 				return BadRequest();
 
-			await _notificationService.SendGeneralNotification(message.UserId, message.Title, message.Content);
+			await _notificationService.SendGeneralNotification(message.UserId, message.Title, message.Contents);
 			return Ok();
 		}
 		[HttpGet]
@@ -41,7 +41,7 @@ namespace SmartGym.Controllers
 			if (!areYouSure)
 				return BadRequest("This will send to ALL users. You must confirm this action by setting areYouSure=true.");
 
-			await _notificationService.SendBlastNotificationToAllUsers(message.Title, message.Content);
+			await _notificationService.SendBlastNotificationToAllUsers(message.Title, message.Contents);
 			return Ok();
 		}
 

@@ -9,8 +9,6 @@ public class NotificationService : INotificationService
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
-	private readonly IClassService _classService;
-	private readonly IBookingService _bookingService;
 
 	public NotificationService(IUnitOfWork unitOfWork, IMapper mapper)
 	{
@@ -36,20 +34,25 @@ public class NotificationService : INotificationService
 	{
 		try
 		{
-			var classSession = await _classService.GetClassById(classSessionId);
+			var classSession = await _unitOfWork.ClassSessionRepository.GetAsync(classSessionId);
 			if (classSession == null)
 			{
 				throw new Exception($"Class session with ID {classSessionId} not found.");
 			}
+			var classEntity = await _unitOfWork.ClassRepository.GetAsync(classSession.ClassId);
+			if (classEntity == null)
+			{
+				throw new Exception($"Class with ID {classSession.ClassId} not found.");
+			}
 
-			string levelDisplay = classSession.Level.HasValue
-				? EnumHelper.GetDisplayName(classSession.Level.Value)
+			string levelDisplay = classEntity.Level.HasValue
+				? EnumHelper.GetDisplayName(classEntity.Level.Value)
 				: "N/A";
-			string messageBody = $"Class: {classSession.Name}\n" +
-								 $"Schedule: {classSession.Schedule:dddd, MMMM d, yyyy h:mm tt}\n" +
-								 $"Trainer ID: {classSession.TrainerId}\n" +
+			string messageBody = $"Class: {classEntity.Name}\n" +
+								 $"Schedule: {classEntity.Schedule:dddd, MMMM d, yyyy h:mm tt}\n" +
+								 $"Trainer ID: {classEntity.TrainerId}\n" +
 								 $"Level: {levelDisplay}\n" +
-								 $"Description: {classSession.Description}";
+								 $"Description: {classEntity.Description}";
 
 			var notification = new Notification
 			{
@@ -74,22 +77,28 @@ public class NotificationService : INotificationService
 	{
 		try
 		{
-			var classSession = await _classService.GetClassById(classSessionId);
-			var waitlist = await _bookingService.GetSingleWaitlistRecord(classSessionId);
+			var classSession = await _unitOfWork.ClassSessionRepository.GetAsync(classSessionId);
 			if (classSession == null)
 			{
 				throw new Exception($"Class session with ID {classSessionId} not found.");
 			}
-
-			string levelDisplay = classSession.Level.HasValue
-				? EnumHelper.GetDisplayName(classSession.Level.Value)
+			var classEntity = await _unitOfWork.ClassRepository.GetAsync(classSession.ClassId);
+			if (classEntity == null)
+			{
+				throw new Exception($"Class with ID {classEntity.Id} not found.");
+			}
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.SessionId == classSessionId && x.MemberId == userId);
+			var waitlistRecord = waitlist.FirstOrDefault();
+			int position = waitlistRecord == null ? 1 : waitlistRecord.Position;
+			string levelDisplay = classEntity.Level.HasValue
+				? EnumHelper.GetDisplayName(classEntity.Level.Value)
 				: "N/A";
-			string messageBody = $"Class: {classSession.Name}\n" +
-								 $"Schedule: {classSession.Schedule:dddd, MMMM d, yyyy h:mm tt}\n" +
-								 $"Trainer ID: {classSession.TrainerId}\n" +
+			string messageBody = $"Class: {classEntity.Name}\n" +
+								 $"Schedule: {classEntity.Schedule:dddd, MMMM d, yyyy h:mm tt}\n" +
+								 $"Trainer ID: {classEntity.TrainerId}\n" +
 								 $"Level: {levelDisplay}\n" +
-								 $"Description: {classSession.Description}\n" +
-								 $"Position: {waitlist.Position}";
+								 $"Description: {classEntity.Description}\n" +
+								 $"Position: {position}";
 			var update = isNew ? "added to the waitlist" : "updated in the waitlist";
 			var notification = new Notification
 			{

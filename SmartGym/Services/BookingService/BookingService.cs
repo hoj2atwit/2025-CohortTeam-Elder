@@ -12,8 +12,9 @@ public class BookingService : IBookingService
 	private readonly INotificationService _notificationService;
 	private readonly IMapper _mapper;
 
-	public BookingService(IUnitOfWork unitOfWork, IMapper mapper)
+	public BookingService(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService)
 	{
+		_notificationService = notificationService;
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
 	}
@@ -153,7 +154,7 @@ public class BookingService : IBookingService
 	{
 		try
 		{
-			var classBookings = await _unitOfWork.BookingsRepository.GetAsync(b => b.ClassSessionId == sessionId);
+			var classBookings = await _unitOfWork.ClassSessionRepository.GetAsync(b => b.Id == sessionId);
 			return classBookings.Count();
 		}
 		catch (Exception ex)
@@ -171,7 +172,7 @@ public class BookingService : IBookingService
 	{
 		try
 		{
-			var sessionEntity = await _unitOfWork.ClassSessionRepository.GetAsync(newBookingData.SessionId);
+			var sessionEntity = await _unitOfWork.ClassSessionRepository.GetAsync(newBookingData.ClassSessionId);
 			if (sessionEntity != null && sessionEntity.HeadCount < sessionEntity.MaxCapacity)
 			{
 				Booking newBooking = _mapper.Map<Booking>(newBookingData);
@@ -184,15 +185,14 @@ public class BookingService : IBookingService
 				sessionEntity.HeadCount += 1;
 				_unitOfWork.ClassSessionRepository.Update(sessionEntity);
 
-				await _unitOfWork.SaveAsync();
-
 				await _notificationService.SendBookingConfirm(newBooking.UserId, newBooking.ClassSessionId);
+				await _unitOfWork.SaveAsync();
 				return _mapper.Map<BookingDTO>(newBooking);
 			}
 			else
 			{
 				// If session is full, add user to waitlist
-				await AddUserToWaitlist(newBookingData.UserId, newBookingData.SessionId);
+				await AddUserToWaitlist(newBookingData.UserId, newBookingData.ClassSessionId);
 				return null;
 			}
 		}
@@ -513,9 +513,9 @@ public class BookingService : IBookingService
 			};
 
 			await _unitOfWork.WaitlistRepository.AddAsync(newWaitlist);
+			await _notificationService.SendWaitlistNotification(newWaitlist.MemberId, newWaitlist.SessionId, true);
 			await _unitOfWork.SaveAsync();
 
-			await _notificationService.SendWaitlistNotification(newWaitlist.MemberId, newWaitlist.SessionId, true);
 			return _mapper.Map<WaitlistDTO>(newWaitlist);
 		}
 		catch (Exception ex)
@@ -583,8 +583,8 @@ public class BookingService : IBookingService
 
 			_mapper.Map(waitlistDto, waitlistRecord);
 			_unitOfWork.WaitlistRepository.Update(waitlistRecord);
-			await _unitOfWork.SaveAsync();
 			await _notificationService.SendWaitlistNotification(waitlistRecord.MemberId, waitlistRecord.SessionId);
+			await _unitOfWork.SaveAsync();
 			return _mapper.Map<WaitlistDTO>(waitlistRecord);
 		}
 		catch (Exception ex)
@@ -622,6 +622,7 @@ public class BookingService : IBookingService
 			{
 				record.Position -= 1;
 				_unitOfWork.WaitlistRepository.Update(record);
+				await _notificationService.SendWaitlistNotification(record.MemberId, record.SessionId);
 			}
 
 			if (isTransaction)
