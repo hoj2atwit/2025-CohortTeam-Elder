@@ -1,8 +1,8 @@
 ﻿@attribute [AllowAnonymous]
-@page "/login"
+@page "/"
 @using Microsoft.AspNetCore.Authorization
-@inject NavigationManager Nav
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Login</PageTitle>
 
@@ -45,18 +45,13 @@
                 <button class="cursor-pointer" type="submit" value="Submit">LOGIN</button>
             </div>
         </form>
-        @if (Nav.Uri.Contains("error="))
+        @if (Navigation.Uri.Contains("error="))
         {
             <p class="mt-3 text-center text-red-600">Invalid email or password.</p>
         }
     </div>
 </div>
 
-@* @code {
-    private void HandleLogin()
-    {
-        // TODO: Add authentication logic here
-
-        Navigation.NavigateTo("/dashboard");
-    } *@
+@code {
+}
 
