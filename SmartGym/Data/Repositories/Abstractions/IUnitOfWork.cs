@@ -15,5 +15,6 @@ public interface IUnitOfWork
 	public IRepository<Waitlist> WaitlistRepository { get; }
 	public IRepository<ClassSession> ClassSessionRepository { get; }
 	public IRepository<AccountHistory> UserHistoryRepository { get; }
+	public IRepository<Notification> NotificationRepository { get; }
 	public Task SaveAsync();
 }

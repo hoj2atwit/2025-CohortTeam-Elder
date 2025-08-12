@@ -67,9 +67,13 @@ public class BookingsController : ControllerBase
     if (classItem == null)
       return NotFound("Class not found");
 
-    var alreadyBooked = await _bookingService.IsUserAlreadyBooked(bookingData.UserId, bookingData.SessionId);
-    if (alreadyBooked)
-      return BadRequest("User is already booked for this class");
+	var alreadyBooked = await _bookingService.IsUserAlreadyBooked(bookingData.UserId, bookingData.SessionId);
+	if (alreadyBooked)
+	  return BadRequest("User is already booked for this class");
+
+	var alreadyOnWaitlist = await _bookingService.GetWaitlistBySession(bookingData.SessionId);
+	if (alreadyOnWaitlist.Any(x => x.MemberId == bookingData.UserId))
+	  return BadRequest("User is already on the waitlist for this class");
 
     var currentBookings = await _bookingService.CountBookingsForSession(bookingData.SessionId);
     if (currentBookings >= classItem.MaxCapacity)
