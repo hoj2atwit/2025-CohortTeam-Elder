@@ -9,6 +9,7 @@ public class BookingService : IBookingService
 {
 
 	private readonly IUnitOfWork _unitOfWork;
+	private readonly INotificationService _notificationService;
 	private readonly IMapper _mapper;
 
 	public BookingService(IUnitOfWork unitOfWork, IMapper mapper)
@@ -170,12 +171,29 @@ public class BookingService : IBookingService
 	{
 		try
 		{
-			Booking newBooking = _mapper.Map<Booking>(newBookingData);
-			newBooking.Status = (int)BookingStatus.Pending;
-			newBooking.CreatedAt = DateTime.UtcNow;
-			await _unitOfWork.BookingsRepository.AddAsync(newBooking);
-			await _unitOfWork.SaveAsync();
-			return _mapper.Map<BookingDTO>(newBooking);
+			var sessionEntity = await _unitOfWork.ClassSessionRepository.GetAsync(newBookingData.SessionId);
+			if (sessionEntity != null && sessionEntity.HeadCount < sessionEntity.MaxCapacity)
+			{
+				Booking newBooking = _mapper.Map<Booking>(newBookingData);
+				newBooking.Status = (int)BookingStatus.Pending;
+				newBooking.CreatedAt = DateTime.UtcNow;
+				await _unitOfWork.BookingsRepository.AddAsync(newBooking);
+
+				// Increment headcount in session
+
+				sessionEntity.HeadCount += 1;
+				_unitOfWork.ClassSessionRepository.Update(sessionEntity);
+
+
+				await _unitOfWork.SaveAsync();
+
+				await _notificationService.SendBookingConfirm(newBooking.UserId, newBooking.ClassSessionId);
+				return _mapper.Map<BookingDTO>(newBooking);
+			}
+			else
+			{
+				throw new Exception("Class is fully booked");
+			}
 		}
 		catch (Exception ex)
 		{
@@ -271,25 +289,10 @@ public class BookingService : IBookingService
 						 .OrderBy(w => w.Position)
 						 .ToList();
 
-						var nextWaitlist = waitlist.FirstOrDefault();
+						var nextWaitlist = waitlist.FirstOrDefault(x => x.SessionId == session.Id);
 						if (nextWaitlist != null)
 						{
-							// Create new booking for the next in line
-							var newBooking = new Booking
-							{
-								UserId = nextWaitlist.MemberId,
-								ClassSessionId = session.Id,
-								Status = BookingStatus.Pending,
-								CreatedAt = DateTime.UtcNow
-							};
-							await _unitOfWork.BookingsRepository.AddAsync(newBooking);
-
-							// Remove the waitlist record
-							await DeleteFromWaitlist(nextWaitlist.Id, true);
-
-							// Increment headcount back since a new booking is made
-							session.HeadCount += 1;
-							_unitOfWork.ClassSessionRepository.Update(session);
+							await QueueNextInLine(session, nextWaitlist);
 						}
 					}
 				}
@@ -477,6 +480,45 @@ public class BookingService : IBookingService
 		catch (Exception ex)
 		{
 			Console.WriteLine($"Error in GetFullWaitList: {ex.Message}");
+			return null;
+		}
+	}
+
+	/// <summary>
+	/// Adds a user to the waitlist for a specific class session.
+	/// </summary>
+	/// <param name="userId"></param>
+	/// <param name="sessionId"></param>
+	/// <returns></returns>
+	public async Task<WaitlistDTO?> AddUserToWaitlist(int userId, int sessionId)
+	{
+		try
+		{
+			// Check if user is already on the waitlist for this session
+			var user = await _unitOfWork.WaitlistRepository.GetAsync(x => x.MemberId == userId && x.SessionId == sessionId);
+			if (user.Any())
+				return null;
+
+			// Get current max position
+			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.SessionId == sessionId);
+			int nextPosition = waitlist.Any() ? waitlist.Max(x => x.Position) + 1 : 1;
+			var newWaitlist = new Waitlist
+			{
+				MemberId = userId,
+				SessionId = sessionId,
+				Position = nextPosition,
+				JoinedDateTime = DateTime.UtcNow
+			};
+
+			await _unitOfWork.WaitlistRepository.AddAsync(newWaitlist);
+			await _unitOfWork.SaveAsync();
+
+			await _notificationService.SendWaitlistNotification(newWaitlist.MemberId, newWaitlist.SessionId);
+			return _mapper.Map<WaitlistDTO>(newWaitlist);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error in AddUserToWaitlist: {ex.Message}");
 			return null;
 		}
 	}
