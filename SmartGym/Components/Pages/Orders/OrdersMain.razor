@@ -49,11 +49,16 @@
 		updateView();
 	}
 
-	protected override async Task OnInitializedAsync()
-	{
-		await layout.setupSearch("Viewing All Orders", new EventCallback<string>(this, search));
-		await refreshOrders();
-	}
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await layout.setupSearch("Viewing All Orders", new EventCallback<string>(this, search));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await layout.setupSearch("Viewing All Orders", new EventCallback<string>(this, search));
+        await refreshOrders();
+    }
 
 	private async Task refreshOrders()
 	{

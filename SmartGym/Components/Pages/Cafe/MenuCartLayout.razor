@@ -35,9 +35,9 @@
         return Task.CompletedTask;
     }
 
-    async public Task removeFromCart(int id)
+    async public Task removeFromCart(int id, int oldAmount)
     {
-        instance.CurrentCart.removeItem(id);
+        instance.CurrentCart.removeItem(id, oldAmount);
         await updateCart();
     }
 

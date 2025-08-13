@@ -5,8 +5,8 @@
         <div class="flex items-center justify-center">
             <button class="aspect-square w-10 rounded-full border bg-primary text-white p-5 text-xl font-bold hover:cursor-pointer  hover:bg-violet-600" @onclick=increaseAmount><i class="fa-solid fa-plus"></i></button>
             @* Input field for quantity of cart item. If quantity input is invalid then default to 0 as input *@
-            <input type="number" style="text-align: center;margin: 0 5px;padding: 5px 2em;" class="field-sizing-content w-auto min-w-0 border border-black" value=@cartItem.Amount @onchange="@((ChangeEventArgs e) => { try { cartItem.Amount = int.Parse(e.Value.ToString()); } catch (Exception ex) { e.Value = 0; cartItem.Amount = 0; } updateAmount(); })" />
-            <button class="aspect-square w-10 rounded-full border bg-background text-white p-5 text-xl font-bold hover:cursor-pointer  hover:bg-violet-600" @onclick=decreaseAmount><i class="fa-solid fa-minus"></i></button>
+            <input type="number" style="text-align: center; margin: 0 5px;padding: 5px 2em;"" class="field-sizing-content w-auto min-w-0 border border-black" value=@cartItem.Amount @onchange="@((ChangeEventArgs e) => { oldAmount = cartItem.Amount; try { cartItem.Amount = int.Parse(e.Value.ToString()); } catch (Exception ex) { e.Value = 0; cartItem.Amount = 0; } updateAmount(); })" />
+            <button class="aspect-square w-10 rounded-full border bg-background text-white border-black p-5 text-xl font-bold hover:cursor-pointer  hover:bg-violet-600" @onclick=decreaseAmount>-</button>
         </div>
     </div>
     <span class="px-2 py-1 text-primary font-bold text-xl">@cartItem.CurrentPriceString</span>
@@ -16,7 +16,8 @@
     public CartModel.CartItemModel? cartItem { get; set; }
     [Parameter]
     public MenuCartLayout cartMain { get; set; }
-
+    private int oldAmount = 0;
+    private bool checkOld = true;
     /// <summary>
     /// Increases the amount of cartItem by 1.
     /// </summary>
@@ -30,11 +31,11 @@
     /// decreases the amount of a cartItem by 1. 
     /// If that were to decrease the amount to 0 or lower, removes the cartItem from the cart.
     /// </summary>
-    async public void decreaseAmount()
+    async public Task decreaseAmount()
     {
         if (cartItem.Amount - 1 <= 0)
         {
-            cartMain.removeFromCart(cartItem.Item.ItemId);
+            await cartMain.removeFromCart(cartItem.Item.ItemId, oldAmount);
         }
         else
         {
@@ -52,10 +53,15 @@
     {
         if (cartItem.Amount <= 0)
         {
-            cartMain.removeFromCart(cartItem.Item.ItemId);
+            await cartMain.removeFromCart(cartItem.Item.ItemId, oldAmount);
         }
         else
         {
+            if (checkOld)
+            {
+                checkOld = cartItem.validateStock(oldAmount); 
+            }
+
             cartItem.updatePrice();
         }
         await cartMain.updateCart();
