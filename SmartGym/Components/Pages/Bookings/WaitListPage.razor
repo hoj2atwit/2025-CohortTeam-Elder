@@ -1,0 +1,98 @@
+﻿@page "/view-waitlist"
+@using SmartGym.Constants.Enums
+@using SmartGym.Models
+@using SmartGym.Services
+@using Microsoft.AspNetCore.Identity
+@inject SmartGym.Services.IBookingService bookingService
+@inject SmartGym.Services.IClassService classService
+@inject SmartGym.Services.IUserService userService
+@inject NavigationManager navManager
+@inject UserManager<AppUser> UserManager
+@inject IJSRuntime JS
+@attribute [StreamRendering]
+
+<PageTitle>View Waitlist</PageTitle>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<div>
+	<h1 style="font-size:40px"><b>List of Waitlist</b></h1>
+	<a href="/viewbookings" onclick="location.href='/viewbookings'; return false;"
+		class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+		Go Back To Bookings
+	</a>
+	<table id="waitlistTable" class="display">
+		<thead>
+			<tr>
+				<th>Class Session ID</th>
+				<th>Class Name</th>
+				<th>User Name</th>
+				<th>Class Date</th>
+				<th>Position</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (waitlist != null)
+			{
+				foreach (var waitlistDto in waitlist)
+				{
+					<tr>
+						<td>@waitlistDto.SessionId</td>
+						<td>@waitlistDto.ClassName</td>
+						<td>@waitlistDto.Member.Name</td>
+						<td>@waitlistDto.Session.SessionDateTime.ToString("MM/dd/yyyy hh:mm tt")</td>
+						<td>@waitlistDto.Position</td>
+					</tr>
+				}
+			}
+			else
+			{
+				<tr>
+					<td colspan="8"><em>Loading...</em></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+@code {
+	private List<WaitlistDTO> waitlist;
+	private List<ClassDTO> classList;
+
+	protected override async Task OnInitializedAsync()
+	{
+		waitlist = await bookingService.GetFullWaitList(true);
+		classList = await classService.GetAllClasses();
+
+		// Map ClassName from classList to each waitlist item
+		foreach (var item in waitlist)
+		{
+			var classDto = classList.FirstOrDefault(c => c.Id == item.Session.ClassId);
+			if (classDto != null)
+			{
+				item.ClassName = classDto.Name;
+			}
+		}
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (waitlist != null && waitlist.Any())
+		{
+			await JS.InvokeVoidAsync("setupDataTable");
+		}
+	}
+}
+
+<script>
+	function setupDataTable() {
+		if ($.fn.DataTable.isDataTable('#waitlistTable')) {
+			$('#waitlistTable').DataTable().destroy();
+		}
+		$('#waitlistTable').DataTable({
+			paging: false
+		});
+	}
+</script>

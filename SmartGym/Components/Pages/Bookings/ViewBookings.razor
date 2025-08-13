@@ -3,85 +3,111 @@
 @using SmartGym.Models
 @using SmartGym.Services
 @using Microsoft.AspNetCore.Identity
-@using System.Collections
 @inject SmartGym.Services.IBookingService bookingService
-@inject SmartGym.Services.IUserService userService;
+@inject SmartGym.Services.IUserService userService
 @inject NavigationManager navManager
 @inject UserManager<AppUser> UserManager
+@inject IJSRuntime JS
 @attribute [StreamRendering]
 
 <PageTitle>View Bookings</PageTitle>
 
-<style>
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-</style>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <div>
-    <h1 style="font-size:40px"><b>List of Bookings</b></h1>
-    <div>
-        <a href="/addnewbooking">Add New Booking</a>
-    </div>
-    @if (bookingList == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <table style="width:100%">
-            <thead>
-                <tr>
-                    <th>User ID</th>
-                    <th>Class Session ID</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Confirmed At</th>
-                    <th>Updated At</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (BookingDTO bookingDto in bookingList)
-                {
-                    <tr>
-                        <td>@bookingDto.User.Name</td>
-                        <td>@bookingDto.ClassSessionId</td>
-                        <td>@((BookingStatus)bookingDto.Status)</td>
-                        <td>@bookingDto.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
-                        <td>@bookingDto.ConfirmedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
-                        <td>@bookingDto.UpdatedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
-                        <td><button onclick=@(() => DelBooking(bookingDto))>Delete Booking</button></td>
-                        <td><button onclick=@(() => UpdBooking(bookingDto))>Update Booking</button></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+	<h1 style="font-size:40px"><b>List of Bookings</b></h1>
+	<div class="mb-4">
+		<a href="/addnewbooking" onclick="location.href='/addnewbooking'; return false;"
+			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			Add New Booking
+		</a>
+		<a href="/view-waitlist" onclick="location.href='/view-waitlist'; return false;"
+			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			View Wait List
+		</a>
+	</div>
+	<table id="bookingsTable" class="display">
+		<thead>
+			<tr>
+				<th>User Name</th>
+				<th>Class Session ID</th>
+				<th>Status</th>
+				<th>Created At</th>
+				<th>Confirmed At</th>
+				<th>Updated At</th>
+				<th>Delete</th>
+				<th>Update</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (bookingList != null)
+			{
+				foreach (var bookingDto in bookingList)
+				{
+					<tr>
+						<td>@bookingDto.User?.Name</td>
+						<td>@bookingDto.ClassSessionId</td>
+						<td>@((BookingStatus)bookingDto.Status)</td>
+						<td>@bookingDto.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
+						<td>@bookingDto.ConfirmedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
+						<td>@bookingDto.UpdatedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
+						<td>
+							<button class="bg-red-500 text-white px-2 py-1 rounded"
+								@onclick="() => DelBooking(bookingDto)">Delete</button>
+						</td>
+						<td>
+							<button class="bg-blue-500 text-white px-2 py-1 rounded"
+								@onclick="() => UpdBooking(bookingDto)">Update</button>
+						</td>
+					</tr>
+				}
+			}
+			else
+			{
+				<tr>
+					<td colspan="8"><em>Loading...</em></td>
+				</tr>
+			}
+		</tbody>
+	</table>
 </div>
 
 @code {
-    private List<BookingDTO> bookingList = new();
-    private List<UserDto> userList = new();
-    private Dictionary<int, string> uDictionary = new();
+	private List<BookingDTO> bookingList;
 
-    protected override async Task OnInitializedAsync()
-    {
-        // populate bookingList
-        bookingList = await bookingService.GetAllBookings(true);
-        var bookingIds = bookingList.Select(x => x.UserId).ToList();
-        userList = await userService.GetAllUsers();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		bookingList = await bookingService.GetAllBookings(true);
+	}
 
-    private Task DelBooking(BookingDTO b)
-    {
-        navManager.NavigateTo($"/deletebooking/{b.UserId}-{b.ClassSessionId}-{b.Id}");
-        return Task.CompletedTask;
-    }
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (bookingList != null && bookingList.Any())
+		{
+			await JS.InvokeVoidAsync("setupDataTable");
+		}
+	}
 
-    private Task UpdBooking(BookingDTO b)
-    {
-        navManager.NavigateTo($"/updatebooking/{b.UserId}-{b.ClassSessionId}-{b.Id}");
-        return Task.CompletedTask;
-    }
+	private void DelBooking(BookingDTO b)
+	{
+		navManager.NavigateTo($"/deletebooking/{b.UserId}-{b.ClassSessionId}-{b.Id}");
+	}
+
+	private void UpdBooking(BookingDTO b)
+	{
+		navManager.NavigateTo($"/updatebooking/{b.UserId}-{b.ClassSessionId}-{b.Id}");
+	}
 }
+
+<script>
+	function setupDataTable() {
+		if ($.fn.DataTable.isDataTable('#bookingsTable')) {
+			$('#bookingsTable').DataTable().destroy();
+		}
+		$('#bookingsTable').DataTable({
+			paging: false
+		});
+	}
+</script>
