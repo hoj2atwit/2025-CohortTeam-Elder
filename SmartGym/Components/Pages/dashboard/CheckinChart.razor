@@ -1,0 +1,42 @@
+@using SmartGym.Services
+
+@if (CheckinData != null && CheckinData.Any())
+{
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 h-full">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Daily Check-ins (Last 7 Days)</h3>
+        <div class="flex items-end justify-between gap-2" style="height: 280px;">
+            @{
+                var maxCount = CheckinData.Max(d => d.Count);
+                if (maxCount == 0) maxCount = 1; // Prevent division by zero
+            }
+            @foreach (var data in CheckinData)
+            {
+                var heightPercent = maxCount > 0 ? (double)data.Count * 80 / maxCount : 0; // Use 80% max height
+                var actualHeight = Math.Max(heightPercent, data.Count > 0 ? 8 : 0); // Minimum 8% if there's data
+                <div class="flex flex-col items-center justify-end gap-2 flex-1 h-full">
+                    <div class="bg-blue-500 w-full rounded-t flex items-end justify-center text-white text-xs font-medium transition-all duration-300 hover:bg-blue-600" 
+                         style="height: @(actualHeight)%;">
+                        @if (data.Count > 0)
+                        {
+                            <span class="mb-1">@data.Count</span>
+                        }
+                    </div>
+                    <div class="text-xs text-gray-600 text-center mt-2">@data.Date</div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center text-gray-500" style="height: 320px;">
+        <div class="text-center">
+            <div class="text-lg mb-2">📊</div>
+            <div>Loading check-in data...</div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public List<CheckinDataPoint>? CheckinData { get; set; }
+}
