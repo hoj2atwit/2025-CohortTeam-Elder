@@ -6,26 +6,11 @@
 @inject IOrderService orderService
 @inject ICafeService cafeService
 @inject IUserService userService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <title>@userName's Order</title>
-<div class="sticky top-0 z-10 bg-[#f3f4f6]">
-    <SearchNavBar title=@($"{userName}'s Order") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })" />
-</div>
 <div class="flex">
     <div class="border border-black p-4" style="max-width:65vw;">
         <section class="flex flex-row justify-between p-2">
-            <div class="w-full">
-
-                @* TODO: Add Search Functionality to menu, updating the menu when input is updated *@
-                @*<input type="text" @onchange="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })"
-                       class="relative rounded-full border px-2 py-2 text-slate-700 shadow-lg transition duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:shadow focus:outline-none"
-                       style="width: 55%;" placeholder="Search..." />*@
-
-                @* Depending on decided functionality, might be removed *@
-                @*<button class="rounded-r-full border py-2 shadow-lg transition"
-                        type="button">
-                    Search
-                </button>*@
-            </div>
             <div class="flex w-96 flex-col">
 
                     @* TODO: Add Filters and have them update the menu when selected *@
@@ -35,7 +20,7 @@
 
                 </div>
         </section>
-        @if (PointOfSaleModel.instance.FilteredMenu == null)
+        @if (PointOfSaleModel.instance.FilteredMenu == null || PointOfSaleModel.instance.FullMenuDict == null)
         {
             <p><em>Loading...</em></p>
         }
@@ -67,6 +52,9 @@
     [Parameter]
     public int cId { get; set; }
 
+    [CascadingParameter]
+    public MainLayout layout { get; set; }
+
     public string searchText = "";
     public string userName = "";
     private MenuCartLayout menuCart;
@@ -81,19 +69,37 @@
         PointOfSaleModel.instance = new PointOfSaleModel(orderService, cafeService);
         await PointOfSaleModel.instance.refresh();
 
-        UserDto user = await userService.GetUserById(uId);
-        if (user != null)
+        UserDto userDto = await userService.GetUserById(uId);
+        if (userDto != null)
         {
-            userName = user.Name;
+            userName = userDto.Name;
             OrderDTO orderDTO = await orderService.GetOrderById(cId);
             if (orderDTO != null)
             {
                 PointOfSaleModel.instance.loadCart(new CartModel(orderDTO, PointOfSaleModel.instance.FullMenuDict));
             }
         }
+        else
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.Identity != null && user.Identity.IsAuthenticated)
+            {
+                userName = user.Identity.Name;
+            }
+        }
+
+        await layout.setupSearch($"{userName}'s Order", new EventCallback<string>(this, searchMenu));
 
         await updateMenu();
         //TODO: Load Cart from User
+    }
+
+    public async Task searchMenu(string search)
+    {
+        searchText = search;
+        await updateMenu();
+        
     }
 
     public async Task finishCheckout()

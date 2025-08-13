@@ -2,6 +2,7 @@
 @using SmartGym.Services
 @inject IClassService ClassService
 @inject IUserService UserService
+@inject IDashboardService DashboardService
 
 <div class="ml-6 h-full overflow-y-auto ">
     <h1 class="text-2xl font-bold">Dashboard</h1>
@@ -31,9 +32,7 @@
 <div class="mt-8 flex gap-6">
     <!-- Daily Check-ins Graph -->
     <div class="flex-1">
-         <div class="flex-1 bg-gray-100 border border-gray-300 rounded-lg h-48 flex items-center justify-center text-gray-500">
-            [Revenue Chart goes here]
-        </div>
+        <CheckinChart CheckinData="checkinData" />
     </div>
     
     <!-- Upcoming Classes -->
@@ -141,6 +140,7 @@
     private List<ClassDTO> allClasses = new();
     private List<ClassDTO> upcomingClasses = new();
     private List<UserDto> allUsers = new();
+    private List<CheckinDataPoint> checkinData = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -149,6 +149,9 @@
             // Load all classes and users
             allClasses = await ClassService.GetAllClasses();
             allUsers = await UserService.GetAllUsers();
+            
+            // Load checkin data for chart
+            checkinData = await DashboardService.GetDailyCheckinsAsync();
             
             // Filter for upcoming classes (next 5)
             var currentTime = DateTime.Now;
@@ -162,6 +165,7 @@
         {
             Console.WriteLine($"Error loading dashboard data: {ex.Message}");
             upcomingClasses = new List<ClassDTO>();
+            checkinData = new List<CheckinDataPoint>();
         }
     }
 

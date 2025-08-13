@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using SmartGym.Data;
 using SmartGym.Models;
 using SmartGym.Services;
@@ -17,7 +18,7 @@ public class BookingsController : ControllerBase
     _bookingService = bookingService;
     _unitOfWork = unitOfWork;
   }
-
+  [Authorize(Roles = "Admin, Staff")]
   [HttpGet]
   public async Task<ActionResult<List<BookingDTO>>> GetAll([FromQuery] bool includeNestedClasses = false)
   {
@@ -38,14 +39,14 @@ public class BookingsController : ControllerBase
     var bookings = await _bookingService.GetBookingsByClassId(classId);
     return Ok(bookings);
   }
-	[HttpGet("session/{sessionId:int}")]
-	public async Task<ActionResult<List<BookingDTO>>> GetBySessionId(int sessionId)
-	{
-		var bookings = await _bookingService.GetBookingsBySessionId(sessionId);
-		return Ok(bookings);
-	}
+  [HttpGet("session/{sessionId:int}")]
+  public async Task<ActionResult<List<BookingDTO>>> GetBySessionId(int sessionId)
+  {
+    var bookings = await _bookingService.GetBookingsBySessionId(sessionId);
+    return Ok(bookings);
+  }
 
-	[HttpGet("check")]
+  [HttpGet("check")]
   public async Task<ActionResult<bool>> IsUserAlreadyBooked(int userId, int classId)
   {
     var result = await _bookingService.IsUserAlreadyBooked(userId, classId);
@@ -62,18 +63,25 @@ public class BookingsController : ControllerBase
   [HttpPost]
   public async Task<IActionResult> BookClass([FromBody] BookingPostDTO bookingData)
   {
-    var classList = await _unitOfWork.ClassRepository.GetAsync(c => c.Id == bookingData.SessionId);
+    var classList = await _unitOfWork.ClassRepository.GetAsync(c => c.Id == bookingData.ClassSessionId);
     var classItem = classList.FirstOrDefault();
     if (classItem == null)
       return NotFound("Class not found");
 
-    var alreadyBooked = await _bookingService.IsUserAlreadyBooked(bookingData.UserId, bookingData.SessionId);
+		var alreadyBooked = await _bookingService.IsUserAlreadyBooked(bookingData.UserId, bookingData.ClassSessionId);
     if (alreadyBooked)
       return BadRequest("User is already booked for this class");
 
-    var currentBookings = await _bookingService.CountBookingsForSession(bookingData.SessionId);
+		var alreadyOnWaitlist = await _bookingService.GetWaitlistBySession(bookingData.ClassSessionId);
+		if (alreadyOnWaitlist.Any(x => x.MemberId == bookingData.UserId))
+			return BadRequest("User is already on the waitlist for this class");
+
+		var currentBookings = await _bookingService.CountBookingsForSession(bookingData.ClassSessionId);
     if (currentBookings >= classItem.MaxCapacity)
-      return BadRequest("Class is full");
+		{
+			await _bookingService.CreateBooking(bookingData);
+			return BadRequest("Class is full, user has been added to waitlist.");
+		}
 
     var newBooking = await _bookingService.CreateBooking(bookingData);
     return CreatedAtAction(nameof(GetByUserId), new { userId = bookingData.UserId }, newBooking);
@@ -105,7 +113,7 @@ public class BookingsController : ControllerBase
       return NotFound();
     return NoContent();
   }
-
+  [Authorize(Roles = "Admin, Staff")]
   [HttpPost("autocancel")]
   public async Task<IActionResult> AutoCancel()
   {

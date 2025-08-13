@@ -9,11 +9,11 @@ public enum BookingStatus
   [Display(Name = "Confirmed")]
   Confirmed = 1,
   [Display(Name = "Completed")]
-  Completed = 3,
+  Completed = 2,
   [Display(Name = "No Show")]
-  NoShow = 4,
+  NoShow = 3,
   [Display(Name = "Expired")]
-  Expired = 5,
+  Expired = 4,
   [Display(Name = "Cancelled")]
-  Cancelled = 6
+  Cancelled = 5
 }

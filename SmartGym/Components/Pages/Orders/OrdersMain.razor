@@ -8,9 +8,6 @@
 @inject NavigationManager navigationManager
 @attribute [StreamRendering]
 <title> Viewing Orders </title>
-<div class="sticky top-0 z-10 bg-[#f3f4f6]" style="width:100%;">
-    <SearchNavBar title=@("Viewing All Orders") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateView(); })" />
-</div>
 <div class="flex">
     <label> Filter by Status: </label>
     <InputSelect ValueExpression="@(() => orderFilter)" Value=@orderFilter ValueChanged="@((OrderStatus e) => { orderFilter = e; refreshOrders(); })">
@@ -38,19 +35,29 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public MainLayout layout { get; set; }
     private string searchText = "";
     private List<OrderDTO>? orders;
     public OrderStatus orderFilter { get; set; } = OrderStatus.Pending;
 
-    private async Task refreshOrders()
+    public async Task search(string s)
     {
-        orders = await orderService.GetAllOrdersByStatus(orderFilter);
+        searchText = s;
+        //Do whatever you want to do with the search bar in your update function
         updateView();
     }
 
     protected override async Task OnInitializedAsync()
     {
+        await layout.setupSearch("Viewing All Orders", new EventCallback<string>(this, search));
         await refreshOrders();
+    }
+
+    private async Task refreshOrders()
+    {
+        orders = await orderService.GetAllOrdersByStatus(orderFilter);
+        updateView();
     }
 
     public void updateView()

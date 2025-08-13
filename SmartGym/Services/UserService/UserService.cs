@@ -13,19 +13,31 @@ public class UserService : IUserService
 
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
-	public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+	private readonly UserManager<AppUser> _userManager;
+
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
 	{
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
-	}
+		_userManager = userManager;
+    }
 
-	public async Task<UserDto> CreateUser(UserDto newUserData)
+    public async Task<UserDto> CreateUser(UserDto newUserData)
 	{
 		try
 		{
 			AppUser newUser = _mapper.Map<AppUser>(newUserData);
 			await _unitOfWork.UserRepository.AddAsync(newUser);
 			await _unitOfWork.SaveAsync();
+			if (newUserData.RoleId != null)
+			{
+				throw new Exception("The required property \"RoleId\" is null.");
+			}
+			else
+			{
+				var roleName = EnumHelper.GetDisplayName(newUserData.RoleId);
+				await _userManager.AddToRoleAsync(newUser, roleName); // doesnt need SaveAsync
+			}
 			return _mapper.Map<UserDto>(newUser);
 		}
 		catch (Exception ex)
@@ -70,7 +82,21 @@ public class UserService : IUserService
 		try
 		{
 			var userEntity = await _unitOfWork.UserRepository.GetAsync(id);
-			return _mapper.Map<UserDto>(userEntity);
+			if (userEntity == null)
+				return null;
+
+			var userDto = _mapper.Map<UserDto>(userEntity);
+
+			// Get the single role from UserManager
+			var roles = await _userManager.GetRolesAsync(userEntity);
+			if (roles != null && roles.Count > 0)
+			{
+				var roleName = roles[0];
+				var roleIdNullable = EnumHelper.GetRoleIdFromName(roleName);
+				userDto.RoleId = roleIdNullable.HasValue ? roleIdNullable.Value : RoleId.Unknown;
+			}
+
+			return userDto;
 		}
 		catch (Exception ex)
 		{
@@ -79,7 +105,7 @@ public class UserService : IUserService
 		}
 	}
 
-	public async Task<bool>CheckInUser(UserDto user, AccessPoint accessPoint, CheckinMethod checkinMethod)
+	public async Task<bool> CheckInUser(UserDto user, AccessPoint accessPoint, CheckinMethod checkinMethod)
 	{
 		try
 		{
