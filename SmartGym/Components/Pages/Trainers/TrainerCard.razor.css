@@ -4,8 +4,14 @@
 }
 
 .card-pic {
-  height: calc(22vh - 2rem);
-  border: 1px solid;
-  border-radius: 50%;
-  width: 50%;
+	aspect-ratio: 1 / 1;
+	width: 22vh;
+	max-width: 180px;
+	height: auto;
+	border: 1px solid;
+	border-radius: 50%;
+	object-fit: cover;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
