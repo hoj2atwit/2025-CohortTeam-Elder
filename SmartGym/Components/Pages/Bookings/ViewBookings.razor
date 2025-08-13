@@ -18,8 +18,15 @@
 
 <div>
 	<h1 style="font-size:40px"><b>List of Bookings</b></h1>
-	<div>
-		<a href="/addnewbooking">Add New Booking</a>
+	<div class="mb-4">
+		<a href="/addnewbooking" onclick="location.href='/addnewbooking'; return false;"
+			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			Add New Booking
+		</a>
+		<a href="/view-waitlist" onclick="location.href='/view-waitlist'; return false;"
+			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			View Wait List
+		</a>
 	</div>
 	<table id="bookingsTable" class="display">
 		<thead>
