@@ -1,6 +1,6 @@
 ﻿@using Components.UIClasses.Cafe;
 <button class="max-w-1/4 min-w-50 flex flex-col border border-primary shadow-2xl hover:bg-gray-200 hover:cursor-pointer shadow-sm hover:shadow-md transition-all duration-300transform hover:-translate-y-1" @onclick="OnClickCallback">
-    <p class="relative left-0 top-0 z-10 block" style="font-size:1rem; line-height:2rem;">@(item.stock > 0 ? "In Stock: " + item.stock : "Sold Out")</p>
+    <p class="relative left-0 top-0 z-10 block @(item.stock > 0 ? "text-green-700" : "text-red-500")" style="font-size:1rem; line-height:2rem;">@(item.stock > 0 ? "In Stock: " + item.stock : "Sold Out")</p>
 
     @if (item.ImageLocation.ToLower().Contains("default"))
     {

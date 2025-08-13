@@ -53,12 +53,12 @@
 						<td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
 						<td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
 						<td>
-							<button class="bg-red-500 text-white px-2 py-1 rounded" onclick=@(() => DeleteUser(userDto))>
+							<button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 hover:cursor-pointer" onclick=@(() => DeleteUser(userDto))>
 							 <i class="fa-solid fa-user-minus mr-3"></i> Delete Member
 							</button>
 						</td>
 						<td>
-							<button class="bg-accent text-white px-2 py-1 rounded" onclick=@(() => UpdateUser(userDto))>
+							<button class="bg-accent text-white px-2 py-1 rounded hover:bg-background hover:cursor-pointer" onclick=@(() => UpdateUser(userDto))>
 							<i class="fa-solid fa-pen-to-square mr-3"></i> Update Member	
 							</button>
 						</td>

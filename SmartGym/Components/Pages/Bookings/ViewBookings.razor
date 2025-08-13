@@ -49,13 +49,13 @@
 						<td>@bookingDto.ConfirmedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
 						<td>@bookingDto.UpdatedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
 						<td>
-							<button class="bg-red-500 text-white px-2 py-1 rounded"
+							<button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 hover:cursor-pointer"
 								@onclick="() => DelBooking(bookingDto)">
 								<i class="fa-solid fa-user-minus mr-3"></i>Delete
 							</button>
 						</td>
 						<td>
-							<button class="bg-accent text-white px-2 py-1 rounded"
+							<button class="bg-accent text-white px-2 py-1 rounded hover:bg-background hover:cursor-pointer"
 								@onclick="() => UpdBooking(bookingDto)">
 								<i class="fa-solid fa-pen-to-square mr-3"></i>Update
 							</button>

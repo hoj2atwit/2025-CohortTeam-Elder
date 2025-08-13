@@ -5,7 +5,7 @@
         <div class="flex items-center justify-center">
             <button class="aspect-square w-10 rounded-full border bg-primary text-white p-5 text-xl font-bold hover:cursor-pointer  hover:bg-violet-600" @onclick=increaseAmount><i class="fa-solid fa-plus"></i></button>
             @* Input field for quantity of cart item. If quantity input is invalid then default to 0 as input *@
-            <input type="number" style="text-align: center; margin: 0 5px;padding: 5px 2em;"" class="field-sizing-content w-auto min-w-0 border border-black" value=@cartItem.Amount @onchange="@((ChangeEventArgs e) => { oldAmount = cartItem.Amount; try { cartItem.Amount = int.Parse(e.Value.ToString()); } catch (Exception ex) { e.Value = 0; cartItem.Amount = 0; } updateAmount(); })" />
+            <input type="number" style="text-align: center; margin: 0 5px;padding: 5px 2em;" class="field-sizing-content w-auto min-w-0 border border-black" value=@cartItem.Amount @onchange="@((ChangeEventArgs e) => { oldAmount = cartItem.Amount; try { cartItem.Amount = int.Parse(e.Value.ToString()); } catch (Exception ex) { e.Value = 0; cartItem.Amount = 0; } updateAmount(); })" />
             <button class="aspect-square w-10 rounded-full border bg-background text-white border-black p-5 text-xl font-bold hover:cursor-pointer  hover:bg-violet-600" @onclick=decreaseAmount>-</button>
         </div>
     </div>
