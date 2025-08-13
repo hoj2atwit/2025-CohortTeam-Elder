@@ -1,6 +1,5 @@
 @page "/myAccount"
 @using Microsoft.AspNetCore.Components.Authorization
-
 @using Microsoft.AspNetCore.Identity
 @using SmartGym.Constants.Enums
 @using SmartGym.Helpers
@@ -14,45 +13,119 @@
 
 <PageTitle>My Account</PageTitle>
 
-<h1>My Account</h1>
+<div class="flex items-center justify-center min-h-[80vh] bg-gray-50">
+	<div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6">
+		@if (user == null)
+		{
+			<div class="flex flex-col items-center">
+				<p class="text-gray-500 italic">Loading...</p>
+			</div>
+		}
+		else if (!editMode)
+		{
+			<div class="flex flex-col items-center">
+				@if (!string.IsNullOrEmpty(user.ImageRef))
+				{
+					var defaultSvgs = new[] { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
+					bool isDefaultSvg = user.ImageRef.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
+					defaultSvgs.Any(svg => user.ImageRef.Equals(svg, StringComparison.OrdinalIgnoreCase));
+					var imgSrc = isDefaultSvg
+					? $"/lib/images/{user.ImageRef}"
+					: $"/lib/db_images/{user.ImageRef}?cachebust={Guid.NewGuid()}";
+					<img src="@imgSrc" alt="Profile" width="100" height="100" />
+				}
+				<h4 class="text-xl font-semibold mb-1">@user.Name</h4>
+				<p class="text-gray-500 mb-2">@user.Email</p>
+				<p class="text-gray-500 mb-2">@user.DateOfBirth.ToString("MM/dd/yyyy")</p>
+				<span class="inline-block bg-blue-500 text-white text-xs px-3 py-1 rounded-full mb-3">
+					@EnumHelper.GetDisplayName(user.RoleId)
+				</span>
+				<hr class="w-full my-3 border-gray-200" />
+				<div class="w-full flex items-center justify-between text-left">
+					<p class="text-sm"><span class="font-semibold">Account ID:</span> @user.Id</p>
+					<button class="ml-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer"
+						type="button" @onclick="EnterEditMode">
+						Edit
+					</button>
+				</div>
+			</div>
+		}
+		else
+		{
+			<div class="flex flex-col items-center">
+				<EditForm Model="editUser" OnValidSubmit="HandleValidSubmit" class="w-full max-w-md p-6">
+					<DataAnnotationsValidator />
+					<ValidationSummary />
 
-<h3>Account Information</h3>
+					@if (!string.IsNullOrEmpty(editUser.ImageRef))
+					{
+						var defaultSvgs = new[] { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
+						bool isDefaultSvg = editUser.ImageRef.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
+						defaultSvgs.Any(svg => editUser.ImageRef.Equals(svg, StringComparison.OrdinalIgnoreCase));
+						var imgSrc = isDefaultSvg
+						? $"/lib/images/{editUser.ImageRef}"
+						: $"/lib/db_images/{editUser.ImageRef}?cachebust={Guid.NewGuid()}";
+						<div class="flex justify-center">
+							<img src="@imgSrc" alt="Profile" width="100" height="100" class="mb-2" />
+						</div>
+					}
+					<div class="w-full mb-3 flex justify-center">
+						<label class="flex items-center space-x-2 cursor-pointer">
+							<span
+								class="inline-block bg-blue-500 text-white text-xs px-3 py-1 rounded hover:bg-blue-600 transition">
+								Upload
+							</span>
+							<InputFile class="hidden" OnChange="e => OnFileSelected(e, user)" />
+						</label>
+					</div>
 
-@if (user == null)
-{
-	<p><em>Loading...</em></p>
-}
-else
-{
-	<div>
-		<span>Account ID: @user.Id</span>
-		<hr />
-		<span>First Name: @user.Name</span>
-		<hr />
-		<span>Last Name: @user.Email</span>
-		<hr />
-		<span>Membership: @EnumHelper.GetDisplayName(user.RoleId)</span>
+					<div class="w-full mb-3">
+						<label class="block text-gray-700 text-sm font-bold mb-1">First Name</label>
+						<InputText class="w-full px-3 py-2 border rounded" @bind-Value="editUser.FirstName" required />
+						<ValidationMessage For="@(() => editUser.FirstName)" />
+					</div>
+					<div class="w-full mb-3">
+						<label class="block text-gray-700 text-sm font-bold mb-1">Last Name</label>
+						<InputText class="w-full px-3 py-2 border rounded" @bind-Value="editUser.LastName" required />
+						<ValidationMessage For="@(() => editUser.LastName)" />
+					</div>
+					<div class="w-full mb-3">
+						<label class="block text-gray-700 text-sm font-bold mb-1">Email</label>
+						<InputText class="w-full px-3 py-2 border rounded" @bind-Value="editUser.Email" required />
+						<ValidationMessage For="@(() => editUser.Email)" />
+					</div>
+					<div class="w-full mb-3">
+						<label class="block text-gray-700 text-sm font-bold mb-1">Date of Birth</label>
+						<InputDate class="w-full px-3 py-2 border rounded" @bind-Value="editUser.DateOfBirth" required />
+						<ValidationMessage For="@(() => editUser.DateOfBirth)" />
+					</div>
+					<div class="w-full flex items-center justify-end text-left">
+						<button
+							class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer mx-2 my-1"
+							type="submit" @onsubmit="HandleValidSubmit">
+							Save
+						</button>
+						
+						<button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition cursor-pointer mx-2 my-1"
+							type="button" @onclick="CancelEdit">
+							Cancel
+						</button>
+					</div>
+					<hr class="w-full my-3 border-gray-200" />
+					<p class="text-sm"><span class="font-semibold">Account ID:</span> @user.Id</p>
+				</EditForm>
+			</div>
+		}
 	</div>
-}
-
-@* <h3>Billing Information</h3>
-<div>
-<hr/>
-<span>Billing Name: @payment.cardholderName</span>
-<hr/>
-<span>Card # (Last 4): @payment.cardNumber.Substring(12)</span>
-</div> *@
-
-<h3>Personal Information</h3>
-<div>
-
 </div>
 
 @code {
-
+	[Inject]
+	private IJSRuntime JS { get; set; }
 	private UserDto user;
-	private IList<string> roles = new List<string>();
-	//private Payment payment;
+	private UserDto editUser;
+	private bool editMode;
+
 	protected override async Task OnInitializedAsync()
 	{
 		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -61,31 +134,144 @@ else
 		{
 			user = await UserService.GetUserById(userId);
 		}
-
-		// Simulate asynchronous loading to demonstrate streaming rendering
-		//await Task.Delay(500);
-		@* user = new User {
-            firstName = "Johnny",
-            lastName = "Danger",
-            emailAddress = "dangerj@test.com",
-            phoneNumber = "5031239999",
-            accountActivationDate = DateOnly.Parse("2025-07-14"),
-            accountStatus = "Active",
-            accountType = "Standard"
-        }; *@
-		@* payment = new Payment {
-            cardholderName = "Johnathan Maximus Decimus Meridius Danger",
-            cardNumber = "1234987645670000",
-            monthExpiry = 01,
-            yearExpiry = 2029,
-            secCode = 404
-        }; *@
 	}
-	@* private class Payment {
-            public string cardholderName {get; set;}
-            public string cardNumber {get; set;}
-            public int monthExpiry {get; set;}
-            public int yearExpiry {get; set;}
-            public int secCode {get; set;}
-        } *@
+
+	private void EnterEditMode()
+	{
+		editUser = user != null ? new UserDto
+		{
+			Id = user.Id,
+			FirstName = user.FirstName,
+			LastName = user.LastName,
+			Email = user.Email,
+			DateOfBirth = user.DateOfBirth,
+			ImageRef = user.ImageRef,
+			RoleId = user.RoleId,
+			Name = user.Name
+		} : null;
+		editMode = true;
+	}
+
+	private async Task HandleValidSubmit()
+	{
+		if (editUser != null)
+		{
+			await UserService.UpdateUser(user.Id, editUser);
+			editMode = false;
+			await OnInitializedAsync();
+			await InvokeAsync(StateHasChanged);
+		}
+	}
+
+	private void CancelEdit()
+	{
+		editMode = false;
+		//reset
+		editUser = user != null ? new UserDto
+		{
+			Id = user.Id,
+			FirstName = user.FirstName,
+			LastName = user.LastName,
+			Email = user.Email,
+			DateOfBirth = user.DateOfBirth,
+			ImageRef = user.ImageRef,
+			RoleId = user.RoleId,
+			Name = user.Name
+		} : null;
+	}
+
+	private async Task OnFileSelected(InputFileChangeEventArgs e, UserDto user)
+	{
+		var usersFolder = Path.Combine("wwwroot", "lib", "db_images");
+		var file = e.File;
+		if (file != null)
+		{
+			string fileName;
+			// Check if the current image was never updated
+			var defaultSvgs = new[] { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
+			bool isDefaultSvg = string.IsNullOrWhiteSpace(user.ImageRef) ||
+			(user.ImageRef.EndsWith(".svg", StringComparison.OrdinalIgnoreCase) &&
+			defaultSvgs.Any(svg => user.ImageRef.Equals(svg, StringComparison.OrdinalIgnoreCase)));
+			string guid = "";
+			if (isDefaultSvg)
+			{
+				guid = Guid.NewGuid().ToString("N"); // (no dashes)
+				var ext = Path.GetExtension(file.Name);
+				fileName = $"{guid}{ext}";
+			}
+			else
+			{
+				var oldNameWithoutExt = Path.GetFileNameWithoutExtension(user.ImageRef);
+				guid = oldNameWithoutExt;
+				var newExt = Path.GetExtension(file.Name);
+				fileName = $"{oldNameWithoutExt}{newExt}";
+
+				// Delete the old file if it exists
+				var oldFilePath = Path.Combine(usersFolder, user.ImageRef);
+				if (File.Exists(oldFilePath))
+				{
+					try
+					{
+						File.Delete(oldFilePath);
+					}
+					catch (Exception)
+					{
+						// Optionally log error
+					}
+				}
+			}
+
+			const long maxFileSize = 600 * 600 * 4;
+
+			if (file.Size > maxFileSize)
+			{
+				await JS.InvokeVoidAsync("alert", "File is too large. Maximum allowed size is 600px x 600px.");
+				return;
+			}
+
+			var filePath = Path.Combine(usersFolder, fileName);
+			Directory.CreateDirectory(usersFolder);
+			using (var stream = new FileStream(filePath, FileMode.Create))
+			{
+				try
+				{
+					await file.OpenReadStream(maxFileSize).CopyToAsync(stream);
+				}
+				catch (Exception ex)
+				{
+					await JS.InvokeVoidAsync("alert", $"File upload failed: {ex.Message}");
+					return;
+				}
+			}
+
+			byte[] imageBytes;
+			using (var ms = new MemoryStream())
+			{
+				try
+				{
+					await file.OpenReadStream(maxFileSize).CopyToAsync(ms);
+				}
+				catch (Exception ex)
+				{
+					await JS.InvokeVoidAsync("alert", $"File upload failed: {ex.Message}");
+					return;
+				}
+				imageBytes = ms.ToArray();
+			}
+
+			// Use the injected service to update the image reference and upload blob
+			var result = await UserService.UploadUserImageBlob(user.Id, fileName, imageBytes, guid);
+
+			string message = result.Message ?? "No message returned.";
+
+			await JS.InvokeVoidAsync("alert", message);
+
+			if (result.Success)
+			{
+				@* userList = await usersService.GetAllUsers(); *@
+				StateHasChanged();
+			}
+		}
+	}
+
 }
