@@ -20,28 +20,9 @@
 
 </head>
 
-@* <body>
+<body>
     <CascadingAuthenticationState>
         <Routes @rendermode=RenderMode.InteractiveServer />
-    </CascadingAuthenticationState>
-    <script src="_framework/blazor.web.js"></script>
-</body> *@
-
-<body>
-
-    <CascadingAuthenticationState>
-        <Router AppAssembly="@typeof(Program).Assembly" >
-            <Found Context="routeData" >
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
-                    <NotAuthorized>
-                        <Forbidden />
-                    </NotAuthorized>
-                </AuthorizeRouteView>
-            </Found>
-            <NotFound>
-                <Forbidden />
-            </NotFound>
-        </Router>
     </CascadingAuthenticationState>
     <script src="_framework/blazor.web.js"></script>
 </body>
