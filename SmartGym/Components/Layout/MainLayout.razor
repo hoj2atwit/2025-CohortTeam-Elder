@@ -1,15 +1,21 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar border-black-500 border-r-2 bg-[#1b283a]">
-        <NavMenu />
-    </div>
-    <div class="filler" style="width:16rem; top:0; bottom:0; left:0;"/>
-    <main>
-        <article class="content bg-[#f3f4f6] px-4">
-            @Body
-        </article>
-    </main>
+    <CascadingAuthenticationState>
+        <AuthorizeView>
+            <div class="sidebar border-black-500 border-r-2 bg-[#1b283a]">
+                <NavMenu />
+            </div>
+            <div class="filler" style="width:16rem; top:0; bottom:0; left:0;" />
+        </AuthorizeView>
+    </CascadingAuthenticationState>
+    
+        <main>
+            <article class="content bg-[#f3f4f6] px-4">
+                @Body
+            </article>
+        </main>
+    
 </div>
 
 <div id="blazor-error-ui" data-nosnippet>

@@ -1,0 +1,79 @@
+﻿@using SmartGym.Models
+@using System.Globalization
+@if (!notifDTO.WasOpened)
+{
+    <li class="cursor-pointer flex-col p-4 hover:bg-gray-50">
+        <div class="relative ml-2" @onclick=Read>
+            <h3 class="relative left-0 top-0 text-slate-900" style="font-size:0.75rem; line-height:1rem; font-weight: 500;">@notifDTO.Title</h3>
+            <p class="relative left-0 mt-2 line-clamp-2 text-slate-500" style="font-size:0.75rem; line-height:1.625rem; font-weight: 500;">
+                @notifDTO.Contents
+            </p>
+            <p class="relative right-0 mt-2 text-blue-600" style="font-size:0.75rem; line-height:.75rem; font-weight: 500;">@timeFirstArrived</p>
+        </div>
+    </li>
+} else
+{
+    <li class="cursor-pointer flex-col bg-gray-200 p-4 hover:bg-gray-50" >
+        <div class="relative ml-2" @onclick=Read>
+            <h3 class="relative left-0 top-0 text-slate-900" style="font-size:0.75rem; line-height:1rem; font-weight: 500;">@notifDTO.Title</h3>
+            <p class="relative left-0 mt-2 line-clamp-2 text-slate-500" style="font-size:0.75rem; line-height:1.625rem; font-weight: 500;">
+                @notifDTO.Contents
+            </p>
+            <p class="relative right-0 mt-2 text-blue-600" style="font-size:0.75rem; line-height:.75rem; font-weight: 500;">@timeFirstArrived</p>
+        </div>
+    </li>
+}
+
+@code {
+    [Parameter] public NotificationsDTO notifDTO { get; set; }
+    [Parameter] public EventCallback<NotificationsDTO> OnReadCallBack { get; set; }
+    private string timeFirstArrived = "Never";
+
+    protected override Task OnInitializedAsync()
+    {
+        timeFirstArrived = getTimeSinceString();
+        return base.OnInitializedAsync();
+    }
+
+    private async Task Read()
+    {
+        if (!notifDTO.WasOpened)
+        {
+            await OnReadCallBack.InvokeAsync(notifDTO);
+        }
+    }
+
+    private string getTimeSinceString()
+    {
+        string s = "";
+
+        if (notifDTO != null)
+        {
+            TimeSpan timeSince = DateTime.Now.Subtract(notifDTO.TimeStamp);
+            if (timeSince.Days >= 365)
+            {
+                s = notifDTO.TimeStamp.ToString("MMM yyyy");
+            }
+            else if (timeSince.Days > 0)
+            {
+                s = timeSince.Days > 1 ? timeSince.Days + "days ago." : timeSince.Days + "day ago.";
+            }
+            else if (timeSince.Hours > 0)
+            {
+                s = timeSince.Hours > 1 ? timeSince.Hours + "hrs ago." : timeSince.Hours + "hr ago.";
+            }
+            else if (timeSince.Minutes > 0)
+            {
+                s = timeSince.Minutes > 1 ? timeSince.Minutes + "min ago." : timeSince.Minutes + "mins ago.";
+            }
+            else if (timeSince.Seconds > 0)
+            {
+                s = timeSince.Seconds > 30 ? timeSince.Seconds + "seconds ago." : "Now";
+            }
+        }
+        return s;
+    }
+    
+    //TODO: Create function so when clicked, Marked as read.
+    //TODO: Change div color depending on isRead.
+}

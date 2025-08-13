@@ -6,7 +6,7 @@ namespace SmartGym.Services;
 
 public interface IUserService
 {
-	Task<bool> CheckInUser(UserDto user, AccessPoint accessPoint, CheckinMethod checkinMethod);
+    Task<bool> CheckInUser(UserDto user, AccessPoint accessPoint, CheckinMethod checkinMethod);
 	Task<UserDto> CreateUser(UserDto newUserData);
 	Task<UserDto> GetUserById(int id);
 	Task<List<UserDto>> GetAllUsers();

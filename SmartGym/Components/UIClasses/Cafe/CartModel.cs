@@ -97,6 +97,7 @@ namespace SmartGym.Components.UIClasses.Cafe
             dto.Notes = Notes;
             dto.OrderCartList = new List<CartItemsDTO>();
             dto.TotalPrice = Total;
+            dto.OrderStatus = status;
             dto.UserId = userId < 1 ? 1:userId;
 
             foreach (CartItemModel cartItem in CartItems.Values) 

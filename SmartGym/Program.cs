@@ -1,11 +1,13 @@
-using SmartGym.Components;
-using Microsoft.Extensions.Configuration;
-using SmartGym.Services;
-using Microsoft.AspNetCore.Mvc;
-using SmartGym.Data;
-using Microsoft.EntityFrameworkCore;
-using SmartGym.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using SmartGym.Components;
+using SmartGym.Data;
+using SmartGym.Models;
+using SmartGym.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,35 +27,45 @@ builder.Services.AddDbContext<SmartGymContext>(options =>
 	options.UseSqlServer(connectionString);
 });
 //Identity
-builder.Services.AddIdentityCore<AppUser>(options =>
-		{
-			options.User.RequireUniqueEmail = true;
-			options.SignIn.RequireConfirmedAccount = false;
-			options.Password.RequireDigit = true;
-			options.Password.RequireUppercase = true;
-			options.Password.RequireNonAlphanumeric = false;
-			options.Password.RequiredLength = 8;
-		})
-		.AddRoles<IdentityRole<int>>()
-		.AddEntityFrameworkStores<SmartGymContext>()
-		.AddSignInManager()
-		.AddDefaultTokenProviders();
-builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
-.AddIdentityCookies();
-builder.Services.AddAuthorization();
+builder.Services.AddIdentity<AppUser, IdentityRole<int>>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 8;
+})
+.AddEntityFrameworkStores<SmartGymContext>()
+.AddDefaultTokenProviders();
+builder.Services.AddAuthorization(options =>
+options.FallbackPolicy = new AuthorizationPolicyBuilder()
+				.RequireAuthenticatedUser()
+				.Build());
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "SmartGymAuth";
+    options.LoginPath = "/";
+    options.AccessDeniedPath = "/forbidden";
+    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    options.SlidingExpiration = true;
+});
 //Automapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 //Data Repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //Services
+
 builder.Services.AddScoped<IClassService, ClassService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ICafeService, CafeService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
-
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, CustomClaimsPrincipalFactory>();
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 
@@ -65,13 +77,26 @@ if (!app.Environment.IsDevelopment())
 	app.UseHsts();
 }
 
+//app.UseStatusCodePages(async context =>
+//{
+//    if (context.HttpContext.Response.StatusCode == 401)
+//    {
+//        context.HttpContext.Response.ContentType = "application/json";
+//        await context.HttpContext.Response.WriteAsync("{\"error\":\"Unauthorized\"}");
+//    }
+//});
+app.UseStatusCodePagesWithRedirects("/forbidden");
+
+
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseAntiforgery();
 
-app.MapStaticAssets();
+app.MapStaticAssets().AllowAnonymous();
 app.MapRazorComponents<App>()
 		.AddInteractiveServerRenderMode();
 
