@@ -1,8 +1,8 @@
 ﻿@using Components.UIClasses.Cafe;
-<div class="flex flex-col border border-black" style="width:33vw; max-width:33vw; max-height:90vh;">
-    <h5 class="mb-2 justify-center border px-2 py-1 text-lg font-semibold">
+<aside class="flex flex-col border border-primary bg-white" style="width:33vw; max-width:33vw; max-height:90vh;">
+    <h2 class="mb-2 justify-center border px-2 py-1 text-xl font-semibold">
         Cart
-    </h5>
+    </h2>
     <div class="relative flex flex-col items-center gap-2 overflow-y-auto" style="max-height: 90%; max-width:100%; min-height: 80%;">
         @foreach (var cartItem in instance.CurrentCart.CartItems.Values)
         {
@@ -14,10 +14,10 @@
         <label class="right w-full px-4" style="text-align: end;">Tax (7%): @(string.Format("{0:C}", instance.CurrentCart.Tax))</label>
         <label class="right w-full px-4" style="text-align: end;">Total: @instance.CurrentCart.TotalString</label>
     </div>
-    <button class="flex-grow-1 h-full w-full border border-black py-4 text-4xl" @onclick="OnClickCallBack">
-        Checkout
+    <button class="bg-primary text-white flex-grow-1 h-full w-full border border-black py-4 text-4xl hover:bg-primary-900 hover:cursor-pointer shadow-sm hover:shadow-md transition-all duration-300transform" @onclick="OnClickCallBack">
+        <i class="fa-solid fa-cart-shopping mr-4"></i>Checkout
     </button>
-</div>
+</aside>
 @code {
     [Parameter]
     public EventCallback<MouseEventArgs> OnClickCallBack { get; set; }
