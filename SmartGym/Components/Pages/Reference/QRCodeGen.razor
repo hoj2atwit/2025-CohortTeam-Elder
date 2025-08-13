@@ -2,7 +2,12 @@
 @using IronBarCode
 @using SmartGym.Models
 @using SmartGym.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims;
 @inject SmartGym.Services.IUserService service
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 
 <PageTitle>QR Code Generator</PageTitle>
 <h1>QR Code</h1>
@@ -16,17 +21,39 @@
 @code {
 
     // Variable to hold the generated QR code HTML
-    private string qrCode = "";
+    private string? userName;
+    private int id = 1;
+    private List<string> defaultSvgs = new List<string> { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
 
-    // Variable to hold user input text
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            userName = user.Identity.Name;
+            id = int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        }
+
+        await QRCodeGenerator();
+    }
+
+    private string qrCode = "";
+    private async Task QRCodeGenerator()
     private string text = "";
 
-    //Random number
-    private static Random random = new Random();
-
     // Method to generate QR code from user input
-    private void QRCodeGenerator(string text)
+    private void QRCodeGenerator()
     {
+        //UserDto userdto = await service.GetUserById(id);
+        Random random = new Random();
+        long first = random.NextInt64(5000000000, 1000000000000);
+        long second = random.NextInt64(5000000000, 1000000000000);
+        long third = random.NextInt64(5000000000, 1000000000000);
+        text = $"{navigationManager.BaseUri}QRCheckin/%{first}%{userName}${second}${id}&{third}&/";
+        //Set Random ints to User DB to compare to for checkin and login.
         // Create a QR code from the input text
         try {
 
@@ -38,23 +65,11 @@
             GeneratedBarcode myQRCode = QRCodeWriter.CreateQrCode(text);
 
             // Convert the generated QR code to HTML tag
+        StateHasChanged();
             qrCode = Convert.ToString(myQRCode.ToHtmlTag());
         } catch (Exception e) {
             Console.WriteLine($"Error: {e.Message}");
         }
-    }
-
-    private static string RandomString(int length)
-    {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[random.Next(s.Length)]).ToArray());
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        string userQR = RandomString(10);
-        QRCodeGenerator(userQR);
     }
 }
 
