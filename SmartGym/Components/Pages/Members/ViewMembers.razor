@@ -14,13 +14,9 @@
 
 
 <PageTitle>View Members</PageTitle>
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-<div>
-	<h1 class="text-5xl mb-4"><b>List of Members</b></h1>
+<h1 class="text-5xl mb-4"><b>List of Members</b></h1>
+<div class="contained">
+	
 	<div>
 		<a href="/addnewmember" onclick="location.href='/addnewmember'; return false;"
 			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
@@ -31,8 +27,8 @@
 			Edit User Images
 		</a>
 	</div>
-	<table id="userTable"class="display text-left text-xl bg-background"">
-		<thead>
+	<table id="userTable"class="display text-left text-xl">
+		<thead class="bg-background text-white">
 			<tr>
 				<th>First Name</th>
 				<th>Last Name</th>

@@ -8,44 +8,43 @@
 
 <PageTitle>Update Booking</PageTitle>
 
-<div>
-    <div>
-        @if (booking == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <div>
-                 <h4 style="font-size:40px;"><b>Update Booking</b></h4>
+    @if (booking == null)
+    {
+        <LoadingLayout/>
+    }
+    else
+    {
+      <h1 class="mb-4" id="title">Update Booking</h1>
+      <section class="contained text-xl bg-text" aria-labelledby="title">
+            <p>
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="UserId" />
                 <input type="hidden" asp-for="CreatedAt" />
                 <input type="hidden" asp-for="ConfirmedAt" />
                 <input type="hidden" asp-for="UpdatedAt" />
                 <hr />
-            </div>
-            <div>
-                <label for="userid">User ID: @booking.UserId</label>
+            </p>
+            <p>
+				<label for="userid">User ID: </label>@booking.UserId
                 <hr />
-            </div>
-            <div>
-                <label for="session">Class Session ID: @booking.ClassSessionId</label>
+            </p>
+            <p>
+				<label for="session">Class Session ID: </label>@booking.ClassSessionId
                 <hr />
-            </div>
-            <div>
-                <label for="datecreated">Created at: @booking.CreatedAt</label>
+            </p>
+            <p>
+				<label for="datecreated">Created at: </label>@booking.CreatedAt
                 <hr />
-            </div>
-            <div>
-                <label for="dateconfirmed">Confirmed at: @booking.ConfirmedAt</label>
+            </p>
+            <p>
+				<label for="dateconfirmed">Confirmed at: </label>@booking.ConfirmedAt
                 <hr />
-            </div>
-            <div>
-                <label for="dateupdated">Updated at: @booking.UpdatedAt</label>
+            </p>
+            <p>
+				<label for="dateupdated">Updated at: </label>@booking.UpdatedAt
                 <hr />
-            </div>
-            <div>
+            </p>
+            <p>
                 <label for="status">Status: </label>
                 <select @bind=booking.Status name="status" id="status">
                     <option value="" disabled>Select a status</option>
@@ -56,12 +55,17 @@
                     <option value="4">Expired</option>
                     <option value="5">Cancelled</option>
                 </select>
-            </div>
-            <button @onclick="() => EditBooking(booking.UserId, booking.ClassSessionId, booking.Id)" class="">[Update]</button>
-            <a href="/viewbookings">Cancel</a>
-        }
-    </div>
-</div>
+            </p>
+            <p>
+                <button @onclick="() => EditBooking(booking.UserId, booking.ClassSessionId, booking.Id)" class="inline-block bg-accent hover:bg-primary text-white font-semibold py-2 px-4 rounded shadow transition duration-150 hover:cursor-pointer">
+                    <i class="fa-solid fa-pen-to-square mr-4"></i>Update Booking
+                </button>
+                <a href="/viewbookings" class="text-secondary">Cancel</a>
+            </p>
+      </section>
+            
+            
+    }
 
 @code {
     [Parameter]

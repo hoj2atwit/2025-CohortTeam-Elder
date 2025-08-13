@@ -33,10 +33,7 @@
     --color-indigo-600: oklch(51.1% 0.262 276.966);
     --color-violet-600: oklch(54.1% 0.281 293.009);
     --color-purple-500: oklch(62.7% 0.265 303.9);
-    --color-slate-300: oklch(86.9% 0.022 252.894);
-    --color-slate-400: oklch(70.4% 0.04 256.788);
     --color-slate-500: oklch(55.4% 0.046 257.417);
-    --color-slate-700: oklch(37.2% 0.044 257.287);
     --color-slate-900: oklch(20.8% 0.042 265.755);
     --color-gray-50: oklch(98.5% 0.002 247.839);
     --color-gray-100: oklch(96.7% 0.003 264.542);
@@ -99,6 +96,7 @@
     --color-primary-500: #4b1ba9;
     --color-primary-900: #2f116a;
     --color-secondary: #3d2ddd;
+    --color-secondary-500: #2b1f9b;
     --color-secondary-700: #181258;
     --color-background: #170937;
     --color-accent: #b2d152;
@@ -338,9 +336,6 @@
   .mx-2 {
     margin-inline: calc(var(--spacing) * 2);
   }
-  .mx-5 {
-    margin-inline: calc(var(--spacing) * 5);
-  }
   .mx-8 {
     margin-inline: calc(var(--spacing) * 8);
   }
@@ -388,6 +383,9 @@
   }
   .mr-3 {
     margin-right: calc(var(--spacing) * 3);
+  }
+  .mr-4 {
+    margin-right: calc(var(--spacing) * 4);
   }
   .mb-1 {
     margin-bottom: calc(var(--spacing) * 1);
@@ -878,6 +876,9 @@
   .bg-secondary {
     background-color: var(--color-secondary);
   }
+  .bg-secondary-500 {
+    background-color: var(--color-secondary-500);
+  }
   .bg-text {
     background-color: var(--color-text);
   }
@@ -991,6 +992,9 @@
   }
   .align-middle {
     vertical-align: middle;
+  }
+  .font-funnel {
+    font-family: var(--font-funnel);
   }
   .font-sans {
     font-family: var(--font-sans);
@@ -1135,6 +1139,9 @@
   }
   .text-red-700 {
     color: var(--color-red-700);
+  }
+  .text-secondary {
+    color: var(--color-secondary);
   }
   .text-slate-500 {
     color: var(--color-slate-500);
@@ -1284,6 +1291,13 @@
       }
     }
   }
+  .hover\:bg-primary {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-primary);
+      }
+    }
+  }
   .hover\:bg-red-50 {
     &:hover {
       @media (hover: hover) {
@@ -1295,6 +1309,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-red-600);
+      }
+    }
+  }
+  .hover\:bg-red-700 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-red-700);
       }
     }
   }
@@ -1536,8 +1557,22 @@ html, body {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
 }
-a, .btn-link {
-  color: #006bb7;
+label {
+  font-weight: bold;
+}
+select {
+  margin-left: 15px;
+  padding: .5em 0;
+  border: 1px solid black;
+  background: white;
+  color: black;
+}
+section p {
+  padding-bottom: 1em;
+  margin-left: 1em;
+}
+.boxed h1 {
+  padding-left: 3%;
 }
 .btn-primary {
   color: #3d2ddd;
@@ -1874,6 +1909,9 @@ ul li {
   transform-origin: left;
   animation: scroll-watcher linear;
   animation-timeline: scroll();
+}
+table.dataTable tbody tr {
+  background-color: revert-layer !important;
 }
 .pricing-card, .section-card, .why {
   scale: 0.7;

@@ -30,9 +30,24 @@ body {
   scroll-behavior: smooth;
 }
 
-a,
-.btn-link {
-  color: #006bb7;
+label{
+  font-weight:bold;
+}
+select {
+  margin-left:15px;
+  padding: .5em 0;
+  border: 1px solid black;
+  background:white;
+  color:black;
+}
+
+section p {
+  padding-bottom: 1em;
+  margin-left: 1em;
+}
+
+.boxed h1 {
+  padding-left: 3%;
 }
 
 .btn-primary {
@@ -441,6 +456,10 @@ section {
   transform-origin: left;
   animation: scroll-watcher linear;
   animation-timeline: scroll();
+}
+
+table.dataTable tbody tr {
+  background-color: revert-layer !important;
 }
 
 .pricing-card, .section-card, .why{

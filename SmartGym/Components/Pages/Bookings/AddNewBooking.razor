@@ -9,49 +9,50 @@
 
 <PageTitle>Add New Booking</PageTitle>
 
-<div>
-    <div>
-        <div>
-            <h4 style="color:green; font-size:40px"><b>Add a New Booking</b></h4>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div>
-                <label for="userid">Name: </label>
-                <select @bind=UserId name="userid" id="userid">
-                    <option value="" disabled>Select a member</option>
-                    @foreach (UserDto userDto in userList)
-                    {
-                        <option value="@userDto.Id">@userDto.Name</option>
-                    }
-                </select>
-                <hr />
-            </div>
-            <div>
-                <label for="session">Class Session: </label>
-                <select @bind=ClassId name="session" id="session">
-                    <option value="" disabled>Select a class session</option>
-                    @foreach (BookingDTO bookingDTO in bookingList)
-                    {
-                        <option value="@bookingDTO.ClassSessionId">@bookingDTO.ClassSessionId</option>
-                    }
-                </select>
-                <hr />
-            </div>
-            <div>
-                <label for="status">Status: </label>
-                <select @bind=Status name="status" id="status">
-                    <option value="" disabled>Select a status</option>
-                    @foreach (BookingStatus status in Enum.GetValues(typeof(BookingStatus)))
-                    {
-                        <option value="@status">@EnumHelper.GetDisplayName(status)</option>
-                    }
-                </select>
-            </div>
-            <button @onclick=AddBooking class="">[Add]</button>
-            <a href="/viewbookings">Cancel</a>
-        </div>
-    </div>
-</div>
+
+<h1 class="mb-4" id="title">Add New Booking</h1>
+<section class="contained text-xl bg-text" style="padding-top:40px;" aria-labelledby="title">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <p>
+		<label for="userid">Name: </label>
+		<select @bind=UserId name="userid" id="userid">
+			<option value="" disabled>Select a member</option>
+			@foreach (UserDto userDto in userList)
+			{
+				<option value="@userDto.Id">@userDto.Name</option>
+			}
+		</select>
+        </p>
+        <p>
+		  <label for="session">Class Session: </label>
+		  <select @bind=ClassId name="session" id="session">
+			  <option value="" disabled>Select a class session</option>
+			  @foreach (BookingDTO bookingDTO in bookingList)
+			  {
+				  <option value="@bookingDTO.ClassSessionId">@bookingDTO.ClassSessionId</option>
+			  }
+		  </select>
+        </p>
+        <p>
+		  <label for="status">Status: </label>
+		  <select @bind=Status name="status" id="status">
+			  <option value="" disabled>Select a status</option>
+			  @foreach (BookingStatus status in Enum.GetValues(typeof(BookingStatus)))
+			  {
+				  <option value="@status">@EnumHelper.GetDisplayName(status)</option>
+			  }
+		  </select>
+        </p>
+	<p>
+		<button @onclick=AddBooking class="inline-block bg-primary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-plus mr-4"></i>Add Booking
+		</button>
+		<a href="/viewbookings" class="text-secondary">Cancel</a>
+	</p>
+    
+  </section>
+            
+
 
 @code {
     public int UserId { get; set; }
