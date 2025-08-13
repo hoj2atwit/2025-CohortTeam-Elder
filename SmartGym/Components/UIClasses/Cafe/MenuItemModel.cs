@@ -11,6 +11,7 @@ namespace SmartGym.Components.UIClasses.Cafe
         public string ImageLocation = "";
         public string Tags = "";
         public string Ingredients = "";
+        public int stock = 1;
 
         /// <summary>
         /// Default constructor for MenuItem.
@@ -24,6 +25,7 @@ namespace SmartGym.Components.UIClasses.Cafe
             Description = "No Description";
             Tags = "Food";
             Ingredients = "None";
+            stock = 1;
         }
 
         /// <summary>
@@ -38,6 +40,7 @@ namespace SmartGym.Components.UIClasses.Cafe
             Description = menuItemDTO.Description;
             Tags = menuItemDTO.Tags;
             Ingredients = menuItemDTO.Ingredients;
+            stock = menuItemDTO.StockLevel;
         }
 
         /// <summary>
@@ -56,6 +59,7 @@ namespace SmartGym.Components.UIClasses.Cafe
             this.Description = Description;
             this.Tags = Tags;
             this.Ingredients = Ingredients;
+            stock = 1;
         }
 
         /// <summary>

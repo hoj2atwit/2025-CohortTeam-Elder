@@ -61,6 +61,12 @@
     private MenuCheckoutModal checkoutModal;
 
 
+    protected override async Task OnAfterRenderAsync(bool firstRender) 
+    {
+        await layout.setupSearch($"{userName}'s Order", new EventCallback<string>(this, searchMenu));
+        
+    }
+
     async Task InitializeMenu()
     {
 
@@ -88,11 +94,8 @@
                 userName = user.Identity.Name;
             }
         }
-
         await layout.setupSearch($"{userName}'s Order", new EventCallback<string>(this, searchMenu));
-
         await updateMenu();
-        //TODO: Load Cart from User
     }
 
     public async Task searchMenu(string search)
