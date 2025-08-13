@@ -5,22 +5,13 @@
 @inject SmartGym.Services.IUserService service
 
 <PageTitle>QR Code Generator</PageTitle>
-
-<div class="row">
-    <div class="col">
-        <h4>Welcome to Blazor QR Code Generator</h4>
-        <p>Enter the value to Generate QR Code:</p>
-        <!-- Input field for QR code text -->
-        <input @bind="text" />
-        <button @onclick="QRCodeGenerator">[Generate QR Code]</button>
-    </div>
-    <div class="col">
+<h1>QR Code</h1>
+<section class="contained">
+    <section class="text-center">
         <!-- Button to trigger QR code generation -->
-        <p style="font-size:20px"><b>Generated QR Code:</b></p>
-
         @((MarkupString)qrCode)
-    </div>
-</div>
+    </section>
+</section>
 
 @code {
 
@@ -30,8 +21,11 @@
     // Variable to hold user input text
     private string text = "";
 
+    //Random number
+    private static Random random = new Random();
+
     // Method to generate QR code from user input
-    private void QRCodeGenerator()
+    private void QRCodeGenerator(string text)
     {
         // Create a QR code from the input text
         try {
@@ -48,6 +42,19 @@
         } catch (Exception e) {
             Console.WriteLine($"Error: {e.Message}");
         }
+    }
+
+    private static string RandomString(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return new string(Enumerable.Repeat(chars, length)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string userQR = RandomString(10);
+        QRCodeGenerator(userQR);
     }
 }
 
