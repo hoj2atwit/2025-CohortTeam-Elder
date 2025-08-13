@@ -7,33 +7,35 @@
 @inject INotificationService notifService
 
 
-<button class="relative" @onclick=ToggleShow>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-    </svg>
-    @if (unread > 0)
-    {
-        <!-- Notification dot -->
-        <span class="absolute right-0 top-0 block h-2 w-2 rounded-full bg-red-500"> @unread </span>
-    }
+<button class="relative">
+    <div @onclick=ToggleShow>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        @if (unread > 0)
+        {
+            <!-- Notification dot -->
+            <span class="absolute right-0 top-0 block h-2 w-2 rounded-full bg-red-500"></span>
+        }
+    </div>
     @if (isVisible)
     {
         <div id="dropdownMenu"
-             class="z-[1000] absolute right-0 mt-2 block max-h-[500px] w-[410px] min-w-full overflow-auto rounded-lg bg-white py-4 shadow-lg">
+             class="z-[1000] absolute right-0 mt-2 block overflow-auto rounded-lg bg-white py-4 shadow-lg" style="max-width:20vw; max-height:500px; min-width:200px; width:400px;">
             <div class="mb-4 flex items-center justify-between px-4">
-                @*<p class="cursor-pointer text-xs font-medium text-blue-600">Clear all</p>*@
-            <div @onclick=OpenAll><p class="cursor-pointer text-blue-600" style="font-size:0.75rem; line-height:1rem; font-weight: 500; ">Mark as read</p></div>
+                <p class="cursor-pointer text-blue-600" style="font-size:0.75rem; line-height:1rem; font-weight: 500; ">Clear all</p>
+                <div @onclick=OpenAll><p class="cursor-pointer text-blue-600" style="font-size:0.75rem; line-height:1rem; font-weight: 500; ">Mark as read</p></div>
             </div>
-
-            <ul class="divide-y divide-gray-300">
-
-                @foreach (NotificationsDTO notificationsDTO in notifList)
+            <ul class="left-0 start-0">
+                @if (notifList != null)
                 {
-                    <NotificationModalContent notifDTO="@notificationsDTO" OnReadCallBack="Open" OnUnreadCallBack="incrementUnread" />
+                    @foreach (NotificationsDTO notificationsDTO in notifList)
+                    {
+                        <NotificationModalContent notifDTO="@notificationsDTO" OnReadCallBack="Open"/>
+                    }
                 }
-
             </ul>
-            @*<p class="mb-4 mt-6 inline-block cursor-pointer px-4 text-xs font-medium text-blue-600">View all Notifications</p>*@
+            <p class="mb-4 mt-6 inline-block cursor-pointer px-4" style="font-size:0.75rem; line-height:1rem; font-weight: 500; color:blueviolet">View all Notifications</p>
         </div>
     }
 </button>
@@ -50,31 +52,81 @@
         await Update();
     }
 
-    public async Task incrementUnread()
+    private async Task<List<NotificationsDTO>> generateFakeNotifList()
     {
-        unread++;
-        StateHasChanged();
+        List<NotificationsDTO> fakeList = new();
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        int id;
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            try
+            {
+                id = int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                for (int i = 0; i < 30; i++)
+                {
+                    NotificationsDTO fakeDTO = new();
+                    fakeDTO.TimeStamp = DateTime.Now;
+                    fakeDTO.UserId = id;
+                    fakeDTO.Id = i;
+                    fakeDTO.Title = "Taco Appointment";
+                    fakeDTO.Contents = "You have been approved for your Taco Tuesday appointment!";
+                    fakeDTO.WasOpened = i%2==0 ? false: true;
+
+                    fakeList.Add(fakeDTO);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return fakeList;
+            }
+
+        }
+
+        return fakeList;
     }
 
     public async Task ToggleShow()
-    {
+    {   
         isVisible = !isVisible;
-        await Update();
+        if (isVisible)
+        {
+            await Update();
+        }
     }
 
     public async Task Open(NotificationsDTO notifDTO)
     {
-        await notifService.MarkAsOpenedAsync(notifDTO.Id);
-        await Update();
+        notifDTO.WasOpened = true;
+        unread -= 1;
+        try
+        {
+            await notifService.MarkAsOpenedAsync(notifDTO.Id);
+        } catch (Exception e)
+        {
+
+        }
+
+        StateHasChanged();
     }
 
     public async Task OpenAll()
     {
         foreach (NotificationsDTO tempDTO in notifList)
         {
-            await notifService.MarkAsOpenedAsync(tempDTO.Id);
+            tempDTO.WasOpened = true;
+            try
+            {
+                await notifService.MarkAsOpenedAsync(tempDTO.Id);
+            }
+            catch (Exception e)
+            {
+                
+            }
         }
-        await Update();
+        unread = 0;
+        StateHasChanged();
     }
 
     public async Task Update()
@@ -93,8 +145,17 @@
             {
                 notifList = new();
             }
-
         }
+        notifList = await generateFakeNotifList();
+        int tempUnreadTotal = 0;
+        foreach (NotificationsDTO tempdto in notifList)
+        {
+            if (!tempdto.WasOpened)
+            {
+                tempUnreadTotal++;
+            }
+        }
+        unread = tempUnreadTotal;
         StateHasChanged();   
     }
 }
