@@ -2,28 +2,39 @@
 @inject NavigationManager NavigationManager
 
 <CascadingValue Value="this">
-    <div class="page">
-        <CascadingAuthenticationState>
-            <AuthorizeView>
-                <div class="sidebar border-black-500 border-r-2 bg-[#1b283a]">
-                    <NavMenu />
-                </div>
-                <div class="filler" style="width:16rem; top:0; bottom:0; left:0;" />
-            </AuthorizeView>
-        </CascadingAuthenticationState>
-    
+    <div class="font-sans">
+        @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "home")
+        {
+            <HomeLayout />
             <main>
-                <article class="content bg-[#f3f4f6] px-4">
-                    <CascadingAuthenticationState>
-                        <AuthorizeView>
-                            <div class="sticky top-0 z-10 bg-[#f3f4f6]">
-                                <SearchNavBar @ref=searchNav title=@searchNavTitle OnChangeEventCallBack=searchBarOnChange isSearchable=@isSearchable />
-                            </div>
-                        </AuthorizeView>
-                </CascadingAuthenticationState>
-                    @Body
-                </article>
+                @Body
             </main>
+        }
+        else
+        {
+                <CascadingAuthenticationState>
+                    <AuthorizeView>
+                        <div class="sidebar border-black-500 border-r-2 bg-primary-900">
+                            <NavMenu />
+                        </div>
+                        <div class="filler" style="width:16rem; top:0; bottom:0; left:0;" />
+                    </AuthorizeView>
+                </CascadingAuthenticationState>
+
+                <main class="content hero">
+                    <div class="boxed">
+                        <CascadingAuthenticationState>
+                            <AuthorizeView>
+                            <div class="sticky top-0 z-10 notification-bar bg-text">
+                                    <SearchNavBar @ref=searchNav title=@searchNavTitle isSearchable=@isSearchable />
+                                </div>
+                            </AuthorizeView>
+                        </CascadingAuthenticationState>
+                        @Body
+                    </div>
+                </main>            
+        }
+        
     </div>
 
     <div id="blazor-error-ui" data-nosnippet>
@@ -32,29 +43,6 @@
         <span class="dismiss">🗙</span>
     </div>
 </CascadingValue>
-
-<div class="font-sans">
-    @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "home")
-    {
-        <HomeLayout />
-        <main>
-          @Body
-        </main>
-    }
-    else
-    {
-      <div class="page">
-			<nav class="sidebar border-black-500 border-r-2 bg-primary-900">
-				<NavMenu />
-			</nav>
-			<main class="content hero text-white">
-				@Body
-			</main>
-      </div>
-        
-    }
-    
-</div>
 
 <footer class="bg-background text-white text-xl">
   <div class="contained my-[30px]">
@@ -87,7 +75,7 @@
 
     private Task searchSetupDefault()
     {
-        searchNavTitle = "SmartGym";
+        searchNavTitle = "Smart Gym";
         searchBarOnChange = new EventCallback<string>();
         isSearchable = false;
         StateHasChanged();

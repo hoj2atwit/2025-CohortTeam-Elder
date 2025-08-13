@@ -25,11 +25,11 @@
 		<div class="flex flex-col items-center justify-center">
 			@if (userName != null)
 			{
-				<h2 class="text-sm !text-white">Welcome back, @firstName @lastName</h2>
+				<span class="text-sm !text-white">Welcome back, @firstName @lastName</span>
 			}
 			else
 			{
-				<h2 class="text-sm !text-white">Welcome</h2>
+				<span class="text-sm !text-white">Welcome</span>
 			}
 		</div>
 	</div>
@@ -45,47 +45,70 @@
     });">
 	<nav class="nav flex flex-col gap-2 text-white">
 		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard" Match="NavLinkMatch.All">Dashboard
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/home" Match="NavLinkMatch.All">
+				<i class="fa-solid fa-home pr-5"></i>Homepage
 			</NavLink>
 		</div>
 
 		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href="/qrcode">QR Code</NavLink>
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard" Match="NavLinkMatch.All">
+				<i class="fa-solid fa-chart-line"></i>Dashboard
+			</NavLink>
+		</div>
+
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/qrcode">
+				<i class="fa-solid fa-qrcode"></i>QR Code
+			</NavLink>
+		</div>
+		
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/classes">
+				<i class="fa-solid fa-dumbbell pr-5"></i>Classes
+			</NavLink>
+		</div>
+
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href=@($"/cafe/{id}-0")>
+				<i class="fa-solid fa-utensils pr-5"></i>Cafe
+			</NavLink>
 		</div>
 
         <div class="nav-item">
 			<NavLink class="nav-link px-3 text-lg !text-white" href="/members"
-				onclick="location.href='/members'; return false;">Members</NavLink>
+				onclick="location.href='/members'; return false;">
+				<i class="fa-solid fa-users pr-5"></i>Members
+			</NavLink>
         </div>
-
-		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href="/classes">Classes</NavLink>
-		</div>
 
         <div class="nav-item">
-				<NavLink class="nav-link px-3 text-lg !text-white" href="/viewbookings" onclick="location.href='/viewbookings'; return false;">Bookings</NavLink>
+				<NavLink class="nav-link px-3 text-lg !text-white" href="/viewbookings" onclick="location.href='/viewbookings'; return false;">
+				<i class="fa-solid fa-book pr-5"></i>Bookings
+			</NavLink>
         </div>
 
 		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href=@($"/cafe/{id}-0")>Cafe</NavLink>
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/view-orders">
+				<i class="fa-solid fa-list pr-5"></i>View Orders
+			</NavLink>
 		</div>
 
 		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href="/view-orders">View Orders</NavLink>
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/trainers">
+				<i class="fa-solid fa-dumbbell pr-5"></i>Trainers
+			</NavLink>
 		</div>
 
 		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/trainers">Trainers</NavLink>
-		</div>
-
-		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/settings">Settings</NavLink>
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/settings">
+				<i class="fa-solid fa-gear pr-5"></i>Settings
+			</NavLink>
 		</div>
 
 		<div class="nav-item">
 			<form method="post" action="/auth/logout"><button type="submit" value="Submit"
 					class="nav-link cursor-pointer px-3 text-lg !text-white">
-					Logout
+					<i class="fa-solid fa-arrow-right-from-bracket pr-5"></i>ogout
 				</button></form>
 		</div>
 
@@ -114,7 +137,7 @@
 			lastName = user.FindFirst("LastName")?.Value;
 			userInitial = firstName?.FirstOrDefault().ToString().ToUpper();
 			imgRef = user.FindFirst("ImageRef")?.Value;
-
+			
 		}
 	}
 }
