@@ -32,6 +32,7 @@
     --color-indigo-500: oklch(58.5% 0.233 277.117);
     --color-indigo-600: oklch(51.1% 0.262 276.966);
     --color-violet-600: oklch(54.1% 0.281 293.009);
+    --color-violet-700: oklch(49.1% 0.27 292.581);
     --color-purple-500: oklch(62.7% 0.265 303.9);
     --color-slate-500: oklch(55.4% 0.046 257.417);
     --color-slate-900: oklch(20.8% 0.042 265.755);
@@ -92,7 +93,6 @@
     --default-mono-font-family: var(--font-mono);
     --font-funnel: "Funnel Display", sans-serif;
     --color-primary: #5e22d3;
-    --color-primary-100: #9e7ae5;
     --color-primary-500: #4b1ba9;
     --color-primary-900: #2f116a;
     --color-secondary: #3d2ddd;
@@ -792,8 +792,17 @@
   .border-gray-300 {
     border-color: var(--color-gray-300);
   }
+  .border-primary {
+    border-color: var(--color-primary);
+  }
   .border-red-300 {
     border-color: var(--color-red-300);
+  }
+  .border-secondary {
+    border-color: var(--color-secondary);
+  }
+  .border-text {
+    border-color: var(--color-text);
   }
   .border-transparent {
     border-color: transparent;
@@ -851,9 +860,6 @@
   }
   .bg-primary {
     background-color: var(--color-primary);
-  }
-  .bg-primary-100 {
-    background-color: var(--color-primary-100);
   }
   .bg-primary-500 {
     background-color: var(--color-primary-500);
@@ -1256,6 +1262,13 @@
       }
     }
   }
+  .hover\:bg-background {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-background);
+      }
+    }
+  }
   .hover\:bg-blue-600 {
     &:hover {
       @media (hover: hover) {
@@ -1323,6 +1336,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-violet-600);
+      }
+    }
+  }
+  .hover\:bg-violet-700 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-violet-700);
       }
     }
   }
