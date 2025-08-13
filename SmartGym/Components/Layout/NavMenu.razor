@@ -53,17 +53,18 @@
 			<NavLink class="nav-link px-3 text-lg !text-white" href="/qrcode">QR Code</NavLink>
 		</div>
 
-		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href="/members">Members</NavLink>
-		</div>
+        <div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/members"
+				onclick="location.href='/members'; return false;">Members</NavLink>
+        </div>
 
 		<div class="nav-item">
 			<NavLink class="nav-link px-3 text-lg !text-white" href="/classes">Classes</NavLink>
 		</div>
 
-		<div class="nav-item">
-			<NavLink class="nav-link px-3 text-lg !text-white" href="/viewbookings">Bookings</NavLink>
-		</div>
+        <div class="nav-item">
+				<NavLink class="nav-link px-3 text-lg !text-white" href="/viewbookings" onclick="location.href='/viewbookings'; return false;">Bookings</NavLink>
+        </div>
 
 		<div class="nav-item">
 			<NavLink class="nav-link px-3 text-lg !text-white" href=@($"/cafe/{id}-0")>Cafe</NavLink>
