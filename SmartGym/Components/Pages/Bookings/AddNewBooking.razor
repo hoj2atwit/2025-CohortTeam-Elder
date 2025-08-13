@@ -79,7 +79,7 @@
     {
         BookingPostDTO tempBooking = new BookingPostDTO();
         tempBooking.UserId = UserId;
-        tempBooking.SessionId = ClassId;
+        tempBooking.ClassSessionId = ClassId;
         tempBooking.CreatedAt = DateTime.Now;
 
         await bookingService.CreateBooking(tempBooking);
