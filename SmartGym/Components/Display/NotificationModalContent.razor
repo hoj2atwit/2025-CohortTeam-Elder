@@ -2,24 +2,24 @@
 @using System.Globalization
 @if (!notifDTO.WasOpened)
 {
-    <li class="flex cursor-pointer items-center p-4 hover:bg-gray-50" >
-        <div class="ml-6" @onclick=Read>
-            <h3 class="text-sm font-medium text-slate-900">@notifDTO.Title</h3>
-            <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500">
+    <li class="cursor-pointer flex-col p-4 hover:bg-gray-50">
+        <div class="relative ml-2" @onclick=Read>
+            <h3 class="relative left-0 top-0 text-slate-900" style="font-size:0.75rem; line-height:1rem; font-weight: 500;">@notifDTO.Title</h3>
+            <p class="relative left-0 mt-2 line-clamp-2 text-slate-500" style="font-size:0.75rem; line-height:1.625rem; font-weight: 500;">
                 @notifDTO.Contents
             </p>
-            <p class="mt-2 text-xs font-medium leading-3 text-blue-600">@getTimeSinceString()</p>
+            <p class="relative right-0 mt-2 text-blue-600" style="font-size:0.75rem; line-height:.75rem; font-weight: 500;">@timeFirstArrived</p>
         </div>
     </li>
 } else
 {
-    <li class="flex cursor-pointer items-center bg-gray-200 p-4 hover:bg-gray-50" >
-        <div class="ml-6" @onclick=Read>
-            <h3 class="text-sm font-medium text-slate-900">@notifDTO.Title</h3>
-            <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-500">
+    <li class="cursor-pointer flex-col bg-gray-200 p-4 hover:bg-gray-50" >
+        <div class="relative ml-2" @onclick=Read>
+            <h3 class="relative left-0 top-0 text-slate-900" style="font-size:0.75rem; line-height:1rem; font-weight: 500;">@notifDTO.Title</h3>
+            <p class="relative left-0 mt-2 line-clamp-2 text-slate-500" style="font-size:0.75rem; line-height:1.625rem; font-weight: 500;">
                 @notifDTO.Contents
             </p>
-            <p class="mt-2 text-xs font-medium leading-3 text-blue-600">@getTimeSinceString()</p>
+            <p class="relative right-0 mt-2 text-blue-600" style="font-size:0.75rem; line-height:.75rem; font-weight: 500;">@timeFirstArrived</p>
         </div>
     </li>
 }
@@ -27,18 +27,18 @@
 @code {
     [Parameter] public NotificationsDTO notifDTO { get; set; }
     [Parameter] public EventCallback<NotificationsDTO> OnReadCallBack { get; set; }
-    [Parameter] public EventCallback<NotificationsDTO> OnUnreadCallBack { get; set; }
+    private string timeFirstArrived = "Never";
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        await OnUnreadCallBack.InvokeAsync();
+        timeFirstArrived = getTimeSinceString();
+        return base.OnInitializedAsync();
     }
 
     private async Task Read()
     {
         if (!notifDTO.WasOpened)
         {
-            notifDTO.WasOpened = true;
             await OnReadCallBack.InvokeAsync(notifDTO);
         }
     }

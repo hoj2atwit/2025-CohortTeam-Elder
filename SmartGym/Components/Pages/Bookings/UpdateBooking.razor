@@ -1,0 +1,117 @@
+﻿@page "/updatebooking/{uId:int}-{cId:int}-{bId:int}"
+@using SmartGym.Models
+@using SmartGym.Constants.Enums
+@using SmartGym.Services
+@using Microsoft.AspNetCore.Identity
+@inject SmartGym.Services.IBookingService service
+@inject NavigationManager navManager
+
+<PageTitle>Update Booking</PageTitle>
+
+<div>
+    <div>
+        @if (booking == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <div>
+                 <h4 style="font-size:40px;"><b>Update Booking</b></h4>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="CreatedAt" />
+                <input type="hidden" asp-for="ConfirmedAt" />
+                <input type="hidden" asp-for="UpdatedAt" />
+                <hr />
+            </div>
+            <div>
+                <label for="userid">User ID: @booking.UserId</label>
+                <hr />
+            </div>
+            <div>
+                <label for="session">Class Session ID: @booking.ClassSessionId</label>
+                <hr />
+            </div>
+            <div>
+                <label for="datecreated">Created at: @booking.CreatedAt</label>
+                <hr />
+            </div>
+            <div>
+                <label for="dateconfirmed">Confirmed at: @booking.ConfirmedAt</label>
+                <hr />
+            </div>
+            <div>
+                <label for="dateupdated">Updated at: @booking.UpdatedAt</label>
+                <hr />
+            </div>
+            <div>
+                <label for="status">Status: </label>
+                <select @bind=booking.Status name="status" id="status">
+                    <option value="" disabled>Select a status</option>
+                    <option value="0">Pending</option>
+                    <option value="1" selected>Confirmed</option>
+                    <option value="2">Completed</option>
+                    <option value="3">No Show</option>
+                    <option value="4">Expired</option>
+                    <option value="5">Cancelled</option>
+                </select>
+            </div>
+            <button @onclick="() => EditBooking(booking.UserId, booking.ClassSessionId, booking.Id)" class="">[Update]</button>
+            <a href="/viewbookings">Cancel</a>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int uId { get; set; }
+    [Parameter]
+    public int cId { get; set; }
+    [Parameter]
+    public int bId { get; set; }
+    private BookingDTO booking { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        booking = await FindBooking();
+        StateHasChanged();
+    }
+
+    private async Task<BookingDTO> FindBooking()
+    {
+        List<BookingDTO> bookingList;
+        bookingList = await service.GetBookingByUserId(uId);
+
+        foreach (BookingDTO bookingDTO in bookingList)
+        {
+            if (bookingDTO.Id == bId)
+            {
+                return bookingDTO;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Updates a booking
+    /// </summary>
+    /// <param name="uId"></param>
+    /// <param name="cId"></param>
+    /// <param name="bId"></param>
+    /// <returns></returns>
+    private async Task EditBooking(int uId, int cId, int bId)
+    {
+            // TODO: popup error
+            BookingStatus status;
+            status = booking.Status;
+            booking.UserId = uId;
+            booking.ClassSessionId = cId;
+            booking.Id = bId;
+            booking.UpdatedAt = DateTime.Now;
+
+            navManager.NavigateTo("/viewbookings", true);
+        }
+
+}

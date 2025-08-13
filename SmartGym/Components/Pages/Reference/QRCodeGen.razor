@@ -34,10 +34,20 @@
     private void QRCodeGenerator()
     {
         // Create a QR code from the input text
-        GeneratedBarcode myQRCode = QRCodeWriter.CreateQrCode(text);
+        try {
 
-        // Convert the generated QR code to HTML tag
-        qrCode = Convert.ToString(myQRCode.ToHtmlTag());
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ArgumentException("Text can't be empty");
+            }
+
+            GeneratedBarcode myQRCode = QRCodeWriter.CreateQrCode(text);
+
+            // Convert the generated QR code to HTML tag
+            qrCode = Convert.ToString(myQRCode.ToHtmlTag());
+        } catch (Exception e) {
+            Console.WriteLine($"Error: {e.Message}");
+        }
     }
 }
 

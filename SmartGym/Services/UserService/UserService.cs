@@ -15,14 +15,14 @@ public class UserService : IUserService
 	private readonly IMapper _mapper;
 	private readonly UserManager<AppUser> _userManager;
 
-	public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
 	{
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
 		_userManager = userManager;
-	}
+    }
 
-	public async Task<UserDto> CreateUser(UserDto newUserData)
+    public async Task<UserDto> CreateUser(UserDto newUserData)
 	{
 		try
 		{

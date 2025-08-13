@@ -1,0 +1,87 @@
+﻿@page "/viewbookings"
+@using SmartGym.Constants.Enums
+@using SmartGym.Models
+@using SmartGym.Services
+@using Microsoft.AspNetCore.Identity
+@using System.Collections
+@inject SmartGym.Services.IBookingService bookingService
+@inject SmartGym.Services.IUserService userService;
+@inject NavigationManager navManager
+@inject UserManager<AppUser> UserManager
+@attribute [StreamRendering]
+
+<PageTitle>View Bookings</PageTitle>
+
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<div>
+    <h1 style="font-size:40px"><b>List of Bookings</b></h1>
+    <div>
+        <a href="/addnewbooking">Add New Booking</a>
+    </div>
+    @if (bookingList == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table style="width:100%">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Class Session ID</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                    <th>Confirmed At</th>
+                    <th>Updated At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (BookingDTO bookingDto in bookingList)
+                {
+                    <tr>
+                        <td>@bookingDto.User.Name</td>
+                        <td>@bookingDto.ClassSessionId</td>
+                        <td>@((BookingStatus)bookingDto.Status)</td>
+                        <td>@bookingDto.CreatedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
+                        <td>@bookingDto.ConfirmedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
+                        <td>@bookingDto.UpdatedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
+                        <td><button onclick=@(() => DelBooking(bookingDto))>Delete Booking</button></td>
+                        <td><button onclick=@(() => UpdBooking(bookingDto))>Update Booking</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private List<BookingDTO> bookingList = new();
+    private List<UserDto> userList = new();
+    private Dictionary<int, string> uDictionary = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // populate bookingList
+        bookingList = await bookingService.GetAllBookings(true);
+        var bookingIds = bookingList.Select(x => x.UserId).ToList();
+        userList = await userService.GetAllUsers();
+    }
+
+    private Task DelBooking(BookingDTO b)
+    {
+        navManager.NavigateTo($"/deletebooking/{b.UserId}-{b.ClassSessionId}-{b.Id}");
+        return Task.CompletedTask;
+    }
+
+    private Task UpdBooking(BookingDTO b)
+    {
+        navManager.NavigateTo($"/updatebooking/{b.UserId}-{b.ClassSessionId}-{b.Id}");
+        return Task.CompletedTask;
+    }
+}
