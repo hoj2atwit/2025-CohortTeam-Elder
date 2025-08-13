@@ -14,7 +14,7 @@
 					{
 						var imgSrc = $"/lib/db_images/{Trainer.ImageRef}?cachebust={Guid.NewGuid()}";
 						<div
-							class="user-image flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-[#f34f5d] bg-[#f34f5d] text-2xl text-white overflow-hidden">
+							class="user-image flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-primary bg-[#f34f5d] text-2xl text-white overflow-hidden">
 							<img src="@imgSrc" alt="Profile" class="object-cover h-full w-full" />
 						</div>
 					}
@@ -55,15 +55,15 @@
 	<div class="px-4 pb-4">
 		<div class="flex gap-2">
 			<button
-				class="flex-1 bg-[#f34f5d] hover:bg-[#f34f5d-600] text-white text-xs py-2 px-3 rounded-md transition-colors flex items-center justify-center"
+				class="flex-1 bg-primary hover:bg-background text-white text-xs py-2 px-3 rounded-md transition-colors flex items-center justify-center"
 				@onclick:stopPropagation="true" @onclick='() => QuickAction("schedule")'>
-				<span class="mr-1">📅</span>
+				<i class="fa-solid fa-calendar mr-2"></i>
 				Schedule
 			</button>
 			<button
 				class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs py-2 px-2 rounded-md transition-colors flex items-center justify-center"
 				@onclick:stopPropagation="true" @onclick='() => QuickAction("message")'>
-				<span>💬</span>
+				<i class="fa-solid fa-message"></i>
 			</button>
 		</div>
 
