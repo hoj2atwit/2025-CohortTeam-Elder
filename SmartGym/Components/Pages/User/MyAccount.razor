@@ -1,31 +1,39 @@
 @page "/myAccount"
+@using Microsoft.AspNetCore.Components.Authorization
+
 @using Microsoft.AspNetCore.Identity
 @using SmartGym.Constants.Enums
+@using SmartGym.Helpers
 @using SmartGym.Models
+@using SmartGym.Services
+@using System.Security.Claims
 @attribute [StreamRendering]
 @inject UserManager<AppUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService UserService
 
 <PageTitle>My Account</PageTitle>
 
 <h1>My Account</h1>
 
 <h3>Account Information</h3>
-<div>
-    @* <span>First Name: @user.firstName</span>
-<hr/>
-<span>Last Name: @user.lastName</span>
-<hr/>
-<span>Member Since: @user.accountActivationDate</span>
-<hr/>
-<span>Current Status: @user.accountStatus</span> *@
-    <span>Account ID: @user.Id</span>
-    <hr />
-    <span>First Name: @user.Name</span>
-    <hr />
-    <span>Last Name: @user.Email</span>
-    <hr />
-    <span>Membership: @(string.Join(", ", roles))</span>
-</div>
+
+@if (user == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<div>
+		<span>Account ID: @user.Id</span>
+		<hr />
+		<span>First Name: @user.Name</span>
+		<hr />
+		<span>Last Name: @user.Email</span>
+		<hr />
+		<span>Membership: @EnumHelper.GetDisplayName(user.RoleId)</span>
+	</div>
+}
 
 @* <h3>Billing Information</h3>
 <div>
@@ -42,14 +50,21 @@
 
 @code {
 
-    private AppUser user;
-    private IList<string> roles = new List<string>();
-    //private Payment payment;
-    protected override async Task OnInitializedAsync()
-    {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        //await Task.Delay(500);
-        @* user = new User {
+	private UserDto user;
+	private IList<string> roles = new List<string>();
+	//private Payment payment;
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var userIdString = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+		if (int.TryParse(userIdString, out int userId))
+		{
+			user = await UserService.GetUserById(userId);
+		}
+
+		// Simulate asynchronous loading to demonstrate streaming rendering
+		//await Task.Delay(500);
+		@* user = new User {
             firstName = "Johnny",
             lastName = "Danger",
             emailAddress = "dangerj@test.com",
@@ -58,22 +73,15 @@
             accountStatus = "Active",
             accountType = "Standard"
         }; *@
-        user = new AppUser
-        {
-            Id = 23456789,
-            FirstName = "Johnny",
-            LastName = "Danger",
-            Email = "dangerj@test.com"
-        };
-        @* payment = new Payment {
+		@* payment = new Payment {
             cardholderName = "Johnathan Maximus Decimus Meridius Danger",
             cardNumber = "1234987645670000",
             monthExpiry = 01,
             yearExpiry = 2029,
             secCode = 404
         }; *@
-    }
-    @* private class Payment {
+	}
+	@* private class Payment {
             public string cardholderName {get; set;}
             public string cardNumber {get; set;}
             public int monthExpiry {get; set;}
