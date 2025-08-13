@@ -44,8 +44,9 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// Removes Item from cart Dictionary
         /// </summary>
         /// <param name="id">ItemId of menuItem desired to remove.</param>
-        public void removeItem(int id)
+        public void removeItem(int id, int oldAmount)
         {
+            CartItems[id].Item.stock += oldAmount;
             CartItems.Remove(id);
             updateTotal();
         }
@@ -57,15 +58,20 @@ namespace SmartGym.Components.UIClasses.Cafe
         /// <param name="Item"> MenuItem selected by user </param>
         public void addItem(MenuItemModel Item)
         {
-            if (CartItems.ContainsKey(Item.ItemId))
+            if (Item.stock > 0) 
             {
-                CartItems[Item.ItemId].increaseAmount();
+                if (CartItems.ContainsKey(Item.ItemId))
+                {
+                    CartItems[Item.ItemId].increaseAmount();
+                }
+                else
+                {
+                    CartItems.Add(Item.ItemId, new CartItemModel(Item, 1));
+                    Item.stock -= 1;
+                }
+                updateTotal();
             }
-            else
-            {
-                CartItems.Add(Item.ItemId, new CartItemModel(Item, 1));
-            }
-            updateTotal();
+            
         }
 
         /// <summary>
@@ -172,12 +178,28 @@ namespace SmartGym.Components.UIClasses.Cafe
                 CurrentPriceString = string.Format("{0:C}", CurrentPrice);
             }
 
+            public bool validateStock(int oldAmount) 
+            {
+                if (Item.stock + oldAmount < Amount)
+                {
+                    Amount = Item.stock + oldAmount;
+                    Item.stock = 0;
+                    return false;
+                }
+                else 
+                {
+                    Item.stock -= (Amount - oldAmount);
+                }
+                    return true;
+            }
+
             /// <summary>
             /// Increase amount of MenuItem desired by 1. Updates price accordingly.
             /// </summary>
             public void increaseAmount()
             {
                 Amount++;
+                Item.stock -= 1;
                 updatePrice();
             }
 
@@ -187,6 +209,7 @@ namespace SmartGym.Components.UIClasses.Cafe
             public void reduceAmount()
             {
                 Amount--;
+                Item.stock += 1;
                 updatePrice();
             }
 
