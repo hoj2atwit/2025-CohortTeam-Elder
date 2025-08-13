@@ -14,17 +14,17 @@
 
 
 <PageTitle>View Members</PageTitle>
-<h1 class="text-5xl mb-4"><b>List of Members</b></h1>
+<h1 class="">List of Members</h1>
 <div class="contained">
 	
 	<div>
 		<a href="/addnewmember" onclick="location.href='/addnewmember'; return false;"
-			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
-			<i class="fa-solid fa-user-plus"></i> Create New Member
+		   class="inline-block bg-primary-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-user-plus mr-3"></i> Create New Member
 		</a>
 		<a href="/members/backend-edit" onclick="location.href='/members/backend-edit'; return false;"
-			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
-			Edit User Images
+			class="inline-block bg-secondary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-image-portrait mre-3"></i>Edit User Images
 		</a>
 	</div>
 	<table id="userTable"class="display text-left text-xl">
@@ -45,15 +45,7 @@
 			{
 				foreach (UserDto userDto in userList)
 				{
-					@if(userIndex % 2 != 0)
-					{
-						evenRow = "text-black bg-white";
-					}
-					else
-					{
-						evenRow = "text-black bg-primary-100";
-					}
-					<tr class="@evenRow">
+					<tr class="bg-text">
 						<td>@userDto.FirstName</td>
 						<td>@userDto.LastName</td>
 						<td>@userDto.Email</td>
@@ -63,13 +55,11 @@
 						<td>
 							<button class="bg-red-500 text-white px-2 py-1 rounded" onclick=@(() => DeleteUser(userDto))>
 							 <i class="fa-solid fa-user-minus mr-3"></i> Delete Member
-								Delete
 							</button>
 						</td>
 						<td>
-							<button class="bg-blue-500 text-white px-2 py-1 rounded" onclick=@(() => UpdateUser(userDto))>
+							<button class="bg-accent text-white px-2 py-1 rounded" onclick=@(() => UpdateUser(userDto))>
 							<i class="fa-solid fa-pen-to-square mr-3"></i> Update Member	
-							Update
 							</button>
 						</td>
 					</tr>
@@ -89,9 +79,6 @@
 
 
 @code {
-    private int userIndex = 0;
-    private int isEven = 0;
-    private string evenRow = "text-white bg-primary";
     private List<UserDto> userList = new();
 
 	protected override async Task OnInitializedAsync()

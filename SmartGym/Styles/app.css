@@ -33,7 +33,7 @@ body {
 label{
   font-weight:bold;
 }
-select {
+select, input {
   margin-left:15px;
   padding: .5em 0;
   border: 1px solid black;
