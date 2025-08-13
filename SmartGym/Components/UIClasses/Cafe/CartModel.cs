@@ -198,9 +198,12 @@ namespace SmartGym.Components.UIClasses.Cafe
             /// </summary>
             public void increaseAmount()
             {
-                Amount++;
-                Item.stock -= 1;
-                updatePrice();
+                if (Item.stock > 0) 
+                {
+                    Amount++;
+                    Item.stock -= 1;
+                    updatePrice();
+                }
             }
 
             /// <summary>
