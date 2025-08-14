@@ -1,25 +1,27 @@
-@using SmartGym.Models
+﻿@using SmartGym.Models
 @using SmartGym.Services
 @inject IClassService ClassService
 @inject IUserService UserService
 @inject IDashboardService DashboardService
 
-<div class="ml-6 h-full overflow-y-auto ">
+@page "/dashboard"
+
+<div class="ml-6 h-full overflow-y-auto">
     <h1 class="text-2xl font-bold">Dashboard</h1>
     <div class="flex gap-6 mt-4 ">
-        <div class="border-[#f34f5d] border-2 p-4 bg-white rounded-[10px]">
+        <div class="border-primary border-2 p-4 bg-white rounded-[10px]">
             Active Members Today: <br>
             <span class="text-2xl text-green-500">100</span>
         </div>
-        <div class="border-[#f34f5d] border-2 p-4 bg-white rounded-[10px]">
+        <div class="border-background border-2 p-4 bg-white rounded-[10px]">
             Class Occupancy: <br>
             <span class="text-2xl text-green-500">75%</span>
         </div>
-        <div class="border-[#f34f5d] border-2 p-4 bg-white rounded-[10px]">
+        <div class="border-secondary border-2 p-4 bg-white rounded-[10px]">
             Peak Hours: <br>
             <span class="text-2xl !text-green-500">5 PM - 7 PM</span>
         </div>
-        <div class="border-[#f34f5d] border-2 p-4 bg-white rounded-[10px]">
+        <div class="border-text border-2 p-4 bg-white rounded-[10px]">
             Cafe Orders: <br>
             <span class="text-2xl text-green-500">58</span>
             @* <span class="text-2xl text-green-500">58<br></span>
@@ -44,14 +46,14 @@
     
     <!-- Upcoming Classes -->
     <div class="flex-1">
-        <h2 class="text-xl font-semibold mb-2">Upcoming Classes</h2>
-        <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+        <h2 class="mb-2 text-xl font-semibold">Upcoming Classes</h2>
+        <table class="min-w-full rounded-lg border border-gray-200 bg-white">
             <thead>
                 <tr class="bg-gray-100">
-                    <th class="py-2 px-4 border-b text-left">Class</th>
-                    <th class="py-2 px-4 border-b text-left">Trainer</th>
-                    <th class="py-2 px-4 border-b text-left">Time</th>
-                    <th class="py-2 px-4 border-b text-left">Spots Left</th>
+                    <th class="border-b px-4 py-2 text-left">Class</th>
+                    <th class="border-b px-4 py-2 text-left">Trainer</th>
+                    <th class="border-b px-4 py-2 text-left">Time</th>
+                    <th class="border-b px-4 py-2 text-left">Spots Left</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,17 +62,17 @@
                     @foreach (var classItem in upcomingClasses)
                     {
                         <tr>
-                            <td class="py-2 px-4 border-b">@classItem.Name</td>
-                            <td class="py-2 px-4 border-b">@GetTrainerName(classItem.TrainerId)</td>
-                            <td class="py-2 px-4 border-b">@classItem.Schedule.ToString("MMM dd, h:mm tt")</td>
-                            <td class="py-2 px-4 border-b">@classItem.MaxCapacity</td>
+                            <td class="border-b px-4 py-2">@classItem.Name</td>
+                            <td class="border-b px-4 py-2">@GetTrainerName(classItem.TrainerId)</td>
+                            <td class="border-b px-4 py-2">@classItem.Schedule.ToString("MMM dd, h:mm tt")</td>
+                            <td class="border-b px-4 py-2">@classItem.MaxCapacity</td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="4" class="py-4 px-4 text-center text-gray-500">
+                        <td colspan="4" class="px-4 py-4 text-center text-gray-500">
                             @if (allClasses.Any())
                             {
                                 <text>No upcoming classes scheduled</text>
@@ -89,51 +91,51 @@
 
     <!-- Charts Row -->
     <div class="mt-8 flex gap-6">
-        <div class="flex-1 bg-gray-100 border border-gray-300 rounded-lg h-48 flex items-center justify-center text-gray-500">
+        <div class="flex h-48 flex-1 bg-gray-100 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-500">
             [Revenue Chart goes here]
         </div>
-        <div class="flex-1 bg-gray-100 border border-gray-300 rounded-lg h-48 flex items-center justify-center text-gray-500">
+        <div class="flex h-48 flex-1 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-500">
             [Attendance Chart goes here]
         </div>
     </div>
 
     <div class="mt-6 p-4">
-        <div class="view-user-head flex gap-4 items-center">
+        <div class="view-user-head flex items-center gap-4">
             <h2 class="text-lg font-semibold">View Users</h2>
-            <button class="bg-blue-500 text-white px-4 py-2 rounded">Add User</button>
+            <button class="bg-primary-500 text-white px-4 py-2 rounded"><i class="fa-solid fa-user-plus"></i>Add User</button>
             <input type="text" placeholder="Search Users" class="border rounded px-2 py-1" />
         </div>
 
-        <div class="overflow-x-auto mt-4">
-            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+        <div class="mt-4 overflow-x-auto">
+            <table class="min-w-full rounded-lg border border-gray-200 bg-white">
                 <thead>
                     <tr class="bg-gray-100">
-                        <th class="py-2 px-4 border-b text-left">Name</th>
-                        <th class="py-2 px-4 border-b text-left">Email</th>
-                        <th class="py-2 px-4 border-b text-left">Role</th>
-                        <th class="py-2 px-4 border-b text-left">Status</th>
-                        <th class="py-2 px-4 border-b text-left">Actions</th>
+                        <th class="border-b px-4 py-2 text-left">Name</th>
+                        <th class="border-b px-4 py-2 text-left">Email</th>
+                        <th class="border-b px-4 py-2 text-left">Role</th>
+                        <th class="border-b px-4 py-2 text-left">Status</th>
+                        <th class="border-b px-4 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="py-2 px-4 border-b">Komal Singh</td>
-                        <td class="py-2 px-4 border-b">komal@example.com</td>
-                        <td class="py-2 px-4 border-b">Admin</td>
-                        <td class="py-2 px-4 border-b text-green-600">Active</td>
-                        <td class="py-2 px-4 border-b">
+                        <td class="border-b px-4 py-2">Komal Singh</td>
+                        <td class="border-b px-4 py-2">komal@example.com</td>
+                        <td class="border-b px-4 py-2">Admin</td>
+                        <td class="border-b px-4 py-2 text-green-600">Active</td>
+                        <td class="border-b px-4 py-2">
                             <button class="text-blue-500 hover:underline">Edit</button>
-                            <button class="text-red-500 hover:underline ml-2">Delete</button>
+                            <button class="ml-2 text-red-500 hover:underline">Delete</button>
                         </td>
                     </tr>
                     <tr>
-                        <td class="py-2 px-4 border-b">John Doe</td>
-                        <td class="py-2 px-4 border-b">john@example.com</td>
-                        <td class="py-2 px-4 border-b">Member</td>
-                        <td class="py-2 px-4 border-b text-green-600">Active</td>
-                        <td class="py-2 px-4 border-b">
+                        <td class="border-b px-4 py-2">John Doe</td>
+                        <td class="border-b px-4 py-2">john@example.com</td>
+                        <td class="border-b px-4 py-2">Member</td>
+                        <td class="border-b px-4 py-2 text-green-600">Active</td>
+                        <td class="border-b px-4 py-2">
                             <button class="text-blue-500 hover:underline">Edit</button>
-                            <button class="text-red-500 hover:underline ml-2">Delete</button>
+                            <button class="ml-2 text-red-500 hover:underline">Delete</button>
                         </td>
                     </tr>
                     <!-- Add more rows as needed -->
@@ -144,10 +146,19 @@
     </div>
 
 @code {
+    [CascadingParameter]
+    public MainLayout layout { get; set; }
+
     private List<ClassDTO> allClasses = new();
     private List<ClassDTO> upcomingClasses = new();
     private List<UserDto> allUsers = new();
     private List<CheckinDataPoint> checkinData = new();
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        layout.setupNavTitleNoSearch("Dashboard");
+        return base.OnAfterRenderAsync(firstRender);
+    }
 
     protected override async Task OnInitializedAsync()
     {

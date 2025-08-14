@@ -1,0 +1,22 @@
+﻿<div class="home-bar absolute top-0 right-0 z-2 flex justify-self-end items-center">
+	<img src="lib/images/logo.svg" class="logo" />]
+	<ul class="home-nav list-none flex gap-4">
+		<li><a href="#" class="text-white hover:bg-violet-600">Locations</a></li>
+		<li><a href="#" class="text-white hover:bg-violet-600">Training</a></li>
+		<li><a href="#" class="text-white hover:bg-violet-600">Nutriton</a></li>
+	</ul>
+	<button class="p-5 my-5 bg-primary text-xl text-white hover:bg-violet-600 hover:cursor-pointer focus:bg-violet-600" style="height:7vh;"
+	onclick="GoToLogin">
+		<i class="fa-regular fa-circle-user mr-3"></i>
+		Login
+	</button>
+</div>
+
+@code {
+	/*@TODO: Add action to take users to the dashboard when clicking on login*/
+	private string loginText = "Logging you in...";
+	private void GoToLogin()
+	{
+		Console.WriteLine($"{loginText}");
+	}
+}

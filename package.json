@@ -1,6 +1,10 @@
 {
-  "devDependencies": {
-    "@tailwindcss/cli": "^4.1.11",
-    "tailwindcss": "^4.1.11"
-  }
+    "devDependencies": {
+        "@tailwindcss/cli": "^4.1.11",
+        "tailwindcss": "^4.1.11"
+    },
+    "scripts": {
+        "build:css": "npx @tailwindcss -i ./SmartGym/Styles.app.css -o ./SmartGym/wwwroot/app.css",
+        "watch:css": "npx @tailwindcss -i ./SmartGym/Styles.app.css -o ./SmartGym/wwwroot/app.css --watch"
+    }
 }

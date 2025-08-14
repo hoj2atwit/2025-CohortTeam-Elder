@@ -9,79 +9,111 @@
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navManager
 @inject UserManager<AppUser> UserManager
+@inject IJSRuntime JS
 @attribute [StreamRendering]
 
+
 <PageTitle>View Members</PageTitle>
-
-<style>
-    table,
-    th,
-    td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-</style>
-
-<div>
-    <h1 style="font-size:40px"><b>List of Members</b></h1>
-    <div>
-        <a href="/addnewmember">Add New Member</a>
-    </div>
-    @if (userList == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <table style="width:100%">
-            <thead>
-                <tr>
-                    <th>FName</th>
-                    <th>LName</th>
-                    <th>Email</th>
-                    <th>Birthday</th>
-                    <th>Membership Plan</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Display each member -->
-                @foreach (UserDto userDto in userList)
-                {
-                    <tr>
-                        <td>@userDto.FirstName</td>
-                        <td>@userDto.LastName</td>
-                        <td>@userDto.Email</td>
-                        <td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
-                        <td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
-                        <td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
-                        <td><button onclick=@(() => DeleteUser(@userDto))>Delete Member</button></td>
-                        <td><button onclick=@(() => UpdateUser(@userDto))>Update Member</button></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+<h1 class="">List of Members</h1>
+<div class="contained">
+	
+	<div>
+		<a href="/addnewmember" onclick="location.href='/addnewmember'; return false;"
+		   class="inline-block bg-primary-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-user-plus mr-3"></i> Create New Member
+		</a>
+		<a href="/members/backend-edit" onclick="location.href='/members/backend-edit'; return false;"
+			class="inline-block bg-secondary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-image-portrait mre-3"></i>Edit User Images
+		</a>
+	</div>
+	<table id="userTable"class="display text-left text-xl">
+		<thead class="bg-background text-white">
+			<tr>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Email</th>
+				<th>Birthday</th>
+				<th>Account Type</th>
+				<th>Status</th>
+				<th>Delete</th>
+				<th>Update</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (userList != null)
+			{
+				foreach (UserDto userDto in userList)
+				{
+					<tr class="bg-text">
+						<td>@userDto.FirstName</td>
+						<td>@userDto.LastName</td>
+						<td>@userDto.Email</td>
+						<td>@userDto.DateOfBirth.ToString("MM/dd/yyyy")</td>
+						<td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
+						<td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
+						<td>
+							<button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 hover:cursor-pointer" onclick=@(() => DeleteUser(userDto))>
+							 <i class="fa-solid fa-user-minus mr-3"></i> Delete Member
+							</button>
+						</td>
+						<td>
+							<button class="bg-accent text-white px-2 py-1 rounded hover:bg-background hover:cursor-pointer" onclick=@(() => UpdateUser(userDto))>
+							<i class="fa-solid fa-pen-to-square mr-3"></i> Update Member	
+							</button>
+						</td>
+					</tr>
+				}
+			}
+			else
+			{
+				<tr>
+					<td colspan="8"><em>Loading...</em></td>
+				</tr>
+			}
+		</tbody>
+	</table>
 </div>
+
+    
+
 
 @code {
     private List<UserDto> userList = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Populate userList
-        userList = await service.GetAllUsers();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		userList = await service.GetAllUsers();
+	}
 
-    private Task DeleteUser(UserDto u)
-    {
-        navManager.NavigateTo($"/deletemember/{u.Id}");
-        return Task.CompletedTask;
-    }
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (userList != null && userList.Any())
+		{
+			await JS.InvokeVoidAsync("setupDataTable");
+		}
+	}
 
-    private Task UpdateUser(UserDto u)
-    {
-        navManager.NavigateTo($"/updatemember/{u.Id}");
-        return Task.CompletedTask;
-    }
+	private Task DeleteUser(UserDto u)
+	{
+		navManager.NavigateTo($"/deletemember/{u.Id}");
+		return Task.CompletedTask;
+	}
+
+	private Task UpdateUser(UserDto u)
+	{
+		navManager.NavigateTo($"/updatemember/{u.Id}");
+		return Task.CompletedTask;
+	}
 }
+
+<script>
+	function setupDataTable() {
+		if ($.fn.DataTable.isDataTable('#userTable')) {
+			$('#userTable').DataTable().destroy();
+		}
+		$('#userTable').DataTable({
+			paging: false
+		});
+	}
+</script>

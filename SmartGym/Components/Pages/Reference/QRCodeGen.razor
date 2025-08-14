@@ -2,37 +2,57 @@
 @using IronBarCode
 @using SmartGym.Models
 @using SmartGym.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims;
 @inject SmartGym.Services.IUserService service
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 
 <PageTitle>QR Code Generator</PageTitle>
-
-<div class="row">
-    <div class="col">
-        <h4>Welcome to Blazor QR Code Generator</h4>
-        <p>Enter the value to Generate QR Code:</p>
-        <!-- Input field for QR code text -->
-        <input @bind="text" />
-        <button @onclick="QRCodeGenerator">[Generate QR Code]</button>
-    </div>
-    <div class="col">
+<h1>QR Code</h1>
+<section class="contained">
+    <section class="flex items-center justify-center min-h-[80vh]">
         <!-- Button to trigger QR code generation -->
-        <p style="font-size:20px"><b>Generated QR Code:</b></p>
-
         @((MarkupString)qrCode)
-    </div>
-</div>
+    </section>
+</section>
 
 @code {
 
     // Variable to hold the generated QR code HTML
-    private string qrCode = "";
+    private string? userName;
+    private int id = 1;
+    private List<string> defaultSvgs = new List<string> { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
 
-    // Variable to hold user input text
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            userName = user.Identity.Name;
+            id = int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        }
+
+        QRCodeGenerator();
+    }
+
+    private string qrCode = "";
     private string text = "";
 
     // Method to generate QR code from user input
     private void QRCodeGenerator()
     {
+        //UserDto userdto = await service.GetUserById(id);
+        Random random = new Random();
+        long first = random.NextInt64(5000000000, 1000000000000);
+        long second = random.NextInt64(5000000000, 1000000000000);
+        long third = random.NextInt64(5000000000, 1000000000000);
+        text = $"{navigationManager.BaseUri}QRCheckin/%{first}%{userName}${second}${id}&{third}&/";
+        //Set Random ints to User DB to compare to for checkin and login.
         // Create a QR code from the input text
         try {
 
@@ -44,6 +64,7 @@
             GeneratedBarcode myQRCode = QRCodeWriter.CreateQrCode(text);
 
             // Convert the generated QR code to HTML tag
+        StateHasChanged();
             qrCode = Convert.ToString(myQRCode.ToHtmlTag());
         } catch (Exception e) {
             Console.WriteLine($"Error: {e.Message}");

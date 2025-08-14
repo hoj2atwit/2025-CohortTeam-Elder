@@ -7,77 +7,90 @@
 @inject IOrderService orderService
 @inject NavigationManager navigationManager
 @attribute [StreamRendering]
-<title> Viewing Orders </title>
-<div class="sticky top-0 z-10 bg-[#f3f4f6]" style="width:100%;">
-    <SearchNavBar title=@("Viewing All Orders") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateView(); })" />
+<h1>View Orders</h1>
+<div class="flex contained">
+	<label> Filter by Status: </label>
+	<InputSelect ValueExpression="@(() => orderFilter)" Value=@orderFilter ValueChanged="@((OrderStatus e) => { orderFilter = e; refreshOrders(); })">
+		@foreach (OrderStatus enumVal in OrderStatus.GetValues(typeof(OrderStatus)))
+		{
+			<option value=@enumVal> @enumVal.ToString() </option>
+		}
+	</InputSelect>
 </div>
-<div class="flex">
-    <label> Filter by Status: </label>
-    <InputSelect ValueExpression="@(() => orderFilter)" Value=@orderFilter ValueChanged="@((OrderStatus e) => { orderFilter = e; refreshOrders(); })">
-        @foreach (OrderStatus enumVal in OrderStatus.GetValues(typeof(OrderStatus)))
-        {
-            <option value=@enumVal> @enumVal.ToString() </option>
-        }
-    </InputSelect>
-</div>
-<div class="overflow flex w-full max-w-full flex-wrap gap-4">
+<section class="contained">
+	<div class="overflow flex w-full max-w-full flex-wrap gap-4">
 
-    @if (orders == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            @foreach (OrderDTO orderDTO in orders)
-            {
-                @*Replace with orderCard Component*@
-                <OrderCard currOrder=@orderDTO EditStatusOrderCallBack=updateOrder ViewOrderCallBack=editOrder DeleteOrderCallBack=deleteOrder/>
-            }
-        }
+		@if (orders == null)
+		{
+			<LoadingLayout />
+		}
+		else
+		{
+			@foreach (OrderDTO orderDTO in orders)
+			{
+				@*Replace with orderCard Component*@
+				<OrderCard currOrder=@orderDTO EditStatusOrderCallBack=updateOrder ViewOrderCallBack=editOrder DeleteOrderCallBack=deleteOrder />
+			}
+		}
 
-</div>
-
+	</div>
+</section>
 @code {
-    private string searchText = "";
-    private List<OrderDTO>? orders;
-    public OrderStatus orderFilter { get; set; } = OrderStatus.Pending;
+	[CascadingParameter]
+	public MainLayout layout { get; set; }
+	private string searchText = "";
+	private List<OrderDTO>? orders;
+	public OrderStatus orderFilter { get; set; } = OrderStatus.Pending;
 
-    private async Task refreshOrders()
+	public async Task search(string s)
+	{
+		searchText = s;
+		//Do whatever you want to do with the search bar in your update function
+		updateView();
+	}
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        orders = await orderService.GetAllOrdersByStatus(orderFilter);
-        updateView();
+        await layout.setupSearch("Viewing All Orders", new EventCallback<string>(this, search));
     }
 
     protected override async Task OnInitializedAsync()
     {
+        await layout.setupSearch("Viewing All Orders", new EventCallback<string>(this, search));
         await refreshOrders();
     }
 
-    public void updateView()
-    {
-        StateHasChanged();
-    }
+	private async Task refreshOrders()
+	{
+		orders = await orderService.GetAllOrdersByStatus(orderFilter);
+		updateView();
+	}
 
-    public void editOrder(OrderDTO order)
-    {
-        navigationManager.NavigateTo($"/cafe/{order.UserId}-{order.Id}");
-    }
+	public void updateView()
+	{
+		StateHasChanged();
+	}
 
-    public async Task updateOrder(OrderDTO order)
-    {
-        OrderPatchDTO patch = new OrderPatchDTO();
-        patch.Notes = order.Notes;
-        patch.OrderCartList = order.OrderCartList;
-        patch.OrderStatus = order.OrderStatus;
-        patch.TotalPrice = order.TotalPrice;
-        patch.UpdatedAt = DateTime.Now;
-        await orderService.UpdateOrder(order.Id, patch);
-        await refreshOrders();
-    }
+	public void editOrder(OrderDTO order)
+	{
+		navigationManager.NavigateTo($"/cafe/{order.UserId}-{order.Id}");
+	}
 
-    public async Task deleteOrder(OrderDTO order)
-    {
-        await orderService.DeleteOrder(order.Id);
-        await refreshOrders();
-    }
+	public async Task updateOrder(OrderDTO order)
+	{
+		OrderPatchDTO patch = new OrderPatchDTO();
+		patch.Notes = order.Notes;
+		patch.OrderCartList = order.OrderCartList;
+		patch.OrderStatus = order.OrderStatus;
+		patch.TotalPrice = order.TotalPrice;
+		patch.UpdatedAt = DateTime.Now;
+		await orderService.UpdateOrder(order.Id, patch);
+		await refreshOrders();
+	}
+
+	public async Task deleteOrder(OrderDTO order)
+	{
+		await orderService.DeleteOrder(order.Id);
+		await refreshOrders();
+	}
 }

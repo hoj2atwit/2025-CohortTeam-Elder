@@ -3,23 +3,36 @@
 @using System.Security.Claims;
 
 <div class="top-row navbar navbar-dark ps-3">
-    <div class="sidebar-header flex gap-4 p-6 pt-12">
-        <NavLink class="!text-white" href="myAccount">
-            <div class="user-image flex h-[50px] w-[50px] items-center justify-center rounded-full border-2 border-[#f34f5d] bg-[#f34f5d] p-8 text-2xl text-white">
-                @userInitial
-            </div>
-        </NavLink>
-        <div class="flex flex-col items-center justify-center">
-            @if (userName != null)
-            {
-                <h2 class="text-sm !text-white">Welcome back, @firstName @lastName</h2>
-            }
-            else
-            {
-                <h2 class="text-sm !text-white">Welcome</h2>
-            }
-        </div>
-    </div>
+	<div class="sidebar-header flex gap-4 p-6 pt-12">
+		<NavLink class="!text-white" href="myAccount">
+
+			@if (!string.IsNullOrEmpty(imgRef) && !defaultSvgs.Contains(imgRef))
+			{
+				var imgSrc = $"/lib/db_images/{imgRef}?cachebust={Guid.NewGuid()}";
+				<div
+					class="user-image flex h-[52px] w-[52px] items-center justify-center rounded-full border-2 border-[#f34f5d] bg-[#f34f5d] text-2xl text-white overflow-hidden">
+					<img src="@imgSrc" alt="Profile" class="object-cover h-full w-full" />
+				</div>
+			}
+			else
+			{
+				<div
+					class="user-image flex h-[50px] w-[50px] items-center justify-center rounded-full border-2 border-[#f34f5d] bg-[#f34f5d] p-8 text-2xl text-white">
+					@userInitial
+				</div>
+			}
+		</NavLink>
+		<div class="flex flex-col items-center justify-center">
+			@if (userName != null)
+			{
+				<span class="text-sm !text-white">Welcome back, @firstName @lastName</span>
+			}
+			else
+			{
+				<span class="text-sm !text-white">Welcome</span>
+			}
+		</div>
+	</div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
@@ -30,73 +43,101 @@
             toggler.click();
         }
     });">
-    <nav class="nav flex flex-col gap-2 text-white">
+	<nav class="nav flex flex-col gap-2 text-white">
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/home" Match="NavLinkMatch.All">
+				<i class="fa-solid fa-home pr-5"></i>Homepage
+			</NavLink>
+		</div>
+
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard" Match="NavLinkMatch.All">
+				<i class="fa-solid fa-chart-line"></i>Dashboard
+			</NavLink>
+		</div>
+
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/qrcode">
+				<i class="fa-solid fa-qrcode"></i>QR Code
+			</NavLink>
+		</div>
+		
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/classes">
+				<i class="fa-solid fa-dumbbell pr-5"></i>Classes
+			</NavLink>
+		</div>
+
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href=@($"/cafe/{id}-0")>
+				<i class="fa-solid fa-utensils pr-5"></i>Cafe
+			</NavLink>
+		</div>
+
         <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard" Match="NavLinkMatch.All">Dashboard
-            </NavLink>
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/members"
+				onclick="location.href='/members'; return false;">
+				<i class="fa-solid fa-users pr-5"></i>Members
+			</NavLink>
         </div>
 
         <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href="/qrcode">QR Code</NavLink>
+				<NavLink class="nav-link px-3 text-lg !text-white" href="/viewbookings" onclick="location.href='/viewbookings'; return false;">
+				<i class="fa-solid fa-book pr-5"></i>Bookings
+			</NavLink>
         </div>
 
-        <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href="/members">Members</NavLink>
-        </div>
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/view-orders">
+				<i class="fa-solid fa-list pr-5"></i>View Orders
+			</NavLink>
+		</div>
 
-        <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href="/classes">Classes</NavLink>
-        </div>
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/trainers">
+				<i class="fa-solid fa-dumbbell pr-5"></i>Trainers
+			</NavLink>
+		</div>
 
-        <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href="/viewbookings">Bookings</NavLink>
-        </div>
+		<div class="nav-item">
+			<NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/settings">
+				<i class="fa-solid fa-gear pr-5"></i>Settings
+			</NavLink>
+		</div>
 
-        <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href=@($"/cafe/{id}-0")>Cafe</NavLink>
-        </div>
+		<div class="nav-item">
+			<form method="post" action="/auth/logout"><button type="submit" value="Submit"
+					class="nav-link cursor-pointer px-3 text-lg !text-white">
+					<i class="fa-solid fa-arrow-right-from-bracket pr-5"></i>ogout
+				</button></form>
+		</div>
 
-        <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href="/view-orders">View Orders</NavLink>
-        </div>
-
-        <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/trainers">Trainers</NavLink>
-        </div>
-
-        <div class="nav-item">
-            <NavLink class="nav-link px-3 text-lg !text-white" href="/dashboard/settings">Settings</NavLink>
-        </div>
-
-        <div class="nav-item">
-            <form method="post" action="/auth/logout"><button type="submit" value="Submit"
-                    class="nav-link cursor-pointer px-3 text-lg !text-white">
-                    Logout
-                </button></form>
-        </div>
-
-    </nav>
+	</nav>
 </div>
 
 @code {
-    private string? userName;
-    private string? firstName;
-    private string? lastName;
-    private string? id;
-    private string? userInitial;
+	private string? userName;
+	private string? firstName;
+	private string? lastName;
+	private string? id;
+	private string? imgRef;
+	private string? userInitial;
+	private List<string> defaultSvgs = new List<string> { "manager.svg", "staff.svg", "user.svg", "trainer.svg" };
 
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
 
-        if (user.Identity != null && user.Identity.IsAuthenticated)
-        {
-            userName = user.Identity.Name;
-            id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            firstName = user.FindFirst("FirstName")?.Value;
-            lastName = user.FindFirst("LastName")?.Value;
-            userInitial = firstName?.FirstOrDefault().ToString().ToUpper();
-        }
-    }
+		if (user.Identity != null && user.Identity.IsAuthenticated)
+		{
+			userName = user.Identity.Name;
+			id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			firstName = user.FindFirst("FirstName")?.Value;
+			lastName = user.FindFirst("LastName")?.Value;
+			userInitial = firstName?.FirstOrDefault().ToString().ToUpper();
+			imgRef = user.FindFirst("ImageRef")?.Value;
+			
+		}
+	}
 }

@@ -82,7 +82,21 @@ public class UserService : IUserService
 		try
 		{
 			var userEntity = await _unitOfWork.UserRepository.GetAsync(id);
-			return _mapper.Map<UserDto>(userEntity);
+			if (userEntity == null)
+				return null;
+
+			var userDto = _mapper.Map<UserDto>(userEntity);
+
+			// Get the single role from UserManager
+			var roles = await _userManager.GetRolesAsync(userEntity);
+			if (roles != null && roles.Count > 0)
+			{
+				var roleName = roles[0];
+				var roleIdNullable = EnumHelper.GetRoleIdFromName(roleName);
+				userDto.RoleId = roleIdNullable.HasValue ? roleIdNullable.Value : RoleId.Unknown;
+			}
+
+			return userDto;
 		}
 		catch (Exception ex)
 		{

@@ -12,171 +12,172 @@
 
 <PageTitle>Update Member</PageTitle>
 
-<div>
-    <div>
-        @if (user == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <div>
-                <h4 style="font-size:40px;"><b>Update Member</b></h4>
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="CreatedDate" />
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div>
-                    <label asp-for="Input.FirstName">First Name: </label>
-                    <input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true"
-                        placeholder="@user.FirstName" />
-                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-                </div>
-                <div>
-                    <label asp-for="Input.LastName">Last Name: </label>
-                    <input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true"
-                        placeholder="@user.LastName" />
-                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
-                </div>
-                <div>
-                    <label asp-for="Input.Email">Email: </label>
-                    <input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username"
-                        aria-required="true" placeholder="@user.Email" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div>
-                    <label for="dob">DOB: </label>
-                    <input @bind=DateOfBirth type="date" id="dob" name="DOB">
-                </div>
-                <div>
-                    <label for="plans">Membership Plan: </label>
-                    <select @bind=Role name="plans" id="plans">
-                        <option value="" disabled selected>Select a plan</option>
-                        <option value="0">Member</option>
-                        <option value="1">MemberPlus</option>
-                        <option value="2">MemberPremium</option>
-                        <option value="3">Staff</option>
-                        <option value="4">Trainer</option>
-                        <option value="5">Manager</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="status">Status: </label>
-                    <select @bind=Status name="status" id="status">
-                        <option value="0" disabled selected>Select a status</option>
-                        <option value="1">Active</option>
-                        <option value="2">Inactive</option>
-                    </select>
-                </div>
-                <button @onclick="() => EditMember(id)" class="">[Update]</button>
-                <a href="/members">Cancel</a>
-            </div>
-        }
-    </div>
-</div>
+
+@if (user == null)
+{
+	<LoadingLayout />
+}
+else
+{
+		<h1 class="mb-4" id="title">Update Member</h1>
+      <section class="contained text-xl bg-text" aria-labelledby="title">
+		<input type="hidden" asp-for="Id" />
+		<input type="hidden" asp-for="CreatedDate" />
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<p>
+			<label asp-for="Input.FirstName">First Name: </label>
+			<input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true"
+				   placeholder="@user.FirstName" />
+			<span asp-validation-for="Input.FirstName" class="text-danger"></span>
+		</p>
+		<p>
+			<label asp-for="Input.LastName">Last Name: </label>
+			<input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true"
+				   placeholder="@user.LastName" />
+			<span asp-validation-for="Input.LastName" class="text-danger"></span>
+		</p>
+		<p>
+			<label asp-for="Input.Email">Email: </label>
+			<input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username"
+				   aria-required="true" placeholder="@user.Email" />
+			<span asp-validation-for="Input.Email" class="text-danger"></span>
+		</p>
+		<p>
+			<label for="dob">DOB: </label>
+			<input @bind=DateOfBirth type="date" id="dob" name="DOB">
+		</p>
+		<p>
+			<label for="plans">Membership Plan: </label>
+			<select @bind=Role name="plans" id="plans">
+				<option value="" disabled selected>Select a plan</option>
+				<option value="0">Member</option>
+				<option value="1">MemberPlus</option>
+				<option value="2">MemberPremium</option>
+				<option value="3">Staff</option>
+				<option value="4">Trainer</option>
+				<option value="5">Manager</option>
+			</select>
+		</p>
+		<p>
+			<label for="status">Status: </label>
+			<select @bind=Status name="status" id="status">
+				<option value="0" disabled selected>Select a status</option>
+				<option value="1">Active</option>
+				<option value="2">Inactive</option>
+			</select>
+		</p>
+		<p>
+			<button @onclick="() => EditMember(id)" class="inline-block bg-accent hover:bg-primary text-white font-semibold py-2 px-4 rounded shadow transition duration-150 hover:cursor-pointer">
+				<i class="fa-solid fa-pen-to-square mr-4"></i>Update member
+			</button>
+			<a href="/members" class="text-secondary">Cancel</a>
+		</p>
+	  </section>
+
+}
 
 @code {
-    [Parameter]
-    public int id { get; set; }
-    private UserDto user { get; set; }
+	[Parameter]
+	public int id { get; set; }
+	private UserDto user { get; set; }
 
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public string Role { get; set; } = "";
-    public string Status { get; set; }
-    public DateTime DateOfBirth { get; set; } = DateTime.Now;
+	public string FirstName { get; set; }
+	public string LastName { get; set; }
+	public string Email { get; set; }
+	public string Role { get; set; } = "";
+	public string Status { get; set; }
+	public DateTime DateOfBirth { get; set; } = DateTime.Now;
 
-    private List<string> userRoles = new();
+	private List<string> userRoles = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Populate userList
-        user = await service.GetUserById(id);
-        var appUser = await UserManager.FindByIdAsync(id.ToString());
-        var currentRoles = await UserManager.GetRolesAsync(appUser);
-        Role = currentRoles.FirstOrDefault() ?? "";
-        FirstName = user.FirstName;
-        LastName = user.LastName;
-        Email = user.Email;
-        Status = user.Status.ToString();
-        DateOfBirth = user.DateOfBirth;
-        StateHasChanged();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		// Populate userList
+		user = await service.GetUserById(id);
+		var appUser = await UserManager.FindByIdAsync(id.ToString());
+		var currentRoles = await UserManager.GetRolesAsync(appUser);
+		Role = currentRoles.FirstOrDefault() ?? "";
+		FirstName = user.FirstName;
+		LastName = user.LastName;
+		Email = user.Email;
+		Status = user.Status.ToString();
+		DateOfBirth = user.DateOfBirth;
+		StateHasChanged();
+	}
 
-    /// <summary>
-    /// Updates a member
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <param name="userObj"></param>
-    /// <returns></returns>
-    private async Task EditMember(int userId)
-    {
-        // check first name, last name
-        if (pageIsValid())
-        {
-            // TODO: popup error
-            var appUser = await UserManager.FindByIdAsync(userId.ToString());
-            if (appUser is null) return;
-            appUser.FirstName = FirstName;
-            appUser.LastName = LastName;
-            appUser.Email = Email;
-            appUser.DateOfBirth = DateOfBirth;
-            appUser.Status = (UserStatus)int.Parse(Status);
-            appUser.UpdatedDate = DateTime.Now;
+	/// <summary>
+	/// Updates a member
+	/// </summary>
+	/// <param name="userId"></param>
+	/// <param name="userObj"></param>
+	/// <returns></returns>
+	private async Task EditMember(int userId)
+	{
+		// check first name, last name
+		if (pageIsValid())
+		{
+			// TODO: popup error
+			var appUser = await UserManager.FindByIdAsync(userId.ToString());
+			if (appUser is null) return;
+			appUser.FirstName = FirstName;
+			appUser.LastName = LastName;
+			appUser.Email = Email;
+			appUser.DateOfBirth = DateOfBirth;
+			appUser.Status = (UserStatus)int.Parse(Status);
+			appUser.UpdatedDate = DateTime.Now;
 
-            var currentRoles = await UserManager.GetRolesAsync(appUser);
-            await UserManager.RemoveFromRolesAsync(appUser, currentRoles);
-            if (!string.IsNullOrEmpty(Role))
-                await UserManager.AddToRoleAsync(appUser, Role);
+			var currentRoles = await UserManager.GetRolesAsync(appUser);
+			await UserManager.RemoveFromRolesAsync(appUser, currentRoles);
+			if (!string.IsNullOrEmpty(Role))
+				await UserManager.AddToRoleAsync(appUser, Role);
 
-            await UserManager.UpdateAsync(appUser);
-            navManager.NavigateTo("/members", true);
-        }
-        else
-        {
-            await Task.CompletedTask;
-        }
+			await UserManager.UpdateAsync(appUser);
+			navManager.NavigateTo("/members", true);
+		}
+		else
+		{
+			await Task.CompletedTask;
+		}
 
-    }
+	}
 
-    bool pageIsValid()
-    {
-        if (isEmpty(FirstName))
-        {
-            // TODO: popup error
-            return false;
-        }
-        else if (isEmpty(LastName))
-        {
-            return false;
-        }
-        else if (!emailIsValid())
-        {
-            return false;
-        }
-        else if (isEmpty(Status))
-        {
-            return false;
-        }
-        return true;
-    }
+	bool pageIsValid()
+	{
+		if (isEmpty(FirstName))
+		{
+			// TODO: popup error
+			return false;
+		}
+		else if (isEmpty(LastName))
+		{
+			return false;
+		}
+		else if (!emailIsValid())
+		{
+			return false;
+		}
+		else if (isEmpty(Status))
+		{
+			return false;
+		}
+		return true;
+	}
 
-    bool isEmpty(string s)
-    {
-        return (s.Trim() == "");
-    }
+	bool isEmpty(string s)
+	{
+		return (s.Trim() == "");
+	}
 
-    private bool emailIsValid()
-    {
-        try
-        {
-            MailAddress m = new MailAddress(Email);
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-    }
+	private bool emailIsValid()
+	{
+		try
+		{
+			MailAddress m = new MailAddress(Email);
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
 }

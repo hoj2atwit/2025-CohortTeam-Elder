@@ -7,42 +7,27 @@
 @inject ICafeService cafeService
 @inject IUserService userService
 @inject AuthenticationStateProvider AuthenticationStateProvider
-<title>@userName's Order</title>
-<div class="sticky top-0 z-10 bg-[#f3f4f6]">
-    <SearchNavBar title=@($"{userName}'s Order") OnChangeEventCallBack="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })" />
-</div>
+
+<h1>My Order</h1>
 <div class="flex">
     <div class="border border-black p-4" style="max-width:65vw;">
-        <section class="flex flex-row justify-between p-2">
-            <div class="w-full">
-
-                @* TODO: Add Search Functionality to menu, updating the menu when input is updated *@
-                @*<input type="text" @onchange="@((ChangeEventArgs e) => { searchText = "" + e.Value; updateMenu(); })"
-                       class="relative rounded-full border px-2 py-2 text-slate-700 shadow-lg transition duration-300 placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:shadow focus:outline-none"
-                       style="width: 55%;" placeholder="Search..." />*@
-
-                @* Depending on decided functionality, might be removed *@
-                @*<button class="rounded-r-full border py-2 shadow-lg transition"
-                        type="button">
-                    Search
-                </button>*@
-            </div>
+		@*<section class="flex flex-row justify-between p-2" style="min-height:1vh;">
             <div class="flex w-96 flex-col">
 
-                    @* TODO: Add Filters and have them update the menu when selected *@
-                    <button class="rounded-4 h-45 w-full border border-black px-2 py-2">
-                        Filter
+                     TODO: Add Filters and have them update the menu when selected 
+                    <button class="bg-secondry rounded-4 h-45 w-full border border-primary px-2 py-2 hover:cursor-pointer hover:bg-background">
+                    <i class="fa-solid fa-filter mr-4"></i>Filter
                     </button>
 
                 </div>
-        </section>
+        </section>*@
         @if (PointOfSaleModel.instance.FilteredMenu == null || PointOfSaleModel.instance.FullMenuDict == null)
         {
-            <p><em>Loading...</em></p>
+            <LoadingLayout />
         }
         else
         {
-            <div class="rounded-lg border p-4">
+            <div class="rounded-lg border p-4 bg-white">
                 <div class="flex flex-wrap justify-center gap-2 overflow-y-auto" style="max-height:80vh;">
                     @* Fill with MenuItemContainerLayout depending on amount of items desired *@
                     @* TODO: Dynamically update depending on filters *@
@@ -68,18 +53,23 @@
     [Parameter]
     public int cId { get; set; }
 
+    [CascadingParameter]
+    public MainLayout layout { get; set; }
+
     public string searchText = "";
     public string userName = "";
     private MenuCartLayout menuCart;
     private MenuCheckoutModal checkoutModal;
 
 
+    protected override async Task OnAfterRenderAsync(bool firstRender) 
+    {
+        await layout.setupSearch($"{userName}'s Order", new EventCallback<string>(this, searchMenu));
+        
+    }
+
     async Task InitializeMenu()
     {
-
-        
-
-        
 
         //TODO: Get User's Name
         userName = "Test";
@@ -105,9 +95,15 @@
                 userName = user.Identity.Name;
             }
         }
-
+        await layout.setupSearch($"{userName}'s Order", new EventCallback<string>(this, searchMenu));
         await updateMenu();
-        //TODO: Load Cart from User
+    }
+
+    public async Task searchMenu(string search)
+    {
+        searchText = search;
+        await updateMenu();
+        
     }
 
     public async Task finishCheckout()

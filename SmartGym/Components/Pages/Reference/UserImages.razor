@@ -32,7 +32,7 @@
 			{
 				<tr>
 					<td>@user.Id</td>
-					<td>@(userRoles.ContainsKey(user.Id) ? userRoles[user.Id] : "No role")</td>
+					<td>@EnumHelper.GetDisplayName(user.RoleId)</td>
 					<td>@user.Name</td>
 					<td>
 						@if (!string.IsNullOrEmpty(user.ImageRef))

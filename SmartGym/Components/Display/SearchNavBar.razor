@@ -1,14 +1,17 @@
-﻿<nav class="flex items-center justify-between px-6 py-4">
+﻿@attribute [StreamRendering]
+<nav class="flex items-center justify-between px-6 py-4">
     <!-- Logo -->
     <div class="ml-6 flex items-center gap-2">
-        @* <img src="...." alt="LOGO" class="h-8 w-8" /> *@
-        <span class="text-3xl font-bold text-gray-800">@Title</span>
+        <img src="lib/images/logo.svg" alt="LOGO" class="h-8 w-8" />
+        <span class="text-3xl font-bold text-gray-800 font-funnel">@Title</span>
     </div>
 
     <!-- Search box -->
-    <div class="mx-8 flex-1">
-        <input type="text" placeholder="Search..." class="w-full max-w-xs rounded-full border border-[#dbe0e6] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300" @onchange="OnChangeEventCallBack" />
-    </div>
+    @if (isSearchable) {
+        <div class="mx-8 flex-1">
+            <input type="text" placeholder="Search..." class="w-full max-w-xs rounded-full border border-[#dbe0e6] px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300" @onchange="@((ChangeEventArgs e)=>{ string s = "" + e.Value; OnChangeEventCallBack.InvokeAsync(s);})" />
+        </div>
+    }
 
     <!-- Icons -->
     <div class="flex items-center gap-6">
@@ -26,7 +29,15 @@
 @code
 {
     [Parameter]
-    public EventCallback<ChangeEventArgs> OnChangeEventCallBack { get; set; }
+    public EventCallback<string> OnChangeEventCallBack { get; set; }
     [Parameter]
     public string Title { get; set; } = "";
+    [Parameter]
+    public bool isSearchable { get; set; }
+
+    public Task updateView()
+    {
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
 }

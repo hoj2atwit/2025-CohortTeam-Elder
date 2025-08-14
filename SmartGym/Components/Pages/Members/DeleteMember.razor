@@ -11,81 +11,65 @@
 
 <PageTitle>Delete Member</PageTitle>
 
-<div>
-    <div>
-        @if (user == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <div>
-                <h4 style="color:red; font-size:40px"><b>Delete Member</b></h4>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div>
-                    <p>First name: @user.FirstName</p>
-                </div>
-                <hr />
-                <div>
-                    <p>Last name: @user.LastName</p>
-                </div>
-                <hr />
-                <div>
-                    <p>Email: @user.Email</p>
-                </div>
-                <hr />
-                <div>
-                    <p>DOB: @user.DateOfBirth.ToString("MM/dd/yyyy")</p>
-                </div>
-                <hr />
-                <div>
-                    <p>Plan: @(userRoles.FirstOrDefault() ?? "No role")</p>
-                </div>
-                <hr />
-                <div>
-                    <p>Status: @((UserStatus)user.Status)</p>
-                </div>
-                <hr />
-                <div>
-                    <p>Are you sure you want to <b>delete</b> this member?</p>
-                    <p>This member will be permanantly deleted.</p>
-                    <input hidden asp-for="Id" />
 
-                </div>
-            </div>
-            <button @onclick=DelMember class=""><b>[Delete]</b></button>
-        }
-        <a href="/members"> Cancel</a>
-    </div>
-</div>
+@if (user == null)
+{
+	<LoadingLayout />
+}
+else
+{
+	<h1 class="mb-4" id="title">Delete Member</h1>
+	<section class="contained text-xl bg-text" aria-labelledby="title">
+		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<p><strong>First name:</strong> @user.FirstName</p>
+		<p><strong>Last name:</strong> @user.LastName</p>
+		<p><strong>Email:</strong> @user.Email</p>
+		<p><strong>DOB:</strong> @user.DateOfBirth.ToString("MM/dd/yyyy")</p>
+		<p><strong>Plan:</strong> @(userRoles.FirstOrDefault() ?? "No role")</p>
+		<p><strong>Status:</strong> @((UserStatus)user.Status)</p>
+		<p>
+			Are you sure you want to <b>delete</b> this member?<br />
+			This member will be permanantly deleted.<br /><br />
+			<button @onclick=DelMember class="inline-block bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150 hover:cursor-pointer">
+				<i class="fa-solid fa-trash mr-4"></i>Delete
+			</button>
+
+			<a href="/members" class="text-secondary"> Cancel</a>
+		</p>
+		<input hidden asp-for="Id" />
+
+		
+	</section>
+	
+}
+
 
 @code {
-    [Parameter]
-    public int id { get; set; }
-    private UserDto user { get; set; }
-    private List<string> userRoles = new();
+	[Parameter]
+	public int id { get; set; }
+	private UserDto user { get; set; }
+	private List<string> userRoles = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Populate userList
+	protected override async Task OnInitializedAsync()
+	{
+		// Populate userList
 
-        user = await service.GetUserById(id);
-        var appUser = await UserManager.FindByIdAsync(id.ToString());
-        if (appUser != null)
-        {
-            userRoles = (await UserManager.GetRolesAsync(appUser)).ToList();
-        }
-        StateHasChanged();
-    }
+		user = await service.GetUserById(id);
+		var appUser = await UserManager.FindByIdAsync(id.ToString());
+		if (appUser != null)
+		{
+			userRoles = (await UserManager.GetRolesAsync(appUser)).ToList();
+		}
+		StateHasChanged();
+	}
 
-    /// <summary>
-    /// Deletes a member from the table
-    /// </summary>
-    /// <returns></returns>
-    private async Task DelMember()
-    {
-        await service.DeleteUser(id);
-        navManager.NavigateTo("/members");
-    }
+	/// <summary>
+	/// Deletes a member from the table
+	/// </summary>
+	/// <returns></returns>
+	private async Task DelMember()
+	{
+		await service.DeleteUser(id);
+		navManager.NavigateTo("/members");
+	}
 }

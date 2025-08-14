@@ -3,7 +3,7 @@
 {
     <div class="fixed bottom-0 left-0 right-0 top-0 bg-black opacity-50" style="z-index:100;" @onclick="cancelOnClickCallback">
     </div>
-    <div class="fixed top-0 rounded-lg border bg-white" style="z-index:101; width:20vw; left:50%; max-height: 80%; top:25%;">
+    <aside class="fixed top-0 rounded-lg border bg-white" style="z-index:101; min-height:25vh; left:25%; right:25%; top:25%;">
         <div class="overflow-y-auto align-middle" style="max-height:50vh;">
             @if (instance == null)
             {
@@ -14,7 +14,7 @@
             else if (instance.CurrentCart.CartItems.Count == 0)
             {
                 <div class="row">
-                    <div class="col-5 col-md-3 text-end">Cart is empty.</div>
+                    <div class="col-5 col-md-3 text-end text-2xl">Cart is empty.</div>
                 </div>
             }
             else
@@ -22,7 +22,7 @@
                 <div class="border" style="width: 100%; max-height:40vh; display:table; overflow:hidden; overflow-y: auto;">
                     <table style="width: 100%;">
                         <thead>
-                            <tr class="bg-gray-100">
+                            <tr class="bg-background text-white">
                                 <th class="px-4 py-2 text-left">Item</th>
                                 <th class="px-4 py-2 text-left">Quantity</th>
                                 <th class="px-4 py-2 text-left">Price</th>
@@ -31,7 +31,7 @@
                         <tbody>
                             @foreach (CartModel.CartItemModel cartItem in instance.CurrentCart.CartItems.Values)
                             {
-                                <tr>
+                                <tr class="bg-text">
                                     <td class="flex-grow-1 px-4 py-2">@cartItem.Item.Name</td>
                                     <td class="flex-grow-1 px-4 py-2">@($"x{@cartItem.Amount}") </td>
                                     <td class="flex-grow-1 px-4 py-2">@cartItem.CurrentPriceString</td>
@@ -44,17 +44,17 @@
             }
         </div>
         <div class="row flex w-full" style="width:100%;">
-            <button class="flex-grow-1 mt-3 border" @onclick="cancelOnClickCallback">
+            <button class="flex-grow-1 mt-3 border hover:cursor-pointer text-secondary p-5 hover:bg-gray-200" @onclick="cancelOnClickCallback">
                 Cancel
             </button>
             @if (instance != null)
             {
-                <button class="flex-grow-1 mt-3 border" type="button" @onclick="checkoutOnClickCallback">
-                    Pay @instance.CurrentCart.TotalString
+                <button class="flex-grow-1 mt-3 border bg-primary hover:bg-background p-5 text-white hover:cursor-pointer" type="button" @onclick="checkoutOnClickCallback">
+                    <i class="fa-solid fa-credit-card mr-4"></i>Pay @instance.CurrentCart.TotalString
                 </button>
             }
         </div>
-    </div>
+    </aside>
 }
 
 

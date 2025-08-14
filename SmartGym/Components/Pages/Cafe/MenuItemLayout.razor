@@ -1,5 +1,7 @@
 ﻿@using Components.UIClasses.Cafe;
-<button class="max-w-1/4 min-w-50 flex flex-col border border-black shadow-2xl" @onclick="OnClickCallback">
+<button class="max-w-1/4 min-w-50 flex flex-col border border-primary shadow-2xl hover:bg-gray-200 hover:cursor-pointer shadow-sm hover:shadow-md transition-all duration-300transform hover:-translate-y-1" @onclick="OnClickCallback">
+    <p class="relative left-0 top-0 z-10 block @(item.stock > 0 ? "text-green-700" : "text-red-500")" style="font-size:1rem; line-height:2rem;">@(item.stock > 0 ? "In Stock: " + item.stock : "Sold Out")</p>
+
     @if (item.ImageLocation.ToLower().Contains("default"))
     {
         <img class="h-50 aspect-square" id="menuItemImage" src=@Assets[$"lib/images/{item.ImageLocation}"] />
@@ -9,11 +11,11 @@
         <img class="h-50 aspect-square" id="menuItemImage" src=@Assets[$"lib/db_images/{item.ImageLocation}"] />
     }
     
-    <div class="p-4 text-gray-800">
-        <h5 class="mb-2 text-lg font-semibold" >@item.Name</h5>
+    <article class="p-4 text-black">
+        <h3 class="mb-2 text-xl font-semibold font-funnel" >@item.Name</h3>
         <p class="text-base">@item.Description</p>
-        <p class="text-base">@item.PriceString</p>
-    </div>
+        <p class="text-base text-primary">@item.PriceString</p>
+    </article>
 </button>
 
 @code {
