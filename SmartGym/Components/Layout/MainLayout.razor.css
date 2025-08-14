@@ -8,14 +8,6 @@
   background: rgba(243,244,246,0.45);
 }
 
-.notification-bar {
-  max-width: 95%;
-  margin: 0 auto;
-  border-radius: 1em;
-  padding-top: 1.5em;
-  padding-bottom: 1.5em;
-}
-
 main {
   flex: 1;
 }
@@ -63,16 +55,6 @@ main {
   .page {
     flex-direction: row;
   }
-
-.sidebar {
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 16rem;
-    z-index: 1000;
-    overflow-y: auto;
-    position:fixed;
-}
 
   .top-row {
     position: sticky;

@@ -1,7 +1,7 @@
 ﻿@using SmartGym.Models
 @using SmartGym.Components.UIClasses.Cafe
 @inject NavigationManager navigationManager
-<div class="flex flex-col basis-1/3 rounded-lg border border-primary bg-white shadow-sm" style="min-height:30vh; max-height:31vh;">
+<div class="border-primary flex basis-1/3 flex-col rounded-lg border bg-white shadow-sm" style="min-height:30vh; max-height:31vh; max-width:500px">
     <div class="flex">
         <label class="text-2xl"> @currOrder.Id </label>
         <InputSelect ValueExpression="@(() => currOrder.OrderStatus)" Value=@currOrder.OrderStatus ValueChanged="(Constants.OrderStatus s) => setStatusOrder(s)" class="flex-grow">
@@ -17,7 +17,7 @@
     <div class="flex-grow overflow-y-auto border">
         @foreach (CartItemsDTO item in currOrder.OrderCartList)
         {
-            <div class="flex border border-primary text-lg py-5">
+            <div class="border-primary flex border py-5 text-lg">
                 <div class="flex-grow">@item.Name</div>
                 <div class="flex-grow-1">@($"x{item.Quantity}") </div>
                 <div class="flex-grow-0">@string.Format("{0:C}", item.Price)</div>
@@ -26,12 +26,12 @@
     </div>
     <p class="mb-3 text-lg">Total: @string.Format("{0:C}", currOrder.TotalPrice)</p>
     <div class="flex w-full" style="bottom:0; position:relative;">
-        <button @onclick=viewOrder class="flex-grow-1  border bg-accent text-white hover:bg-background hover:cursor-pointer  p-5">
+        <button @onclick=viewOrder class="bg-accent flex-grow-1 border p-5 text-white hover:bg-background hover:cursor-pointer">
             <i class="fa-solid fa-pen-to-square"></i>Edit
         </button>
         @if (currOrder.OrderStatus == Constants.OrderStatus.Incomplete || currOrder.OrderStatus == Constants.OrderStatus.Pending)
         {
-            <button @onclick=completeOrder class="flex-grow-1 border text-white bg-primary hover:bg-background hover:cursor-pointer p-5">
+            <button @onclick=completeOrder class="bg-primary flex-grow-1 border p-5 text-white hover:bg-background hover:cursor-pointer">
                 <i class="fa-solid fa-flag-checkered"></i>Complete
             </button>
         }

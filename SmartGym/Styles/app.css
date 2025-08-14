@@ -169,14 +169,6 @@ main {
     flex-direction: row;
   }
 
-  .sidebar {
-    width: 250px;
-    position: sticky;
-    top: 0;
-    min-height: 100vh;
-    height: auto;
-  }
-
   .top-row {
     position: sticky;
     top: 0;
@@ -210,23 +202,6 @@ main {
     right: 0.75rem;
     top: 0.5rem;
   }
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 16rem;
-  z-index: 1000;
-  overflow-y: auto;
-}
-
-main {
-  flex: 1;
-  margin-left: 16rem;
-  overflow-y: auto;
-  min-height: 100vh;
-}
 
 .content {
   min-height: 100vh;
