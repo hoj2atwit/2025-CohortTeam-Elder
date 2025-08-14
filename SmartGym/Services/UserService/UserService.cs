@@ -15,28 +15,51 @@ public class UserService : IUserService
 	private readonly IMapper _mapper;
 	private readonly UserManager<AppUser> _userManager;
 
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
+	public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager)
 	{
 		_unitOfWork = unitOfWork;
 		_mapper = mapper;
 		_userManager = userManager;
-    }
+	}
 
-    public async Task<UserDto> CreateUser(UserDto newUserData)
+	public async Task<UserDto> CreateUser(UserDto newUserData)
 	{
 		try
 		{
-			AppUser newUser = _mapper.Map<AppUser>(newUserData);
-			await _unitOfWork.UserRepository.AddAsync(newUser);
-			await _unitOfWork.SaveAsync();
-			if (newUserData.RoleId != null)
+			var newUser = new AppUser
+			{
+				UserName = newUserData.Email,
+				Email = newUserData.Email,
+				FirstName = newUserData.FirstName,
+				LastName = newUserData.LastName,
+				DateOfBirth = newUserData.DateOfBirth,
+				Status = UserStatus.Active,
+				CreatedDate = DateTime.UtcNow,
+				UpdatedDate = DateTime.UtcNow,
+				EmailConfirmed = true
+			};
+			if (newUserData.RoleId == null)
 			{
 				throw new Exception("The required property \"RoleId\" is null.");
 			}
 			else
 			{
 				var roleName = EnumHelper.GetDisplayName(newUserData.RoleId);
-				await _userManager.AddToRoleAsync(newUser, roleName); // doesnt need SaveAsync
+				var createResult = await _userManager.CreateAsync(newUser, "Password!123");
+				if (!createResult.Succeeded)
+				{
+					throw new Exception("User creation failed: " + string.Join(", ", createResult.Errors.Select(e => e.Description)));
+				}
+				var roleResult = await _userManager.AddToRoleAsync(newUser, roleName);
+				if (!roleResult.Succeeded)
+				{
+					throw new Exception("Adding to role failed: " + string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+				}
+				var updateResult = await _userManager.UpdateAsync(newUser);
+				if (!updateResult.Succeeded)
+				{
+					throw new Exception("User update failed: " + string.Join(", ", updateResult.Errors.Select(e => e.Description)));
+				}
 			}
 			return _mapper.Map<UserDto>(newUser);
 		}
