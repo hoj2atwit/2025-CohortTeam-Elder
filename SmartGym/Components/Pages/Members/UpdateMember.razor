@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize(Roles = "Admin, Staff")]
 @page "/updatemember/{id:int}"
 @using SmartGym.Constants.Enums
+@using SmartGym.Helpers
 @using SmartGym.Models
 @using SmartGym.Services
 @using System.Net.Mail
@@ -19,8 +20,8 @@
 }
 else
 {
-		<h1 class="mb-4" id="title">Update Member</h1>
-      <section class="contained text-xl bg-text" aria-labelledby="title">
+	<h1 class="mb-4" id="title">Update Member</h1>
+	<section class="contained bg-text text-xl" aria-labelledby="title">
 		<input type="hidden" asp-for="Id" />
 		<input type="hidden" asp-for="CreatedDate" />
 		<div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -47,23 +48,21 @@ else
 			<input @bind=DateOfBirth type="date" id="dob" name="DOB">
 		</p>
 		<p>
-			<label for="plans">Membership Plan: </label>
-			<select @bind=Role name="plans" id="plans">
-				<option value="" disabled selected>Select a plan</option>
-				<option value="0">Member</option>
-				<option value="1">MemberPlus</option>
-				<option value="2">MemberPremium</option>
-				<option value="3">Staff</option>
-				<option value="4">Trainer</option>
-				<option value="5">Manager</option>
+			<label for="role">Role: </label>
+			<select @bind=Role name="role" id="role">
+				@foreach (RoleId role in Enum.GetValues(typeof(RoleId)))
+				{
+					<option value=@role>@EnumHelper.GetDisplayName(role)</option>
+				}
 			</select>
 		</p>
 		<p>
 			<label for="status">Status: </label>
 			<select @bind=Status name="status" id="status">
-				<option value="0" disabled selected>Select a status</option>
-				<option value="1">Active</option>
-				<option value="2">Inactive</option>
+				@foreach (UserStatus status in Enum.GetValues(typeof(UserStatus)))
+				{
+					<option value="@status">@EnumHelper.GetDisplayName(status)</option>
+				}
 			</select>
 		</p>
 		<p>
@@ -72,7 +71,7 @@ else
 			</button>
 			<a href="/members" class="text-secondary">Cancel</a>
 		</p>
-	  </section>
+	</section>
 
 }
 
@@ -84,8 +83,8 @@ else
 	public string FirstName { get; set; }
 	public string LastName { get; set; }
 	public string Email { get; set; }
-	public string Role { get; set; } = "";
-	public string Status { get; set; }
+	public RoleId Role { get; set; }
+	public UserStatus Status { get; set; }
 	public DateTime DateOfBirth { get; set; } = DateTime.Now;
 
 	private List<string> userRoles = new();
@@ -96,11 +95,11 @@ else
 		user = await service.GetUserById(id);
 		var appUser = await UserManager.FindByIdAsync(id.ToString());
 		var currentRoles = await UserManager.GetRolesAsync(appUser);
-		Role = currentRoles.FirstOrDefault() ?? "";
+		Role = user.RoleId;
 		FirstName = user.FirstName;
 		LastName = user.LastName;
 		Email = user.Email;
-		Status = user.Status.ToString();
+		Status = user.Status;
 		DateOfBirth = user.DateOfBirth;
 		StateHasChanged();
 	}
@@ -117,22 +116,51 @@ else
 		if (pageIsValid())
 		{
 			// TODO: popup error
+			user.FirstName = FirstName;
+			user.LastName = LastName;
+			user.Email = Email;
+			user.DateOfBirth = DateOfBirth;
+			user.Status = Status;
+			user.RoleId = Role;
+			user.UpdatedDate = DateTime.Now;
+
+			await service.UpdateUser(userId, user);
 			var appUser = await UserManager.FindByIdAsync(userId.ToString());
-			if (appUser is null) return;
+
+			bool doesExist = true;
+
+			if (appUser == null)
+			{
+				doesExist = false;
+				appUser = new AppUser();
+				appUser.CreatedDate = user.CreatedDate;
+			}
+
 			appUser.FirstName = FirstName;
 			appUser.LastName = LastName;
 			appUser.Email = Email;
 			appUser.DateOfBirth = DateOfBirth;
-			appUser.Status = (UserStatus)int.Parse(Status);
+			appUser.Status = Status;
 			appUser.UpdatedDate = DateTime.Now;
 
-			var currentRoles = await UserManager.GetRolesAsync(appUser);
-			await UserManager.RemoveFromRolesAsync(appUser, currentRoles);
-			if (!string.IsNullOrEmpty(Role))
-				await UserManager.AddToRoleAsync(appUser, Role);
+			// get app user to get its roles
+			if (doesExist) {
+				var currentRoles = await UserManager.GetRolesAsync(appUser);
+
+				await UserManager.RemoveFromRolesAsync(appUser, currentRoles);
+
+			} else
+			{
+				await UserManager.CreateAsync(appUser);
+			}
+
+			if (!string.IsNullOrEmpty(EnumHelper.GetDisplayName(Role)))
+				await UserManager.AddToRoleAsync(appUser, EnumHelper.GetDisplayName(Role));
 
 			await UserManager.UpdateAsync(appUser);
+
 			navManager.NavigateTo("/members", true);
+
 		}
 		else
 		{
@@ -153,10 +181,6 @@ else
 			return false;
 		}
 		else if (!emailIsValid())
-		{
-			return false;
-		}
-		else if (isEmpty(Status))
 		{
 			return false;
 		}
