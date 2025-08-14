@@ -3,6 +3,7 @@
 @inject IClassService ClassService
 @inject IUserService UserService
 @inject IDashboardService DashboardService
+@inject IOrderService OrderService
 
 @page "/dashboard"
 
@@ -91,8 +92,15 @@
 
     <!-- Charts Row -->
     <div class="mt-8 flex gap-6">
-        <div class="flex h-48 flex-1 bg-gray-100 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-500">
-            [Revenue Chart goes here]
+        <div class="flex-1">
+            @if (revenueData == null)
+            {
+                <div class="bg-gray-100 p-4 rounded-lg">Loading revenue data...</div>
+            }
+            else
+            {
+                <RevenueChart RevenueData="revenueData" />
+            }
         </div>
         <div class="flex-1">
             @if (attendanceData == null)
@@ -161,6 +169,7 @@
     private List<UserDto> allUsers = new();
     private List<CheckinDataPoint> checkinData = new();
     private List<AttendanceDataPoint> attendanceData = new();
+    private List<RevenueDataPoint> revenueData = new();
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -172,15 +181,18 @@
     {
         try
         {
-            // Load all classes and users
+            // Load all classes and users first
             allClasses = await ClassService.GetAllClasses();
             allUsers = await UserService.GetAllUsers();
             
-            // Load checkin data for chart
+            // Load chart data sequentially with small delays to avoid DbContext conflicts
             checkinData = await DashboardService.GetDailyCheckinsAsync();
+            await Task.Delay(100); // Small delay to prevent concurrent access
             
-            // Load attendance data for chart
             attendanceData = await DashboardService.GetDailyAttendanceAsync();
+            await Task.Delay(100); // Small delay to prevent concurrent access
+            
+            revenueData = await DashboardService.GetDailyRevenueAsync();
             
             // Filter for upcoming classes (next 5)
             var currentTime = DateTime.Now;
@@ -196,6 +208,7 @@
             upcomingClasses = new List<ClassDTO>();
             checkinData = new List<CheckinDataPoint>();
             attendanceData = new List<AttendanceDataPoint>();
+            revenueData = new List<RevenueDataPoint>();
         }
     }
 

@@ -7,6 +7,7 @@ public interface IDashboardService
 {
     Task<List<CheckinDataPoint>> GetDailyCheckinsAsync();
     Task<List<AttendanceDataPoint>> GetDailyAttendanceAsync();
+    Task<List<RevenueDataPoint>> GetDailyRevenueAsync();
 }
 
 public class DashboardService : IDashboardService
@@ -82,6 +83,38 @@ public class DashboardService : IDashboardService
 
         return allDays;
     }
+
+    public async Task<List<RevenueDataPoint>> GetDailyRevenueAsync()
+    {
+        var last7Days = DateTime.Today.AddDays(-6);
+        
+        // Get orders from the last 7 days and calculate daily revenue
+        var orders = await _context.Orders!
+            .Where(o => o.CreatedAt >= last7Days)
+            .GroupBy(o => o.CreatedAt.Date)
+            .Select(g => new RevenueDataPoint
+            {
+                Date = g.Key.ToString("MMM dd"),
+                Revenue = g.Sum(o => o.TotalPrice)
+            })
+            .ToListAsync();
+
+        // Fill in missing days with 0 revenue
+        var allDays = new List<RevenueDataPoint>();
+        for (int i = 0; i < 7; i++)
+        {
+            var date = last7Days.AddDays(i);
+            var existing = orders.FirstOrDefault(o => 
+                o.Date == date.ToString("MMM dd"));
+            allDays.Add(existing ?? new RevenueDataPoint 
+            { 
+                Date = date.ToString("MMM dd"), 
+                Revenue = 0 
+            });
+        }
+
+        return allDays;
+    }
 }
 
 public class CheckinDataPoint
@@ -94,4 +127,10 @@ public class AttendanceDataPoint
 {
     public string Date { get; set; } = string.Empty;
     public int Count { get; set; }
+}
+
+public class RevenueDataPoint
+{
+    public string Date { get; set; } = string.Empty;
+    public decimal Revenue { get; set; }
 }
