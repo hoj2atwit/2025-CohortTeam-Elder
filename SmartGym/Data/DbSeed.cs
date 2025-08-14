@@ -280,8 +280,30 @@ namespace SmartGym.Data
 					 .RuleFor(x => x.UserId, f => f.Random.ListItem(userIds))
 					 .RuleFor(x => x.AccessPoint, f => f.PickRandom<AccessPoint>());
 
-				var fakeCheckins = faker.Generate(1000); // Generate 20 random classes
+				var fakeCheckins = faker.Generate(1000);
 				context.Checkins.AddRange(fakeCheckins);
+				
+				// Add specific checkins for the last 7 days to ensure dashboard has data
+				var recentCheckins = new List<Checkin>();
+				var checkinFaker = new Faker();
+				for (int i = 0; i < 7; i++)
+				{
+					var date = DateTime.Today.AddDays(-i);
+					var dailyCount = checkinFaker.Random.Int(3, 20); // 3-20 checkins per day
+					
+					for (int j = 0; j < dailyCount; j++)
+					{
+						recentCheckins.Add(new Checkin
+						{
+							CheckinTime = date.AddHours(checkinFaker.Random.Int(6, 22)).AddMinutes(checkinFaker.Random.Int(0, 59)),
+							Method = checkinFaker.PickRandom(new[] { "qr", "desk" }),
+							UserId = checkinFaker.PickRandom(userIds),
+							AccessPoint = checkinFaker.PickRandom<AccessPoint>()
+						});
+					}
+				}
+				
+				context.Checkins.AddRange(recentCheckins);
 				await context.SaveChangesAsync();
 			}
 

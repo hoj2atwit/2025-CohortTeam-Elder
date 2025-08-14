@@ -45,16 +45,6 @@ public class DashboardService : IDashboardService
             });
         }
 
-        // If no real data exists, add some sample data for demonstration
-        if (allDays.All(d => d.Count == 0))
-        {
-            var random = new Random();
-            for (int i = 0; i < allDays.Count; i++)
-            {
-                allDays[i].Count = random.Next(0, 25); // Random checkins between 0-25
-            }
-        }
-
         return allDays;
     }
 }
