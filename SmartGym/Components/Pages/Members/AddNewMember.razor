@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize(Roles = "Admin")]
 @page "/addnewmember"
 @using SmartGym.Constants.Enums
+@using SmartGym.Helpers
 @using SmartGym.Models
 @using SmartGym.Services
 @using System.Net.Mail
@@ -36,16 +37,14 @@
 		<input @bind=DateOfBirth type="date" id="dob" name="DOB" />
 	</p>
 	<p>
-		<label for="plans">Membership Plan: </label>
-		<select @bind=Role name="plans" id="plans">
-			<option value="" disabled selected>Select a plan</option>
-			<option value="0">Member</option>
-			<option value="1">MemberPlus</option>
-			<option value="2">MemberPremium</option>
-			<option value="3">Staff</option>
-			<option value="4">Trainer</option>
-			<option value="5">Manager</option>
-		</select>
+        <label for="role">Role: </label>
+        <select @bind=Role name="role" id="role">
+            <option value="" disabled>Select a role</option>
+            @foreach (RoleId role in Enum.GetValues(typeof(RoleId)))
+            {
+                <option value="@role">@EnumHelper.GetDisplayName(role)</option>
+            }
+        </select>
 	</p>
 	<p>
 		<button @onclick=AddMember class="inline-block bg-primary hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150 hover:cursor-pointer">
@@ -59,7 +58,7 @@
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
-    public string Role { get; set; }
+    public RoleId Role { get; set; }
     public DateTime DateOfBirth { get; set; } = DateTime.Now;
 
     /// <summary>
@@ -79,6 +78,7 @@
             tempUser.Email = Email;
             tempUser.DateOfBirth = DateOfBirth;
             tempUser.Status = 0;
+            tempUser.RoleId = Role;
             tempUser.CreatedDate = DateTime.Now;
             tempUser.UpdatedDate = DateTime.Now;
             await service.CreateUser(tempUser);
@@ -102,10 +102,6 @@
             return false;
         }
         else if (!emailIsValid())
-        {
-            return false;
-        }
-        else if (isEmpty(Role))
         {
             return false;
         }
