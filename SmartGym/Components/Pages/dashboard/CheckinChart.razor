@@ -1,25 +1,18 @@
 @using SmartGym.Services
 
-@if (CheckinData != null && CheckinData.Any())
+@if (CheckinData != null && CheckinData.Count > 0)
 {
     <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 h-full">
         <h3 class="text-lg font-semibold mb-4 text-gray-800">Daily Check-ins (Last 7 Days)</h3>
         <div class="flex items-end justify-between gap-2" style="height: 280px;">
             @{
                 var maxCount = CheckinData.Max(d => d.Count);
-                if (maxCount == 0) maxCount = 1; // Prevent division by zero
+                if (maxCount == 0) maxCount = 10; // Set a minimum scale for better visibility
             }
             @foreach (var data in CheckinData)
             {
                 var heightPercent = maxCount > 0 ? (double)data.Count * 80 / maxCount : 0; // Use 80% max height
-                var actualHeight = Math.Max(heightPercent, data.Count > 0 ? 8 : 0); // Minimum 8% if there's data
-                @if(actualHeight <= 20 && actualHeight < 40)
-                {
-                    heightColor = "bg-accent";
-                } else if(actualHeight >40 && actualHeight < 60)
-                {
-                    heightColor = "bg-text";
-                }
+                var actualHeight = Math.Max(heightPercent, data.Count > 0 ? 10 : 0); // Minimum 10% if there's data
                 <div class="flex flex-col items-center justify-end gap-2 flex-1 h-full">
                     <div class="@heightColor w-full rounded-t flex items-end justify-center text-white text-xs font-medium transition-all duration-300 hover:bg-background" 
                          style="height: @(actualHeight)%;">

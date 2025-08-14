@@ -34,7 +34,14 @@
 <div class="mt-8 flex gap-6">
     <!-- Daily Check-ins Graph -->
     <div class="flex-1">
-        <CheckinChart CheckinData="checkinData" />
+        @if (checkinData == null)
+        {
+            <div class="bg-gray-100 p-4 rounded-lg">Loading chart data...</div>
+        }
+        else
+        {
+            <CheckinChart CheckinData="checkinData" />
+        }
     </div>
     
     <!-- Upcoming Classes -->
