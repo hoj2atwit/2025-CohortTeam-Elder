@@ -16,3 +16,4 @@ node_modules/
 /SmartGym/appsettings.Development.json
 .DS_Store
 /SmartGym/wwwroot/lib/db_images
+/package-lock.json

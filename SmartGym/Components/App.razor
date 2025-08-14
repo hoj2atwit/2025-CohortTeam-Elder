@@ -7,14 +7,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-
-    <!--- Commended out the bootstrap link --->
-    @* <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" /> *@
-    <link rel="stylesheet" href="@Assets["app.css"]" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="@Assets["SmartGym.styles.css"]" />
     <link rel="stylesheet" href="@Assets["lib/tailwind/css/output.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+
+
     <ImportMap />
-    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="icon" type="image/png" href="./lib/images/logo.svg" />
     <HeadOutlet />
 
 
@@ -25,6 +29,11 @@
         <Routes @rendermode=RenderMode.InteractiveServer />
     </CascadingAuthenticationState>
     <script src="_framework/blazor.web.js"></script>
+  	<script src="https://kit.fontawesome.com/8cd603a128.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 </body>
+
 
 </html>

@@ -1,28 +1,46 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
 <CascadingValue Value="this">
-    <div class="page">
-        <CascadingAuthenticationState>
-            <AuthorizeView>
-                <div class="sidebar border-black-500 border-r-2 bg-[#1b283a]">
-                    <NavMenu />
-                </div>
-                <div class="filler" style="width:16rem; top:0; bottom:0; left:0;" />
-            </AuthorizeView>
-        </CascadingAuthenticationState>
-    
+    <div class="font-sans">
+        @if (NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "home")
+        {
+            <HomeLayout />
             <main>
-                <article class="content bg-[#f3f4f6] px-4">
-                    <CascadingAuthenticationState>
-                        <AuthorizeView>
-                            <div class="sticky top-0 z-10 bg-[#f3f4f6]">
-                                <SearchNavBar @ref=searchNav title=@searchNavTitle OnChangeEventCallBack=searchBarOnChange isSearchable=@isSearchable />
-                            </div>
-                        </AuthorizeView>
-                </CascadingAuthenticationState>
-                    @Body
-                </article>
+                @Body
             </main>
+        }
+        else if (string.IsNullOrEmpty(NavigationManager.ToBaseRelativePath(NavigationManager.Uri)) || NavigationManager.ToBaseRelativePath(NavigationManager.Uri) == "login")
+        {
+            <main class="hero" style="margin-left:0;">
+                @Body
+            </main>
+        }
+        else
+        {
+                <CascadingAuthenticationState>
+                    <AuthorizeView>
+                        <div class="sidebar border-black-500 border-r-2 bg-primary-900">
+                            <NavMenu />
+                        </div>
+                        <div class="filler" style="width:16rem; top:0; bottom:0; left:0;" />
+                    </AuthorizeView>
+                </CascadingAuthenticationState>
+
+                <main class="content hero">
+                    <div class="boxed">
+                        <CascadingAuthenticationState>
+                            <AuthorizeView>
+                            <div class="sticky top-0 z-10 notification-bar bg-text">
+                                    <SearchNavBar @ref=searchNav title=@searchNavTitle isSearchable=@isSearchable />
+                                </div>
+                            </AuthorizeView>
+                        </CascadingAuthenticationState>
+                        @Body
+                    </div>
+                </main>            
+        }
+        
     </div>
 
     <div id="blazor-error-ui" data-nosnippet>
@@ -31,6 +49,14 @@
         <span class="dismiss">🗙</span>
     </div>
 </CascadingValue>
+
+<footer class="bg-background text-white text-xl">
+  <div class="contained my-[30px]">
+        <h2 class="uppercase">The true gains start here.</h2>
+        <hr />
+        2025 Team Elder - OC Donut Steel
+  </div>
+</footer>
 
 @code
 {
@@ -55,7 +81,7 @@
 
     private Task searchSetupDefault()
     {
-        searchNavTitle = "SmartGym";
+        searchNavTitle = "Smart Gym";
         searchBarOnChange = new EventCallback<string>();
         isSearchable = false;
         StateHasChanged();

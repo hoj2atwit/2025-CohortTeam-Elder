@@ -12,14 +12,12 @@
 @inject IUserService UserService
 
 <PageTitle>My Account</PageTitle>
-
-<div class="flex items-center justify-center min-h-[80vh] bg-gray-50">
+<h1>My Account</h1>
+<div class="flex items-center justify-center min-h-[80vh]">
 	<div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-6">
 		@if (user == null)
 		{
-			<div class="flex flex-col items-center">
-				<p class="text-gray-500 italic">Loading...</p>
-			</div>
+			<LoadingLayout/>
 		}
 		else if (!editMode)
 		{
@@ -34,18 +32,18 @@
 					: $"/lib/db_images/{user.ImageRef}?cachebust={Guid.NewGuid()}";
 					<img src="@imgSrc" alt="Profile" width="100" height="100" />
 				}
-				<h4 class="text-xl font-semibold mb-1">@user.Name</h4>
+				<h2 class="text-xl font-semibold mb-1">@user.Name</h2>
 				<p class="text-gray-500 mb-2">@user.Email</p>
 				<p class="text-gray-500 mb-2">@user.DateOfBirth.ToString("MM/dd/yyyy")</p>
-				<span class="inline-block bg-blue-500 text-white text-xs px-3 py-1 rounded-full mb-3">
+				<span class="inline-block bg-secondary text-white text-xs px-3 py-1 rounded-full mb-3">
 					@EnumHelper.GetDisplayName(user.RoleId)
 				</span>
 				<hr class="w-full my-3 border-gray-200" />
 				<div class="w-full flex items-center justify-between text-left">
 					<p class="text-sm"><span class="font-semibold">Account ID:</span> @user.Id</p>
-					<button class="ml-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer"
+					<button class="ml-4 p-5 py-1 bg-primary text-white rounded hover:bg-background transition cursor-pointer"
 						type="button" @onclick="EnterEditMode">
-						Edit
+						<i class="fa-solid fa-pen-to-square mr-4"></i>Edit
 					</button>
 				</div>
 			</div>
@@ -101,12 +99,12 @@
 					</div>
 					<div class="w-full flex items-center justify-end text-left">
 						<button
-							class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer mx-2 my-1"
+							class="p-5 py-1 bg-primary text-white rounded hover:bg-background transition cursor-pointer mx-2 my-1"
 							type="submit" @onsubmit="HandleValidSubmit">
-							Save
+							<i class="fa-solid fa-floppy-disk mr-4"></i>Save
 						</button>
 						
-						<button class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition cursor-pointer mx-2 my-1"
+						<button class="p-5 py-1 text-secondary rounded transition cursor-pointer mx-2 my-1"
 							type="button" @onclick="CancelEdit">
 							Cancel
 						</button>

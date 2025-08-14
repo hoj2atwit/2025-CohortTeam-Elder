@@ -10,51 +10,50 @@
 
 <PageTitle>Add New Member</PageTitle>
 
-<div>
-    <div>
-        <div>
-            <h4 style="color:green; font-size:40px"><b>Register a New Member</b></h4>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div>
-                <label asp-for="Input.FirstName">First Name: </label>
-                <input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true"
-                    placeholder="first name" />
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="Input.LastName">Last Name: </label>
-                <input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true"
-                    placeholder="last name" />
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div>
-                <label asp-for="Input.Email">Email: </label>
-                <input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username"
-                    aria-required="true" placeholder="email address" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div>
-                <label for="dob">DOB: </label>
-                <input @bind=DateOfBirth type="date" id="dob" name="DOB" />
-            </div>
-            <div>
-                <label for="plans">Membership Plan: </label>
-                <select @bind=Role name="plans" id="plans">
-                    <option value="" disabled selected>Select a plan</option>
-                    <option value="0">Member</option>
-                    <option value="1">MemberPlus</option>
-                    <option value="2">MemberPremium</option>
-                    <option value="3">Staff</option>
-                    <option value="4">Trainer</option>
-                    <option value="5">Manager</option>
-                </select>
-            </div>
-            <button @onclick=AddMember class="">[Register]</button>
-            <a href="/members">Cancel</a>
-        </div>
-    </div>
-</div>
+<h1 class="mb-4" id="title">Register Member</h1>
+<section class="contained text-xl bg-text" aria-labelledby="title">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<p>
+		<label asp-for="Input.FirstName">First Name: </label>
+		<input @bind=FirstName asp-for="Input.FirstName" class="form-control" aria-required="true"
+			   placeholder="first name" />
+		<span asp-validation-for="Input.FirstName" class="text-danger"></span>
+	</p>
+	<p>
+		<label asp-for="Input.LastName">Last Name: </label>
+		<input @bind=LastName asp-for="Input.LastName" class="form-control" aria-required="true"
+			   placeholder="last name" />
+		<span asp-validation-for="Input.LastName" class="text-danger"></span>
+	</p>
+	<p>
+		<label asp-for="Input.Email">Email: </label>
+		<input @bind=Email asp-for="Input.Email" class="form-control" autocomplete="username"
+			   aria-required="true" placeholder="email address" />
+		<span asp-validation-for="Input.Email" class="text-danger"></span>
+	</p>
+	<p>
+		<label for="dob">DOB: </label>
+		<input @bind=DateOfBirth type="date" id="dob" name="DOB" />
+	</p>
+	<p>
+		<label for="plans">Membership Plan: </label>
+		<select @bind=Role name="plans" id="plans">
+			<option value="" disabled selected>Select a plan</option>
+			<option value="0">Member</option>
+			<option value="1">MemberPlus</option>
+			<option value="2">MemberPremium</option>
+			<option value="3">Staff</option>
+			<option value="4">Trainer</option>
+			<option value="5">Manager</option>
+		</select>
+	</p>
+	<p>
+		<button @onclick=AddMember class="inline-block bg-primary hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150 hover:cursor-pointer">
+            <i class="fa-solid fa-user-plus mr-4"></i>Register User
+		</button>
+		<a href="/members" class="text-secondary">Cancel</a>
+	</p>
+</section>
 
 @code {
     public string FirstName { get; set; }

@@ -12,26 +12,23 @@
 @inject IJSRuntime JS
 @attribute [StreamRendering]
 
+
 <PageTitle>View Members</PageTitle>
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-<div>
-	<h1 style="font-size:40px"><b>List of Members</b></h1>
+<h1 class="">List of Members</h1>
+<div class="contained">
+	
 	<div>
 		<a href="/addnewmember" onclick="location.href='/addnewmember'; return false;"
-			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
-			Create New Member
+		   class="inline-block bg-primary-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-user-plus mr-3"></i> Create New Member
 		</a>
 		<a href="/members/backend-edit" onclick="location.href='/members/backend-edit'; return false;"
-			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
-			Edit User Images
+			class="inline-block bg-secondary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-image-portrait mre-3"></i>Edit User Images
 		</a>
 	</div>
-	<table id="userTable" class="display">
-		<thead>
+	<table id="userTable"class="display text-left text-xl">
+		<thead class="bg-background text-white">
 			<tr>
 				<th>First Name</th>
 				<th>Last Name</th>
@@ -48,7 +45,7 @@
 			{
 				foreach (UserDto userDto in userList)
 				{
-					<tr>
+					<tr class="bg-text">
 						<td>@userDto.FirstName</td>
 						<td>@userDto.LastName</td>
 						<td>@userDto.Email</td>
@@ -56,13 +53,13 @@
 						<td>@EnumHelper.GetDisplayName((RoleId)userDto.RoleId)</td>
 						<td>@EnumHelper.GetDisplayName((UserStatus)userDto.Status)</td>
 						<td>
-							<button class="bg-red-500 text-white px-2 py-1 rounded" onclick=@(() => DeleteUser(userDto))>
-								Delete
+							<button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 hover:cursor-pointer" onclick=@(() => DeleteUser(userDto))>
+							 <i class="fa-solid fa-user-minus mr-3"></i> Delete Member
 							</button>
 						</td>
 						<td>
-							<button class="bg-blue-500 text-white px-2 py-1 rounded" onclick=@(() => UpdateUser(userDto))>
-								Update
+							<button class="bg-accent text-white px-2 py-1 rounded hover:bg-background hover:cursor-pointer" onclick=@(() => UpdateUser(userDto))>
+							<i class="fa-solid fa-pen-to-square mr-3"></i> Update Member	
 							</button>
 						</td>
 					</tr>
@@ -78,8 +75,11 @@
 	</table>
 </div>
 
+    
+
+
 @code {
-	private List<UserDto> userList = new();
+    private List<UserDto> userList = new();
 
 	protected override async Task OnInitializedAsync()
 	{

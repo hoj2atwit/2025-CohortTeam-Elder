@@ -11,25 +11,20 @@
 @attribute [StreamRendering]
 
 <PageTitle>View Bookings</PageTitle>
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-<div>
-	<h1 style="font-size:40px"><b>List of Bookings</b></h1>
+<h1 class="mb-4">Bookings</h1>
+<div class="contained">
 	<div class="mb-4">
 		<a href="/addnewbooking" onclick="location.href='/addnewbooking'; return false;"
-			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
-			Add New Booking
+			class="inline-block bg-primary-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-plus mr-4"></i>Add New Booking
 		</a>
 		<a href="/view-waitlist" onclick="location.href='/view-waitlist'; return false;"
-			class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
-			View Wait List
+			class="inline-block bg-secondary-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-list mr-4"></i>View Wait List
 		</a>
 	</div>
-	<table id="bookingsTable" class="display">
-		<thead>
+	<table id="bookingsTable" class="display text-left text-xl">
+		<thead class="bg-background text-white">
 			<tr>
 				<th>User Name</th>
 				<th>Class Session ID</th>
@@ -46,7 +41,7 @@
 			{
 				foreach (var bookingDto in bookingList)
 				{
-					<tr>
+					<tr class="bg-text">
 						<td>@bookingDto.User?.Name</td>
 						<td>@bookingDto.ClassSessionId</td>
 						<td>@((BookingStatus)bookingDto.Status)</td>
@@ -54,12 +49,16 @@
 						<td>@bookingDto.ConfirmedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
 						<td>@bookingDto.UpdatedAt.ToString("MM/dd/yyyy hh:mm tt")</td>
 						<td>
-							<button class="bg-red-500 text-white px-2 py-1 rounded"
-								@onclick="() => DelBooking(bookingDto)">Delete</button>
+							<button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 hover:cursor-pointer"
+								@onclick="() => DelBooking(bookingDto)">
+								<i class="fa-solid fa-user-minus mr-3"></i>Delete
+							</button>
 						</td>
 						<td>
-							<button class="bg-blue-500 text-white px-2 py-1 rounded"
-								@onclick="() => UpdBooking(bookingDto)">Update</button>
+							<button class="bg-accent text-white px-2 py-1 rounded hover:bg-background hover:cursor-pointer"
+								@onclick="() => UpdBooking(bookingDto)">
+								<i class="fa-solid fa-pen-to-square mr-3"></i>Update
+							</button>
 						</td>
 					</tr>
 				}
