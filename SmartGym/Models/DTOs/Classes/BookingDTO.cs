@@ -13,5 +13,6 @@ public class BookingDTO
 	public DateTime ConfirmedAt { get; set; }
 	public DateTime UpdatedAt { get; set; }
 	public int ClassSessionId { get; set; }
-	
+	public bool Waitlisted { get; set; }
+
 }

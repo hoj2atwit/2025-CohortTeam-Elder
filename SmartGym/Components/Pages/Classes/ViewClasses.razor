@@ -5,50 +5,29 @@
 @inject IClassService classService
 <PageTitle>All Classes</PageTitle>
 <h1 class="text-4xl font-extrabold">
-	This is the page to view your classes.
+	Burn Baby Burn.
 </h1>
+<h4 class="text-4xl font-extrabold ml-4">- Sincerely, Calories</h4>
 
 <br /><br />
 
 
-<div class="text-2xl font-extrabold">Monday Classes</div>
 <br />
 @if (allClasses == null)
 {
-    <p><em>Loading...</em></p>
+	<p><em>Loading...</em></p>
 }
 else
 {
-    <div class="container flex max-w-full gap-4 overflow-x-auto p-4">
-        @foreach (ClassDTO classDTO in allClasses)
-        {
-            <ClassCard currClass=@classDTO> </ClassCard>
-        }
-    </div>
+	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-2">
+		@foreach (ClassDTO classDTO in allClasses)
+		{
+			<div class="min-w-[220px] max-w-[260px] w-full mx-auto">
+				<ClassCard currClass=@classDTO />
+			</div>
+		}
+	</div>
 }
-
-<br />
-<br />
-<br />
-
-<div class="text-2xl font-extrabold">Tuesday Classes</div>
-<br />
-<div class="container flex max-w-full gap-4 overflow-x-auto p-4">
-    @for (int i = 0; i < 8; i++)
-    {
-        <div class="w-[200px] min-w-[180px] flex-shrink-0 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <a href="#">
-                <img class="h-32 w-full rounded-t-lg object-cover" src="/img/placeholder.png" alt="" />
-            </a>
-            <div class="p-3">
-                <a href="#">
-                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">Noteworthy technology acquisitions 2021</h5>
-                </a>
-                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-            </div>
-        </div>
-    }
-</div>
 @code {
     private List<ClassDTO> allClasses;
 

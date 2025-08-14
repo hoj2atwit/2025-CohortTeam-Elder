@@ -1,0 +1,159 @@
+﻿@page "/ClassSessions/{classId:int}"
+@using SmartGym.Helpers
+@using SmartGym.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+
+@inject SmartGym.Services.IBookingService bookingService
+@inject SmartGym.Services.IClassService classService
+@inject SmartGym.Services.IUserService userService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<AppUser> UserManager
+@inject NavigationManager navManager
+@inject IJSRuntime JS
+@attribute [StreamRendering]
+
+
+<PageTitle>View Session</PageTitle>
+<h1 class="">@className </h1>
+<div class="contained">
+
+	<div>
+		<a href="/classes" onclick="location.href='/classes'; return false;"
+			class="inline-block bg-primary-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			<i class="fa-solid fa-user-plus mr-3"></i> Return to classes
+		</a>
+	</div>
+	<table id="sessionTable" class="display text-left text-xl">
+		<thead class="bg-background text-white">
+			<tr>
+				<th>Session ID</th>
+				<th>Instructor</th>
+				<th>Date</th>
+				<th>Headcount</th>
+				<th>Max Capacity</th>
+				<th>Location</th>
+				<th>Description</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (sessions != null)
+			{
+				foreach (ClassSessionDTO session in sessions)
+				{
+					<tr class="bg-text">
+						<td>@session.Id</td>
+						<td>@session.InstructorName</td>
+						<td>@session.SessionDateTime.ToLocalTime().ToString("MM/dd/yyyy hh:mm tt")</td>
+						<td>@session.HeadCount</td>
+						<td>@session.MaxCapacity</td>
+						<td>@EnumHelper.GetDisplayName(session.LocationId)</td>
+						<td>@session.Description</td>
+						<td>
+							<button class="bg-accent text-white px-2 py-1 rounded hover:bg-background hover:cursor-pointer"
+								onclick=@(() => BookSession(session))>
+								<i class="fa-solid fa-pen-to-square mr-3"></i> Book Session
+							</button>
+						</td>
+					</tr>
+				}
+			}
+			else
+			{
+				<tr>
+					<td colspan="8"><em>Loading...</em></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+
+
+
+@code {
+	[Parameter]
+	public int classId { get; set; }
+	public string className { get; set; }
+	private List<ClassSessionDTO> sessions = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		var allSessions = await bookingService.GetAllClassSessions();
+		var classDetails = await classService.GetClassById(classId);
+		var trainer = await userService.GetUserById(classDetails.TrainerId);
+		sessions = allSessions.Where(x => x.ClassId == classId).ToList();
+
+		// Assign trainer name to each session
+		foreach (var session in sessions)
+		{
+			session.InstructorName = trainer.Name;
+		}
+		className = classDetails.Name;
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender && sessions != null && sessions.Any())
+		{
+			await JS.InvokeVoidAsync("setupDataTable");
+		}
+	}
+
+	private async Task BookSession(ClassSessionDTO session)
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var userIdString = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+		int.TryParse(userIdString, out int userId);
+
+		var booking = new BookingPostDTO
+		{
+			UserId = userId,
+			CreatedAt = DateTime.UtcNow,
+			ClassSessionId = session.Id
+		};
+		try
+		{
+			var bookingResult = await bookingService.CreateBooking(booking);
+			if (bookingResult.Waitlisted)
+			{
+				await JS.InvokeVoidAsync("alert", "Full Class, you have been added to the waitlist.");
+				navManager.NavigateTo("/classes", true);
+				return;
+			}
+			await JS.InvokeVoidAsync("showBookingSuccessAndRedirect");
+		}
+		catch (Exception ex)
+		{
+			if (ex.Message.ToLower().Contains("double"))
+			{
+				await JS.InvokeVoidAsync("alert", "You have already booked this session.");
+			}
+			else if (ex.Message.ToLower().Contains("waitlist"))
+			{
+				await JS.InvokeVoidAsync("alert", "You are already on the waitlist.");
+			}
+			else
+			{
+				await JS.InvokeVoidAsync("alert", "Could not book this class, please see front desk");
+			}
+		}
+	}
+}
+
+<script>
+	function setupDataTable() {
+		if ($.fn.DataTable.isDataTable('#sessionTable')) {
+			$('#sessionTable').DataTable().destroy();
+		}
+		$('#sessionTable').DataTable({
+			paging: true
+		});
+	}
+	function showBookingSuccessAndRedirect() {
+		alert("Booking successful!");
+		window.location.href = "/classes";
+	}
+</script>

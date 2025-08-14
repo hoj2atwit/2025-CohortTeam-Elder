@@ -6,6 +6,8 @@
 @inject SmartGym.Services.IBookingService bookingService
 @inject SmartGym.Services.IUserService userService
 @inject NavigationManager navManager
+@inject IJSRuntime JS
+
 
 <PageTitle>Add New Booking</PageTitle>
 
@@ -83,8 +85,32 @@
         tempBooking.ClassSessionId = ClassId;
         tempBooking.CreatedAt = DateTime.Now;
 
-        await bookingService.CreateBooking(tempBooking);
-        navManager.NavigateTo("/viewbookings", true);
+		try
+		{
+			var bookingResult = await bookingService.CreateBooking(tempBooking);
+			if (bookingResult.Waitlisted)
+			{
+				await JS.InvokeVoidAsync("alert", "Full Class, User Waitlisted");
+				navManager.NavigateTo("/viewbookings", true);
+				return;
+			}
+			await JS.InvokeVoidAsync("showBookingSuccessAndRedirect");
+		}
+		catch (Exception ex)
+		{
+			if (ex.Message.ToLower().Contains("double"))
+			{
+				await JS.InvokeVoidAsync("alert", "This user is already booked for this session.");
+			}
+			else if (ex.Message.ToLower().Contains("waitlist"))
+			{
+				await JS.InvokeVoidAsync("alert", "This user is already on the waitlist.");
+			}
+			else
+			{
+				await JS.InvokeVoidAsync("alert", "Could not book this class, please see a Manager or Admin");
+			}
+		}
     }
     
     private async Task GetUsers()
@@ -97,3 +123,10 @@
         bookingList = await bookingService.GetAllBookings();
     }
 }
+
+<script>
+	function showBookingSuccessAndRedirect() {
+		alert("Booking successful!");
+		window.location.href = "/viewbookings";
+	}
+</script>

@@ -172,6 +172,15 @@ public class BookingService : IBookingService
 	{
 		try
 		{
+			// Check if user is already booked for this session
+			var existingBooking = await _unitOfWork.BookingsRepository.GetAsync(
+				x => x.UserId == newBookingData.UserId && x.ClassSessionId == newBookingData.ClassSessionId
+			);
+			if (existingBooking.Any())
+			{
+				throw new Exception("Cannot double book.");
+			}
+
 			var sessionEntity = await _unitOfWork.ClassSessionRepository.GetAsync(newBookingData.ClassSessionId);
 			if (sessionEntity != null && sessionEntity.HeadCount < sessionEntity.MaxCapacity)
 			{
@@ -193,12 +202,11 @@ public class BookingService : IBookingService
 			{
 				// If session is full, add user to waitlist
 				await AddUserToWaitlist(newBookingData.UserId, newBookingData.ClassSessionId);
-				return null;
+				return new BookingDTO() {Waitlisted = true };
 			}
 		}
 		catch (Exception ex)
 		{
-			Console.WriteLine($"Error in CreateBooking: {ex.Message}");
 			throw;
 		}
 	}
@@ -497,9 +505,13 @@ public class BookingService : IBookingService
 		try
 		{
 			// Check if user is already on the waitlist for this session
-			var user = await _unitOfWork.WaitlistRepository.GetAsync(x => x.MemberId == userId && x.SessionId == sessionId);
-			if (user.Any())
-				return null;
+			var existingWaitlist = await _unitOfWork.WaitlistRepository.GetAsync(
+				x => x.MemberId == userId && x.SessionId == sessionId
+			);
+			if (existingWaitlist.Any())
+			{
+				throw new Exception("User is already on the waitlist for this session.");
+			}
 
 			// Get current max position
 			var waitlist = await _unitOfWork.WaitlistRepository.GetAsync(x => x.SessionId == sessionId);
@@ -521,7 +533,7 @@ public class BookingService : IBookingService
 		catch (Exception ex)
 		{
 			Console.WriteLine($"Error in AddUserToWaitlist: {ex.Message}");
-			return null;
+			throw;
 		}
 	}
 

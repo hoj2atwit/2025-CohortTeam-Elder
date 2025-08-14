@@ -1,4 +1,5 @@
-﻿@page "/members/backend-edit"
+﻿@attribute [Authorize(Roles = "Admin")]
+@page "/members/backend-edit"
 @using SmartGym.Models
 @using SmartGym.Helpers
 @using SmartGym.Constants.Enums
@@ -6,6 +7,8 @@
 @attribute [StreamRendering]
 @inject SmartGym.Services.IUserService usersService
 @inject UserManager<AppUser> UserManager
+@inject IJSRuntime JS
+
 
 <PageTitle>Edit Members Images</PageTitle>
 
@@ -38,7 +41,7 @@
 							var imgSrc = isDefaultSvg
 							? $"/lib/images/{user.ImageRef}"
 							: $"/lib/db_images/{user.ImageRef}?cachebust={Guid.NewGuid()}";
-							<img src="@imgSrc" alt="Profile" width="50" height="50" />
+							<img src="@imgSrc" alt="Profile" width="50" height="50" loading="lazy" />
 						}
 					</td>
 					<td>@user.DateOfBirth</td>
@@ -55,14 +58,14 @@
 		}
 		else
 		{
-			<p><em>Loading...</em></p>
+			<tr>
+				<td colspan="6"><em>Loading...</em></td>
+			</tr>
 		}
 	</tbody>
 </table>
 
 @code {
-	[Inject]
-	private IJSRuntime JS { get; set; }
 	private List<UserDto> userList;
 	private Dictionary<int, string> userRoles = new();
 
@@ -172,7 +175,6 @@
 		}
 	}
 }
-
 <script>
 	function setupDataTable() {
 		// Destroy existing DataTable instance if it exists

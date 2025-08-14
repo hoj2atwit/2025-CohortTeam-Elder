@@ -38,7 +38,7 @@
 						<td>@waitlistDto.SessionId</td>
 						<td>@waitlistDto.ClassName</td>
 						<td>@waitlistDto.Member.Name</td>
-						<td>@waitlistDto.Session.SessionDateTime.ToString("MM/dd/yyyy hh:mm tt")</td>
+						<td>@waitlistDto.Session.SessionDateTime.ToLocalTime().ToString("MM/dd/yyyy hh:mm tt")</td>
 						<td>@waitlistDto.Position</td>
 					</tr>
 				}
