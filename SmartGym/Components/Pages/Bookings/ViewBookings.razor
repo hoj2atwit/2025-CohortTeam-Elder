@@ -83,7 +83,7 @@
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		if (bookingList != null && bookingList.Any())
+		if (!firstRender && bookingList != null && bookingList.Any())
 		{
 			await JS.InvokeVoidAsync("setupDataTable");
 		}
@@ -106,7 +106,7 @@
 			$('#bookingsTable').DataTable().destroy();
 		}
 		$('#bookingsTable').DataTable({
-			paging: false
+			paging: true
 		});
 	}
 </script>

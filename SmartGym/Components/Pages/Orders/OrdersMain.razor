@@ -8,7 +8,7 @@
 @inject NavigationManager navigationManager
 @attribute [StreamRendering]
 <h1>View Orders</h1>
-<div class="flex contained">
+<div class="contained flex">
 	<label> Filter by Status: </label>
 	<InputSelect ValueExpression="@(() => orderFilter)" Value=@orderFilter ValueChanged="@((OrderStatus e) => { orderFilter = e; refreshOrders(); })">
 		@foreach (OrderStatus enumVal in OrderStatus.GetValues(typeof(OrderStatus)))
@@ -38,6 +38,7 @@
 @code {
 	[CascadingParameter]
 	public MainLayout layout { get; set; }
+
 	private string searchText = "";
 	private List<OrderDTO>? orders;
 	public OrderStatus orderFilter { get; set; } = OrderStatus.Pending;
@@ -49,14 +50,9 @@
 		updateView();
 	}
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await layout.setupSearch("Viewing All Orders", new EventCallback<string>(this, search));
-    }
-
     protected override async Task OnInitializedAsync()
     {
-        await layout.setupSearch("Viewing All Orders", new EventCallback<string>(this, search));
+        await layout.setupSearch(new EventCallback<string>(this, search));
         await refreshOrders();
     }
 
