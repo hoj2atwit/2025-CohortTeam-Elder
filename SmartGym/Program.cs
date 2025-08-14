@@ -65,6 +65,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, CustomClaimsPrincipalFactory>();
+builder.Services.AddSingleton<QRCodeService>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
