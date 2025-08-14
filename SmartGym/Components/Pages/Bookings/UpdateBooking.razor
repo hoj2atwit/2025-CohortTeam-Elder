@@ -3,6 +3,7 @@
 @using SmartGym.Constants.Enums
 @using SmartGym.Services
 @using Microsoft.AspNetCore.Identity
+@using SmartGym.Helpers
 @inject SmartGym.Services.IBookingService service
 @inject NavigationManager navManager
 
@@ -15,7 +16,7 @@
     else
     {
       <h1 class="mb-4" id="title">Update Booking</h1>
-      <section class="contained text-xl bg-text" aria-labelledby="title">
+      <section class="contained bg-text text-xl" aria-labelledby="title">
             <p>
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="UserId" />
@@ -46,14 +47,12 @@
             </p>
             <p>
                 <label for="status">Status: </label>
-                <select @bind=booking.Status name="status" id="status">
-                    <option value="" disabled>Select a status</option>
-                    <option value="0">Pending</option>
-                    <option value="1" selected>Confirmed</option>
-                    <option value="2">Completed</option>
-                    <option value="3">No Show</option>
-                    <option value="4">Expired</option>
-                    <option value="5">Cancelled</option>
+                <select @bind=bookingStatus name="status" id="status">
+                @foreach (BookingStatus status in Enum.GetValues(typeof(BookingStatus)))
+                {
+                    <option value=@status>@EnumHelper.GetDisplayName(status)</option>
+                }
+                    
                 </select>
             </p>
             <p>
@@ -74,11 +73,14 @@
     public int cId { get; set; }
     [Parameter]
     public int bId { get; set; }
+
+    private BookingStatus bookingStatus { get; set; } = 0;
     private BookingDTO booking { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         booking = await FindBooking();
+        bookingStatus = booking.Status;
         StateHasChanged();
     }
 
@@ -107,15 +109,10 @@
     /// <returns></returns>
     private async Task EditBooking(int uId, int cId, int bId)
     {
-            // TODO: popup error
-            BookingStatus status;
-            status = booking.Status;
-            booking.UserId = uId;
-            booking.ClassSessionId = cId;
-            booking.Id = bId;
-            booking.UpdatedAt = DateTime.Now;
+
+            await service.UpdateBookingStatus(bId, (int)bookingStatus);
 
             navManager.NavigateTo("/viewbookings", true);
-        }
+       }
 
 }
