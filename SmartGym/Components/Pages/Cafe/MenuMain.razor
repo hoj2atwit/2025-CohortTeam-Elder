@@ -8,14 +8,14 @@
 @inject IUserService userService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h1>My Order</h1>
+<h1>@($"{userName}'s Order")</h1>
 <div class="flex">
     <div class="border border-black p-4" style="max-width:65vw;">
 		@*<section class="flex flex-row justify-between p-2" style="min-height:1vh;">
             <div class="flex w-96 flex-col">
 
                      TODO: Add Filters and have them update the menu when selected 
-                    <button class="bg-secondry rounded-4 h-45 w-full border border-primary px-2 py-2 hover:cursor-pointer hover:bg-background">
+                    <button class="bg-secondry rounded-4 h-45 border-primary w-full border px-2 py-2 hover:bg-background hover:cursor-pointer">
                     <i class="fa-solid fa-filter mr-4"></i>Filter
                     </button>
 
@@ -27,7 +27,7 @@
         }
         else
         {
-            <div class="rounded-lg border p-4 bg-white">
+            <div class="rounded-lg border bg-white p-4">
                 <div class="flex flex-wrap justify-center gap-2 overflow-y-auto" style="max-height:80vh;">
                     @* Fill with MenuItemContainerLayout depending on amount of items desired *@
                     @* TODO: Dynamically update depending on filters *@
@@ -61,13 +61,6 @@
     private MenuCartLayout menuCart;
     private MenuCheckoutModal checkoutModal;
 
-
-    protected override async Task OnAfterRenderAsync(bool firstRender) 
-    {
-        await layout.setupSearch($"{userName}'s Order", new EventCallback<string>(this, searchMenu));
-        
-    }
-
     async Task InitializeMenu()
     {
 
@@ -95,7 +88,7 @@
                 userName = user.Identity.Name;
             }
         }
-        await layout.setupSearch($"{userName}'s Order", new EventCallback<string>(this, searchMenu));
+        await layout.setupSearch(new EventCallback<string>(this, searchMenu));
         await updateMenu();
     }
 

@@ -20,7 +20,7 @@
         {
                 <CascadingAuthenticationState>
                     <AuthorizeView>
-                        <div class="sidebar border-black-500 border-r-2 bg-primary-900">
+                        <div class="sidebar border-black-500 bg-primary-900 border-r-2">
                             <NavMenu />
                         </div>
                         <div class="filler" style="width:16rem; top:0; bottom:0; left:0;" />
@@ -31,8 +31,8 @@
                     <div class="boxed">
                         <CascadingAuthenticationState>
                             <AuthorizeView>
-                            <div class="sticky top-0 z-10 notification-bar bg-text">
-                                    <SearchNavBar @ref=searchNav title=@searchNavTitle isSearchable=@isSearchable />
+                            <div class="notification-bar bg-text sticky top-0 z-10">
+                                    <SearchNavBar @ref=searchNav title=@searchNavTitle isSearchable=@isSearchable OnChangeEventCallBack="searchBarOnChange" />
                                 </div>
                             </AuthorizeView>
                         </CascadingAuthenticationState>
@@ -50,7 +50,7 @@
     </div>
 </CascadingValue>
 
-<footer class="bg-background text-white text-xl">
+<footer class="bg-background text-xl text-white">
   <div class="contained my-[30px]">
         <h2 class="uppercase">The true gains start here.</h2>
         <hr />
@@ -71,9 +71,8 @@
         return base.OnParametersSetAsync();
     }
 
-    public async Task setupSearch(string title, EventCallback<string> bodySearchMethod)
+    public async Task setupSearch(EventCallback<string> bodySearchMethod)
     {
-        searchNavTitle = title;
         searchBarOnChange = bodySearchMethod;
         isSearchable = true;
         StateHasChanged();
@@ -81,18 +80,6 @@
 
     private Task searchSetupDefault()
     {
-        searchNavTitle = "Smart Gym";
-        searchBarOnChange = new EventCallback<string>();
-        isSearchable = false;
-        StateHasChanged();
-
-        return Task.CompletedTask;
-    }
-
-    public Task setupNavTitleNoSearch(string s)
-    {
-        searchNavTitle = s;
-        searchBarOnChange = new EventCallback<string>();
         isSearchable = false;
         StateHasChanged();
 
