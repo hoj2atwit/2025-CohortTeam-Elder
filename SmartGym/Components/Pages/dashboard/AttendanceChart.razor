@@ -1,0 +1,43 @@
+@using SmartGym.Services
+
+@if (AttendanceData != null && AttendanceData.Count > 0)
+{
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 h-full">
+        <h3 class="text-lg font-semibold mb-4 text-gray-800">Class Attendance (Last 7 Days)</h3>
+        <div class="flex items-end justify-between gap-2" style="height: 200px;">
+            @{
+                var maxCount = AttendanceData.Max(d => d.Count);
+                if (maxCount == 0) maxCount = 10; // Set a minimum scale for better visibility
+            }
+            @foreach (var data in AttendanceData)
+            {
+                var heightPercent = maxCount > 0 ? (double)data.Count * 80 / maxCount : 0; // Use 80% max height
+                var actualHeight = Math.Max(heightPercent, data.Count > 0 ? 10 : 0); // Minimum 10% if there's data
+                <div class="flex flex-col items-center justify-end gap-2 flex-1 h-full">
+                    <div class="@heightColor w-full rounded-t flex items-end justify-center text-white text-xs font-medium transition-all duration-300 hover:bg-secondary" 
+                         style="height: @(actualHeight)%;">
+                        @if (data.Count > 0)
+                        {
+                            <span class="mb-1">@data.Count</span>
+                        }
+                    </div>
+                    <div class="text-xs text-gray-600 text-center mt-2">@data.Date</div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center text-gray-500" style="height: 248px;">
+        <div class="text-center">
+            <div class="text-lg mb-2">📈</div>
+            <div>Loading attendance data....</div>
+        </div>
+    </div>
+}
+
+@code {
+    private string heightColor = "bg-secondary";
+    [Parameter] public List<AttendanceDataPoint>? AttendanceData { get; set; }
+}

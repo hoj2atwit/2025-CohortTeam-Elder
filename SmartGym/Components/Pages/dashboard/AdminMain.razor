@@ -94,8 +94,15 @@
         <div class="flex h-48 flex-1 bg-gray-100 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-500">
             [Revenue Chart goes here]
         </div>
-        <div class="flex h-48 flex-1 items-center justify-center rounded-lg border border-gray-300 bg-gray-100 text-gray-500">
-            [Attendance Chart goes here]
+        <div class="flex-1">
+            @if (attendanceData == null)
+            {
+                <div class="bg-gray-100 p-4 rounded-lg">Loading attendance data...</div>
+            }
+            else
+            {
+                <AttendanceChart AttendanceData="attendanceData" />
+            }
         </div>
     </div>
 
@@ -153,6 +160,7 @@
     private List<ClassDTO> upcomingClasses = new();
     private List<UserDto> allUsers = new();
     private List<CheckinDataPoint> checkinData = new();
+    private List<AttendanceDataPoint> attendanceData = new();
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -171,6 +179,9 @@
             // Load checkin data for chart
             checkinData = await DashboardService.GetDailyCheckinsAsync();
             
+            // Load attendance data for chart
+            attendanceData = await DashboardService.GetDailyAttendanceAsync();
+            
             // Filter for upcoming classes (next 5)
             var currentTime = DateTime.Now;
             upcomingClasses = allClasses
@@ -184,6 +195,7 @@
             Console.WriteLine($"Error loading dashboard data: {ex.Message}");
             upcomingClasses = new List<ClassDTO>();
             checkinData = new List<CheckinDataPoint>();
+            attendanceData = new List<AttendanceDataPoint>();
         }
     }
 
