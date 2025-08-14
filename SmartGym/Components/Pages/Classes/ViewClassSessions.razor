@@ -21,30 +21,37 @@
 
 	<div>
 		<a href="/classes" onclick="location.href='/classes'; return false;"
-			class="inline-block bg-primary-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-150">
+			class="bg-primary-500 inline-block rounded px-4 py-2 font-semibold text-white shadow transition duration-150 hover:bg-blue-700">
 			<i class="fa-solid fa-user-plus mr-3"></i> Return to classes
 		</a>
 	</div>
-	<table id="sessionTable" class="display text-left text-xl">
-		<thead class="bg-background text-white">
-			<tr>
-				<th>Session ID</th>
-				<th>Instructor</th>
-				<th>Date</th>
-				<th>Headcount</th>
-				<th>Max Capacity</th>
-				<th>Location</th>
-				<th>Description</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			@if (sessions != null)
-			{
-				foreach (ClassSessionDTO session in sessions)
-				{
-					<tr class="bg-text">
-						<td>@session.Id</td>
+	@if (sessions != null)
+	{
+		if (sessions.Count < 1)
+		{
+			<label>No Sessions available.</label>
+		}
+		else
+		{
+			<table id="sessionTable" class="display text-left text-xl">
+				<thead class="bg-background text-white">
+					<tr>
+						<th>Session ID</th>
+						<th>Instructor</th>
+						<th>Date</th>
+						<th>Headcount</th>
+						<th>Max Capacity</th>
+						<th>Location</th>
+						<th>Description</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+
+					@foreach (ClassSessionDTO session in sessions)
+					{
+						<tr class="bg-text">
+							<td>@session.Id</td>
 						<td>@session.InstructorName</td>
 						<td>@session.SessionDateTime.ToLocalTime().ToString("MM/dd/yyyy hh:mm tt")</td>
 						<td>@session.HeadCount</td>
@@ -52,22 +59,21 @@
 						<td>@EnumHelper.GetDisplayName(session.LocationId)</td>
 						<td>@session.Description</td>
 						<td>
-							<button class="bg-accent text-white px-2 py-1 rounded hover:bg-background hover:cursor-pointer"
-								onclick=@(() => BookSession(session))>
+							<button class="bg-accent rounded px-2 py-1 text-white hover:bg-background hover:cursor-pointer"
+									onclick=@(() => BookSession(session))>
 								<i class="fa-solid fa-pen-to-square mr-3"></i> Book Session
 							</button>
 						</td>
 					</tr>
-				}
-			}
-			else
-			{
-				<tr>
-					<td colspan="8"><em>Loading...</em></td>
-				</tr>
-			}
-		</tbody>
-	</table>
+					}
+				</tbody>
+			</table>
+		}
+	}
+	else
+	{
+		<label>Loading...</label>
+	}
 </div>
 
 
