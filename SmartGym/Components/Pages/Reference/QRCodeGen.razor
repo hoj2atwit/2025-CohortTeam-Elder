@@ -1,5 +1,4 @@
 ﻿@page "/qrcode"
-@using IronBarCode
 @using SmartGym.Models
 @using SmartGym.Services
 @using Microsoft.AspNetCore.Components.Authorization
@@ -7,14 +6,18 @@
 @inject SmartGym.Services.IUserService service
 @inject NavigationManager navigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject QRCodeService QRService
 
 
 <PageTitle>QR Code Generator</PageTitle>
 <h1>QR Code</h1>
 <section class="contained">
-    <section class="flex items-center justify-center min-h-[80vh]">
+    <section class="flex min-h-[80vh] items-center justify-center">
         <!-- Button to trigger QR code generation -->
-        @((MarkupString)qrCode)
+        @if (!string.IsNullOrEmpty(qrCode))
+        {
+            <img src="@qrCode" alt="QR Code" />
+        }
     </section>
 </section>
 
@@ -61,11 +64,9 @@
                 throw new ArgumentException("Text can't be empty");
             }
 
-            GeneratedBarcode myQRCode = QRCodeWriter.CreateQrCode(text);
-
             // Convert the generated QR code to HTML tag
-        StateHasChanged();
-            qrCode = Convert.ToString(myQRCode.ToHtmlTag());
+            StateHasChanged();
+            qrCode = QRService.GenerateSvgQRCode(text);
         } catch (Exception e) {
             Console.WriteLine($"Error: {e.Message}");
         }

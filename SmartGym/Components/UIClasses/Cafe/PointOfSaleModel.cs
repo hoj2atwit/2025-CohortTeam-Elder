@@ -1,5 +1,4 @@
-﻿using IronBarCode;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SmartGym.Models;
 using SmartGym.Services;
 namespace SmartGym.Components.UIClasses.Cafe
