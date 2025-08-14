@@ -88,7 +88,7 @@
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		if (userList != null && userList.Any())
+		if (!firstRender && userList != null && userList.Any())
 		{
 			await JS.InvokeVoidAsync("setupDataTable");
 		}

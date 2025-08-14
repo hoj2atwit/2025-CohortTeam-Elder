@@ -13,10 +13,6 @@
 
 <PageTitle>View Waitlist</PageTitle>
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
 <div>
 	<h1 style="font-size:40px"><b>List of Waitlist</b></h1>
 	<a href="/viewbookings" onclick="location.href='/viewbookings'; return false;"
@@ -34,7 +30,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@if (waitlist != null)
+			@if (waitlist != null && waitlist.Any())
 			{
 				foreach (var waitlistDto in waitlist)
 				{
@@ -50,7 +46,7 @@
 			else
 			{
 				<tr>
-					<td colspan="8"><em>Loading...</em></td>
+					<td colspan="5"><em>Loading...</em></td>
 				</tr>
 			}
 		</tbody>
@@ -79,7 +75,7 @@
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		if (waitlist != null && waitlist.Any())
+		if (!firstRender && waitlist != null && waitlist.Any())
 		{
 			await JS.InvokeVoidAsync("setupDataTable");
 		}
