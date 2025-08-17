@@ -20,7 +20,7 @@ If you want to learn more about creating good readme files then refer the follow
 - [Chakra Core](https://github.com/Microsoft/ChakraCore)
 
 # Authors
-- Thomas Nguyen - [Linkedin](https://www.linkedin.com/tn9517/) Github
+- Thomas Nguyen - [Linkedin](https://www.linkedin.com/tn9517/) - Github
 - Kelvin Nguyen - [Linkedin](https://www.linkedin.com/in/kelvincelsius/) - [Github](https://github.com/callmecelsius)
 - Felipe Teixeira Andrade - [Linkedin](https://www.linkedin.com/in/felipe-teixeira-andrade/) - [Github](https://github.com/felipetexa)
 - Komalpreet Singh - [Linkedin](https://www.linkedin.com/in/komalpreet-singh-40ab17187/) - [Github](https://github.com/Komalpreet05)
